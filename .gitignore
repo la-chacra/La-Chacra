@@ -1,0 +1,18 @@
+
+# Node (frontend)
+Desarrollo/frontend/node_modules/
+Desarrollo/frontend/node_modules
+Desarrollo/frontend/dist/
+
+
+# PHP Composer (backend)
+Desarrollo/backend/vendor/
+Desarrollo/backend/.env
+
+# Logs
+Desarrollo/*.log
+Desarrollo/backend/storage/logs/
+
+# Sistema 
+.DS_Store
+Thumbs.db
