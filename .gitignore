@@ -1,4 +1,3 @@
-
 # Node (frontend)
 Desarrollo/frontend/node_modules/
 Desarrollo/frontend/node_modules
@@ -12,7 +11,3 @@ Desarrollo/backend/.env
 # Logs
 Desarrollo/*.log
 Desarrollo/backend/storage/logs/
-
-# Sistema 
-.DS_Store
-Thumbs.db
