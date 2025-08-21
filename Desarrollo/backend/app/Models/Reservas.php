@@ -13,20 +13,22 @@ enum EstadoReserva {
     case Cancelada;
 }
 
-class Reserva {
+class Reserva extends Usuario{
 
     //self:: Errores
     protected static $errores = [];
 
     private int $id_reserva;
     private int $id_mesa; 
-    private EstadoReserva $estado; 
+    private EstadoReserva $estado;
+    private int $cantPersonas; 
     private DateTime $hora; 
     private DateTime $fecha;
 
-    public function __construct(string $id_reserva, string $id_mesa, EstadoReserva $estado, string $hora, string $fecha) {
+    public function __construct(string $id_reserva, string $id_mesa, EstadoReserva $estado, string $hora, string $fecha, int $cantPersonas) {
         $this->id_reserva = $id_reserva;
         $this->id_mesa = $id_mesa;
+        $this->cantPersonas = $cantPersonas;
         $this->estado = $estado;
         $this->hora = new DateTime($hora);
         $this->fecha = new DateTime($fecha);
@@ -40,7 +42,7 @@ class Reserva {
      * @param Reserva $reserva Recibe una solicitud
      * @return bool Verdadero o Falso según se pudo realizar la operación o no
      */
-    public function registrar (Reserva $reserva) : bool{
+    public function registrarReserva (Reserva $reserva) : bool{
         $conexion_bd = new Database;
         return $conexion_bd->ejecutarConsulta(
             "INSERT INTO reserva (id_reserva, id_mesa, estado, hora, fecha) VALUES (:id_reserva, :id_mesa, :estado, :hora, :fecha)", 
@@ -50,33 +52,33 @@ class Reserva {
     }
 
     public function crearReserva () {
+        if($id_usuario) {
+        $this->validarReserva();
+        //Insertar en la base de datos
+        $this->registrarReserva();
 
     }
+}
+    
 
     public function cancelarReserva () {
 
     }
 
     public function validarReserva () {
-             
-        // if($this->estado){
-        //     self::$errores[] = "Debes insertar un titulo";
-        // }
-        // if(!$this->precio){
-        //     self::$errores[] = "Debes insertar un precio";
-        // }
-        // if(strlen($this->descripcion) < 50){//Debe escribir minimo 50 caracteres
-        //     self::$errores[] = "Debes insertar un descripcion";
-        // }
-        // if( !$this->habitaciones){ 
-        //     self::$errores[] = "Debes insertar un habitaciones";
-        // }
-        // if(!$this->wc){
-        //     self::$errores[] = "Debes insertar un wc";
+        if(!$this->fecha){
+            self::$errores[] = "Debes insertar una fecha";
+        }
+        if($this->hora){
+            self::$errores[] = "Debes insertar la hora de la reserva";
+        }
+        
+        if(!$this->cantPersonas){
+            self::$errores[] = "Debes insertar la cantidad de personas de la reserva";
        
         
-        // return self::$errores;
-        // }
+        return self::$errores;
+        }
     }
 
 
@@ -90,7 +92,13 @@ class Reserva {
     public function setid_reserva (int $id_reserva) {
         $this->id_reserva = $id_reserva;
     }
+    public function getcantPersonas () : int {
+        return $this->cantPersonas;
+    }
 
+    public function setcantPersonas (int $cantPersonas) {
+        $this->cantPersonas = $cantPersonas;
+    }
 
     public function getestado () : EstadoReserva {
         return $this->estado;
