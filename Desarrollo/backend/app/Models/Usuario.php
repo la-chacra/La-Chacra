@@ -2,17 +2,19 @@
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-use Database;
+use database;
 
 abstract class Usuario {
 
+    private int $id_usuario;
     private string $nombre;
     private string $apellido; 
     private string $correo; 
     private string $contrasena; 
     private DateTime $fechaNacimiento;
 
-    public function __construct(string $nombre, string $apellido, string $correo, string $contrasena, string $fechaNacimiento) {
+    public function __construct(int $id_usuario, string $nombre, string $apellido, string $correo, string $contrasena, string $fechaNacimiento) {
+        $this->id_usuario = $id_usuario;
         $this->nombre = $nombre;
         $this->apellido = $apellido;
         $this->correo = $correo;
@@ -26,7 +28,7 @@ abstract class Usuario {
      * @return true|false Según se pudo realizar la operación o no
      */
     public function registrar () : bool{
-        $conexion_bd = new Database;
+        $conexion_bd = new database;
 
         return $conexion_bd->ejecutarConsulta(
             // Los ":" al lado de los parámetros los hace poder insertarse con arrays asociativos. 
