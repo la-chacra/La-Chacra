@@ -6,15 +6,15 @@ use database;
 
 abstract class Usuario {
 
-    private int $id_usuario;
+    private int $usuario_id;
     private string $nombre;
     private string $apellido; 
     private string $correo; 
     private string $contrasena; 
     private DateTime $fechaNacimiento;
 
-    public function __construct(int $id_usuario, string $nombre, string $apellido, string $correo, string $contrasena, string $fechaNacimiento) {
-        $this->id_usuario = $id_usuario;
+    public function __construct(int $usuario_id, string $nombre, string $apellido, string $correo, string $contrasena, string $fechaNacimiento) {
+        $this->usuario_id = $usuario_id;
         $this->nombre = $nombre;
         $this->apellido = $apellido;
         $this->correo = $correo;
@@ -76,16 +76,21 @@ abstract class Usuario {
         return $resultado ? true : false;
     }
 
-    public function actualizarDatos () {
+    public function actualizarDatos (array $columnas = []) {
+        $conexion_bd = new Database;
 
+        return $conexion_bd->ejecutarConsulta(
+            "UPDATE usuarios SET {} WHERE usuario_id = {$this->usuario_id}",
+
+        );
     }
 
     public function eliminarCuenta () {
         $conexion_bd = new Database;
 
         return $conexion_bd->ejecutarConsulta(
-            "DELETE FROM usuarios WHERE correo = :correo",
-            ['correo' => $this->correo]
+            "DELETE FROM usuarios WHERE usuario_id = :id",
+            ['id' => $this->usuario_id]
         );
     }
 
