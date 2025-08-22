@@ -3,7 +3,7 @@
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 use Database;
-
+use Usuario;
 
 
 //Se necesita espeficiar antes los valores del enum, para poder asignarlos en la clase
@@ -13,7 +13,7 @@ enum EstadoReserva {
     case Cancelada;
 }
 
-class Reserva extends Usuario{
+class Reserva{
 
     //self:: Errores
     protected static $errores = [];
@@ -53,17 +53,14 @@ class Reserva extends Usuario{
     }
 
     public function crearReserva () {
-        if($id_usuario) {
-        $this->validarReserva();
-        //Insertar en la base de datos
-        $this->registrarReserva();
-
-    }
+        $query = "SELECT * mesa FROM reservas";
+        
 }
     
 
     public function cancelarReserva () {
-
+            
+    
     }
 
     public function validarReserva () {
@@ -75,7 +72,7 @@ class Reserva extends Usuario{
         }
         
         if(!$this->cantPersonas){
-            self::$errores[] = "Debes insertar la cantidad de personas de la reserva";
+            self::$errores[] = "Debes insertar la cantidad de personas para la reserva";
        
         
         return self::$errores;
