@@ -44,6 +44,7 @@ class Reserva extends Usuario{
      */
     public function registrarReserva (Reserva $reserva) : bool{
         $conexion_bd = new Database;
+
         return $conexion_bd->ejecutarConsulta(
             "INSERT INTO reserva (id_reserva, id_mesa, estado, hora, fecha) VALUES (:id_reserva, :id_mesa, :estado, :hora, :fecha)", 
             ['id_reserva' => $reserva->id_reserva, 'id_mesa' => $reserva->id_mesa, 'estado' => $reserva->estado, 'hora' => $reserva->hora,
