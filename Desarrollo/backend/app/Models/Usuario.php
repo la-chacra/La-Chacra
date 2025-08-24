@@ -2,17 +2,19 @@
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-use Database;
+use database;
 
 abstract class Usuario {
 
+    private int $usuario_id;
     private string $nombre;
     private string $apellido; 
     private string $correo; 
     private string $contrasena; 
     private DateTime $fechaNacimiento;
 
-    public function __construct(string $nombre, string $apellido, string $correo, string $contrasena, string $fechaNacimiento) {
+    public function __construct(int $usuario_id, string $nombre, string $apellido, string $correo, string $contrasena, string $fechaNacimiento) {
+        $this->usuario_id = $usuario_id;
         $this->nombre = $nombre;
         $this->apellido = $apellido;
         $this->correo = $correo;
@@ -23,27 +25,73 @@ abstract class Usuario {
     /**
      * Realizar el registro de un usuario en la Base de Datos
      * 
-     * @param Usuario $usuario Recibe un usuario
-     * @return bool Verdadero o Falso según se pudo realizar la operación o no
+     * @return true|false Según se pudo realizar la operación o no
      */
-    public function registrar (Usuario $usuario) : bool{
-        $conexion_bd = new Database;
+    public function registrar () : bool{
+        $conexion_bd = new database;
+
         return $conexion_bd->ejecutarConsulta(
+            // Los ":" al lado de los parámetros los hace poder insertarse con arrays asociativos. 
             "INSERT INTO usuario (nombre, apellido, correo, contrasena, fechaNacimiento) VALUES (:nombre, :apellido, :correo, :contrasena, :fechaNacimiento)", 
-            ['nombre' => $usuario->nombre, 'apellido' => $usuario->apellido, 'correo' => $usuario->correo, 'contrasena' => $usuario->contrasena, 'fechaNacimiento' => $usuario->fechaNacimiento]
+            [
+                'nombre'          => $this->nombre, 
+                'apellido'        => $this->apellido, 
+                'correo'          => $this->correo, 
+                'contrasena'      => $this->contrasena, 
+                'fechaNacimiento' => $this->fechaNacimiento
+            ]
         );
     }
 
-    public function autenticar () {
 
+    /**
+     * Realizar la autenticación de un usuario en la Base de Datos
+     * 
+     * @return null Si el usuario no existe
+     * @return true|false Si la autenticación es válida o no
+     */
+    public function autenticar () : bool|null{
+        $conexion_bd = new Database;
+        
+        $resultado = $conexion_bd->realizarConsulta(
+            "SELECT * FROM usuarios WHERE correo = :correo",
+            ['correo' => $this->correo]
+        );
+
+        if (!$resultado):
+            return null;
+        endif;
+
+        return $resultado['contrasena'] == $this->contrasena;
     }
 
-    public function actualizarDatos () {
+    public function esExistente(): bool{
+        $conexion_bd = new Database;
 
+        $resultado = $conexion_bd->realizarConsulta(
+            "SELECT * FROM usuarios WHERE correo = :correo",
+            ['correo' => $this->correo]
+        );
+
+        return $resultado ? true : false;
+    }
+
+    public function actualizarDatos (array $columnas = []) {
+        $conexion_bd = new Database;
+
+        return $conexion_bd->ejecutarConsulta(
+            "UPDATE usuarios SET {} WHERE usuario_id = {$this->usuario_id}",
+
+        );
     }
 
     public function eliminarCuenta () {
+        $conexion_bd = new Database;
 
+        return $conexion_bd->ejecutarConsulta(
+            "DELETE FROM usuarios WHERE usuario_id = :id",
+            ['id' => $this->usuario_id]
+        );
     }
 
 
