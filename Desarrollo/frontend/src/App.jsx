@@ -1,9 +1,26 @@
-export default function App() {
+import { useState } from 'react'
+
+import './App.css'
+import Header from "./Header"
+import Hero from "./Hero"
+import Horarios from "./Horarios"
+import MasVendidos from "./MasVendidos"
+import Mision from "./Mision"
+import Footer from "./Footer"
+
+function App() {
   return (
-    <div className=flex h-screen items-center justify-center bg-gray-100>
-      <h1 className=text-3xl font-bold text-blue-600>
-        ¡Hola, React + Tailwind!
-      </h1>
-    </div>
-  );
+    <>
+      <div>
+        <Header />
+        <Hero />
+        <Horarios />
+        <MasVendidos />
+        <Mision />
+        <Footer />
+      </div>
+    </>
+  )
 }
+
+export default App
