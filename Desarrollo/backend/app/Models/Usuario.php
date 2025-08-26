@@ -8,9 +8,9 @@ abstract class Usuario {
 
     private int $usuario_id;
     private string $nombre;
-    private string $apellido; 
-    private string $correo; 
-    private string $contrasena; 
+    private string $apellido;
+    private string $correo;
+    private string $contrasena;
     private DateTime $fechaNacimiento;
 
     public function __construct(int $usuario_id, string $nombre, string $apellido, string $correo, string $contrasena, string $fechaNacimiento) {
@@ -69,8 +69,8 @@ abstract class Usuario {
         $conexion_bd = new Database;
 
         $resultado = $conexion_bd->realizarConsulta(
-            "SELECT * FROM usuarios WHERE correo = :correo",
-            ['correo' => $this->correo]
+            "SELECT * FROM usuarios WHERE usuario_id = :id",
+            ['id' => $this->usuario_id]
         );
 
         return $resultado ? true : false;
@@ -96,6 +96,14 @@ abstract class Usuario {
 
 
     // Getters y Setters
+    public function getId(): int {
+        return $this->usuario_id;
+    }
+
+    public function setId(int $usuario_id) {
+        $this->usuario_id = $usuario_id;
+    }
+
     public function getNombre () : string {
         return $this->nombre;
     }
