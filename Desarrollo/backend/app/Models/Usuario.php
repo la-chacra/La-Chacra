@@ -130,9 +130,7 @@ abstract class Usuario {
     // | Getter y Setter |
     // |_________________|
 
-    public function getId(): int {
-        return $this->usuario_id;
-    }
+   
 
     public function setId(int $usuario_id) {
         $this->usuario_id = $usuario_id;
