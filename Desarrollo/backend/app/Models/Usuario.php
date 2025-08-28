@@ -3,6 +3,7 @@
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 use database;
+use Reservas;
 
 abstract class Usuario {
 
@@ -21,6 +22,11 @@ abstract class Usuario {
         $this->contrasena = $contrasena;
         $this->fechaNacimiento = new DateTime($fechaNacimiento);
     }
+
+    //  ______________________________________________________________________
+    // |                                                                      |
+    // | Metodos general de un usuario (Registro, Autenticación, Eliminación) |
+    // |______________________________________________________________________|
 
     /**
      * Realizar el registro de un usuario en la Base de Datos
@@ -65,6 +71,11 @@ abstract class Usuario {
         return $resultado['contrasena'] == $this->contrasena;
     }
 
+    /**
+     * Verficar si existe un usuario en la base de datos
+     * 
+     * @return true|false Si el usuario existe o no
+     */
     public function esExistente(): bool{
         $conexion_bd = new Database;
 
@@ -85,6 +96,11 @@ abstract class Usuario {
         );
     }
 
+    /**
+     * Eliminar un usuario de la base de datos
+     * 
+     * @return true|false Si la eliminación fue éxitosa o no
+     */
     public function eliminarCuenta () {
         $conexion_bd = new Database;
 
@@ -95,7 +111,21 @@ abstract class Usuario {
     }
 
 
-    // Getters y Setters
+    //  ______________________________________________________________________
+    // |                                                                      |
+    // |                  Metodos orientados a las reservas                   |
+    // |______________________________________________________________________|
+
+    public function realizarReserva() {
+
+    }
+
+
+    //  _________________
+    // |                 |
+    // | Getter y Setter |
+    // |_________________|
+
     public function getId(): int {
         return $this->usuario_id;
     }
