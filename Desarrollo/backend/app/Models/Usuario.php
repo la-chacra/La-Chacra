@@ -43,6 +43,10 @@ abstract class Usuario {
         );
     }
 
+     public function getId(): int {
+        return $this->usuario_id;
+    }
+
 
     /**
      * Realizar la autenticación de un usuario en la Base de Datos

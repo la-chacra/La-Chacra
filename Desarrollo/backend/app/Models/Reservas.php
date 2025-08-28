@@ -17,7 +17,7 @@ class Reserva{
 
     //self:: Errores
     protected static $errores = [];
-
+    private Usuario $usuario;
     private int $id_reserva;
     private int $id_mesa; 
     private EstadoReserva $estado;
@@ -51,6 +51,11 @@ class Reserva{
              'fecha' => $reserva->fecha]
         );
     }
+    private function getIdUsuario(): int {
+    // Aquí se obtiene el id_usuario desde la clase Usuario
+    return $this->usuario->getId();
+}
+
 
     public function crearReserva () {
         $query = "SELECT * mesa FROM reservas";
@@ -64,19 +69,29 @@ class Reserva{
     }
 
     public function validarReserva () {
-        if(!$this->fecha){
-            self::$errores[] = "Debes insertar una fecha";
+       $conexion_bd = new Database();
+       $consulta = "SELECT * FROM reservas 
+                    WHERE fecha = :fecha 
+                    AND hora = :hora 
+                    AND id_usuario = :id_usuario 
+                    AND cantPersonas = :cantPersonas";
+
+        $parametros = [
+            ":fecha"        => $this->fecha,
+            ":hora"         => $this->hora,
+            ":id_usuario"   => $this->getIdUsuario(),
+            ":cantPersonas" => $this->cantPersonas
+        ];
+
+        $resultado = $conexion_bd->realizarConsulta($consulta, $parametros);
+
+        if (count($resultado) > 0) {
+            return false; // La reserva ya existe
+        } else {
+            return true; // Se puede hacer la reserva
         }
-        if($this->hora){
-            self::$errores[] = "Debes insertar la hora de la reserva";
-        }
-        
-        if(!$this->cantPersonas){
-            self::$errores[] = "Debes insertar la cantidad de personas para la reserva";
+    
        
-        
-        return self::$errores;
-        }
     }
 
 
