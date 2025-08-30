@@ -17,7 +17,7 @@ class Reserva{
 
     //self:: Errores
     protected static $errores = [];
-
+    private Usuario $usuario;
     private int $id_reserva;
     private int $id_mesa; 
     private EstadoReserva $estado;
@@ -51,32 +51,43 @@ class Reserva{
              'fecha' => $reserva->fecha]
         );
     }
+    private function getIdUsuario(): int {
+    // Aquí se obtiene el id_usuario desde la clase Usuario
+    return $this->usuario->getId();
+}
+
 
     public function crearReserva () {
-        $query = "SELECT * mesa FROM reservas";
-        
+        $conexion_bd = new Database();
+        $consulta = "INSERT INTO reservas (id_reserva, id_mesa, estado,hora,fecha) 
+        VALUES (:id_reserva, :id_mesa, :estado, :hora, :fecha)";
+        $resultado = $conexion_bd->ejecutarConsulta($consulta);
 }
     
 
     public function cancelarReserva () {
-            
+        $conexion_bd = new Database();
+        $consulta = "DELETE FROM reservas WHERE id_reserva = :id_reserva";
+        $resultado = $conexion_bd->ejecutarConsulta($consulta); 
     
     }
 
     public function validarReserva () {
-        if(!$this->fecha){
-            self::$errores[] = "Debes insertar una fecha";
+       $conexion_bd = new Database();
+       $consulta = "SELECT * FROM reservas 
+                    WHERE fecha = :fecha 
+                    AND hora = :hora 
+                    AND id_usuario = :id_usuario 
+                    AND cantPersonas = :cantPersonas";
+        $resultado = $conexion_bd->realizarConsulta($consulta);
+
+        if ($consulta)  {
+            $errores[] = "Esta reserva ya existe"; // La reserva ya existe
+        } else {
+            return true; // Se puede hacer la reserva
         }
-        if($this->hora){
-            self::$errores[] = "Debes insertar la hora de la reserva";
-        }
-        
-        if(!$this->cantPersonas){
-            self::$errores[] = "Debes insertar la cantidad de personas para la reserva";
+    
        
-        
-        return self::$errores;
-        }
     }
 
 
