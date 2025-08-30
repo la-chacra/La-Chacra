@@ -1,26 +1,18 @@
-import { useState } from 'react'
-
-import './App.css'
-import Header from "./Header"
-import Hero from "./Hero"
-import Horarios from "./Horarios"
-import MasVendidos from "./MasVendidos"
-import Mision from "./Mision"
-import Footer from "./Footer"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Inicio from "./pages/Inicio/Inicio";
+// (cuando agreguen más páginas, las importas acá)
 
 function App() {
   return (
-    <>
-      <div>
-        <Header />
-        <Hero />
-        <Horarios />
-        <MasVendidos />
-        <Mision />
-        <Footer />
-      </div>
-    </>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<Inicio />} />
+        {/* Ejemplo de otras rutas futuras */}
+        {/* <Route path="/carta" element={<Carta />} /> */}
+        {/* <Route path="/contacto" element={<Contacto />} /> */}
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
