@@ -1,6 +1,6 @@
 import React from 'react';
 
-import productImg from '../../assets/hero.jpg';
+import productImg from "../../assets/hero.jpeg";
 
 const Productos = () => {
     return (
