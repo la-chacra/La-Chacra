@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Inicio from "./pages/Inicio/Inicio";
+import Carta from './pages/Carta/Carta';
+
 // (cuando agreguen más páginas, las importas acá)
 
 function App() {
@@ -8,6 +10,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Inicio />} />
+        <Route path="/carta" element={<Carta />} />
+
         {/* Ejemplo de otras rutas futuras */}
         {/* <Route path="/carta" element={<Carta />} /> */}
         {/* <Route path="/contacto" element={<Contacto />} /> */}

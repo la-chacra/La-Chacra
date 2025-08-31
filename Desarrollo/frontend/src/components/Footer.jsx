@@ -1,14 +1,33 @@
-import React from 'react';
+import React from "react";
+import heroImg from "../assets/logo.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFacebook, faInstagram, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 
 const Footer = () => {
-    return (
-        <footer className="p-4 bg-[#1D1D1B] text-white text-center">
-            <div className="mb-4">
-                <h2>Redes Sociales</h2>
-                <p>Facebook | Instagram</p>
-            </div>
-            <p>Contacto: 099799388</p>
-        </footer>
-    );
+  return (
+    <footer className="footer">
+      <div className="footer-left">
+        <img src={heroImg} alt="La Chacra Logo" className="footer-logo" />
+      </div>
+      <div className="footer-right">
+        <div className="footer-section">
+          <h3>Redes Sociales</h3>
+          <p>
+            <FontAwesomeIcon icon={faFacebook} /> @lachacragourmet
+          </p>
+          <p>
+            <FontAwesomeIcon icon={faInstagram} /> @lachacragourmet
+          </p>
+        </div>
+        <div className="footer-section">
+          <h3>Contacto</h3>
+          <p>
+            <FontAwesomeIcon icon={faWhatsapp} /> 099779388
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
 };
+
 export default Footer;

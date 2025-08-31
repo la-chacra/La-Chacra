@@ -1,6 +1,6 @@
 import React from "react";
 
-import profileImg from '../../assets/hero.jpg';
+import profileImg from "../../assets/hero.jpeg";
 
 const Mision = ({ 
   title = "Nuestra Misión", 
