@@ -1,24 +1,22 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Inicio from "./pages/Inicio/Inicio";
+import Carta from './pages/Carta/Carta';
 
-import './App.css';
-import './index.css';
-import Header from "./Header";
-import Hero from "./Hero";
-import Horarios from "./Horarios";
-import MasVendidos from "./MasVendidos";
-import Mision from "./Mision";
-import Footer from "./Footer";
+// (cuando agreguen más páginas, las importas acá)
 
 function App() {
   return (
-    <div>
-      <Header />
-      <Hero />
-      <Horarios />
-      <MasVendidos />
-      <Mision />
-      <Footer />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Inicio />} />
+        <Route path="/carta" element={<Carta />} />
+
+        {/* Ejemplo de otras rutas futuras */}
+        {/* <Route path="/carta" element={<Carta />} /> */}
+        {/* <Route path="/contacto" element={<Contacto />} /> */}
+      </Routes>
+    </Router>
   );
 }
 

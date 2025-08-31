@@ -3,14 +3,15 @@
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 use database;
+use Reservas;
 
-abstract class Usuario {
+class Usuario {
 
     private int $usuario_id;
     private string $nombre;
-    private string $apellido; 
-    private string $correo; 
-    private string $contrasena; 
+    private string $apellido;
+    private string $correo;
+    private string $contrasena;
     private DateTime $fechaNacimiento;
 
     public function __construct(int $usuario_id, string $nombre, string $apellido, string $correo, string $contrasena, string $fechaNacimiento) {
@@ -21,6 +22,11 @@ abstract class Usuario {
         $this->contrasena = $contrasena;
         $this->fechaNacimiento = new DateTime($fechaNacimiento);
     }
+
+    //  ______________________________________________________________________
+    // |                                                                      |
+    // | Metodos general de un usuario (Registro, Autenticación, Eliminación) |
+    // |______________________________________________________________________|
 
     /**
      * Realizar el registro de un usuario en la Base de Datos
@@ -41,6 +47,10 @@ abstract class Usuario {
                 'fechaNacimiento' => $this->fechaNacimiento
             ]
         );
+    }
+
+     public function getId(): int {
+        return $this->usuario_id;
     }
 
 
@@ -65,26 +75,42 @@ abstract class Usuario {
         return $resultado['contrasena'] == $this->contrasena;
     }
 
+    /**
+     * Verficar si existe un usuario en la base de datos
+     * 
+     * @return true|false Si el usuario existe o no
+     */
     public function esExistente(): bool{
         $conexion_bd = new Database;
 
         $resultado = $conexion_bd->realizarConsulta(
-            "SELECT * FROM usuarios WHERE correo = :correo",
-            ['correo' => $this->correo]
+            "SELECT * FROM usuarios WHERE usuario_id = :id",
+            ['id' => $this->usuario_id]
         );
 
         return $resultado ? true : false;
     }
 
-    public function actualizarDatos (array $columnas = []) {
+    public function actualizarDatos () {
         $conexion_bd = new Database;
 
         return $conexion_bd->ejecutarConsulta(
-            "UPDATE usuarios SET {} WHERE usuario_id = {$this->usuario_id}",
-
+            "UPDATE usuarios SET nombre = nombre = :nombre, apellido = :apellido, correo = :correo, contrasena = :contrasena, fechaNacimiento = :fecha_nacimiento  WHERE usuario_id = {$this->usuario_id}",
+            [
+                'nombre'          => $this->nombre, 
+                'apellido'        => $this->apellido, 
+                'correo'          => $this->correo, 
+                'contrasena'      => $this->contrasena, 
+                'fechaNacimiento' => $this->fechaNacimiento
+            ]
         );
     }
 
+    /**
+     * Eliminar un usuario de la base de datos
+     * 
+     * @return true|false Si la eliminación fue éxitosa o no
+     */
     public function eliminarCuenta () {
         $conexion_bd = new Database;
 
@@ -94,8 +120,17 @@ abstract class Usuario {
         );
     }
 
+    //  _________________
+    // |                 |
+    // | Getter y Setter |
+    // |_________________|
 
-    // Getters y Setters
+   
+
+    public function setId(int $usuario_id) {
+        $this->usuario_id = $usuario_id;
+    }
+
     public function getNombre () : string {
         return $this->nombre;
     }

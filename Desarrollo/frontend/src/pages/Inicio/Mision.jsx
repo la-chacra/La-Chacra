@@ -1,9 +1,11 @@
 import React from "react";
 
+import profileImg from "../../assets/hero.jpeg";
+
 const Mision = ({ 
   title = "Nuestra Misión", 
   description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.Vivamus efficitur ultricies tincidunt. Donec hendrerit blandit eros in cursus",
-  image = "/path/to/profile.jpg" 
+  image = profileImg 
 }) => {
   return (
     <section className="p-8 bg-gray-50 rounded-2xl shadow-md">

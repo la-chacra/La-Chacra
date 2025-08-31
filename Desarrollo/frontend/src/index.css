@@ -1,3 +1,541 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*font*/
+@font-face {
+  font-family: 'Texturina';
+  src: url('./assets/fonts/Texturina-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 100 900; 
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Overlock';
+  src: url('./assets/fonts/Overlock-Regular.ttf') format('truetype');
+  font-weight: 100 900; 
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('./assets/fonts/Montserrat-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900; 
+  font-style: normal;
+}
+
+.font-montserrat {
+  font-family: 'Montserrat', serif;
+}
+
+.font-overlock {
+  font-family: 'Overlock', serif;
+}
+
+.font-texturina {
+  font-family: 'Texturina', serif;
+}
+
+/*HERO*/
+
+.hero-section {
+  height: 100vh; 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.text-shadow {
+  text-shadow: 3px 5px 1px #221206b2;
+}
+
+.text-hero-title {
+  font-size: clamp(2rem, 6vw, 5rem);
+}
+
+.menu-btn {
+  background-color: #f2e3b3;
+  color: #000;
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 50px;
+  border: 2px solid #000;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 2px 3px 0px #000;
+  transition: all 0.2s ease-in-out;
+}
+
+.menu-btn i {
+  font-size: 1.1rem;
+}
+
+.menu-btn:hover {
+  background-color: #e6d69a;
+  transform: translateY(-2px);
+  box-shadow: 3px 4px 0px #000;
+}
+
+/*horarios*/
+
+/*más vendidos*/
+
+/*mision*/
+
+/*CARTA*/
+.carta-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: #1a1a1a; 
+}
+
+/*barras laterales*/
+.sidebar {
+  width: 10px;
+  background-color: #0e0e0e; 
+}
+
+/* contenido principal */
+.carta-container {
+  flex: 1;
+  padding: 20px;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+/* titulo carta */
+.carta-title {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  font-family: overlock, serif;
+}
+
+.menu-section {
+  margin-bottom: 40px;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  color: #FDAC4A;
+  border-bottom: 1px solid #555;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+}
+
+/*CATEGORY NAV*/
+.category-nav-container {
+  margin-bottom: 15px;
+}
+
+.category-title {
+  color: #b4b3b0;
+  font-size: 0.85rem;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.category-nav {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.category-btn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: #b4b3b0;
+  position: relative;
+  cursor: pointer;
+  padding: 5px 0;
+  transition: color 0.3s ease;
+}
+
+.category-btn::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: #f6f1e7;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.category-btn.active {
+  color: #f6f1e7;
+}
+
+.category-btn.active::after {
+  width: 100%;
+}
+
+/*cuandricula productos*/
+.products-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/*PRODUCT CARD*/
+.product-card {
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  padding: 10px 0;
+  border-bottom: 1px solid #444;
+}
+
+.product-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 15px;
+  border: 2px solid #f4a261;
+}
+
+.product-info {
+  flex: 1;
+}
+
+.product-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.product-name-line {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.product-name {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: white;
+  margin-right: 8px;
+  white-space: nowrap;
+}
+
+.dotted-line {
+  flex-grow: 1;
+  border-bottom: 1px dotted #b4b3b0;
+  margin: 0 8px;
+}
+
+.product-price {
+  font-weight: bold;
+  color: #f4a261;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+.product-description {
+  font-size: 0.85rem;
+  color: #ccc;
+  margin-top: 3px;
+}
+
+/*HEADER*/
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #3E5E4A;
+  padding: 0.75rem 1rem;
+  color: #fff;
+  position: relative;
+  flex-wrap: wrap;
+}
+
+.logo-img {
+  height: 70px;
+  width: auto;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  font-family: "Overlock", sans-serif;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: white;
+  transition: color 0.2s ease;
+  font-size: clamp(14px, 2vw, 20px);
+}
+
+.nav-links a:hover {
+  color: #F2E3B3;
+}
+
+.right-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.auth-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn {
+  background: black;
+  font-family: overlock, sans-serif;
+  color: white;
+  padding: 0.4rem 0.9rem;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.btn:hover {
+  background: #444;
+}
+
+/*seleccion de lenguaje*/
+.lang-select {
+  font-family: overlock, sans-serif;
+  background: #F6F1E7;
+  color: black;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/*menu desplegable*/
+.hamburger {
+  display: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  align-items: center;
+  font-weight: 600;
+  margin-left: auto;
+}
+
+/*menu dropdown*/
+.mobile-menu {
+  width: 100%;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.5s ease, opacity 0.4s ease;
+}
+
+.mobile-menu.open {
+  max-height: 500px;
+  opacity: 1;
+}
+
+.mobile-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0;
+  font-weight: 600;
+  font-family: "Overlock", sans-serif;
+}
+
+.mobile-nav-links,
+.mobile-auth {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.mobile-nav a,
+.mobile-nav span,
+.mobile-nav button {
+  color: white;
+  text-decoration: none;
+  font-size: clamp(16px, 2.5vw, 22px);
+}
+
+.mobile-nav a:hover {
+  color: #F2E3B3;
+}
+
+.mobile-nav button {
+  background: black;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+}
+
+.mobile-divider {
+  width: 80%;
+  margin: 0.75rem auto;
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/*responsive*/
+@media (max-width: 768px) {
+  .nav-links,
+  .auth-controls {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .lang-select {
+    margin-left: 0.75rem;
+  }
+}
+
+/*FOOTER*/
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1D1D1B;
+  color: #fff;
+  padding: 20px 40px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.footer-logo {
+  width: 220px; 
+}
+
+.footer-text {
+  font-size: 18px;
+  font-family: 'Georgia', serif;
+  letter-spacing: 3px;
+}
+
+.footer-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.footer-section h3 {
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.footer-section p {
+  margin: 4px 0;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-section i {
+  font-size: 16px;
+}
+
+/*footer responsive*/
+@media (max-width: 600px) {
+  .footer {
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .footer-left,
+  .footer-right {
+    flex: 1 1 100%;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .footer-right {
+
+  }
+
+  .footer-section h3 {
+    font-size: 14px;
+  }
+
+  .footer-section p {
+    font-size: 13px;
+  }
+
+  .footer-logo {
+    max-width: 80%;
+  }
+}
+
+/* Animaciones */
+/* Desvanecimiento suave de entrada y deslizamiento hacia arriba */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Desvanecimiento suave */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 1s ease forwards;
+}
+
+.fade-in {
+  animation: fadeIn 1s ease forwards;
+}
+
+
+.underline-center {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.underline-center::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
+  background-color: currentColor; 
+  transform: translateX(-50%);
+  transition: width 0.3s ease-in-out;
+}
+
+.underline-center:hover::after {
+  width: 100%;
+}
