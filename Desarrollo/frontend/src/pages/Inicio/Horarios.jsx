@@ -1,25 +1,43 @@
-import React from 'react';
+import React from "react";
 
-const Horarios = () => {
-    return (
-        <section className="flex flex-col md:flex-row justify-around p-8 bg-[#F6F1E7]">
-            <div className="flex flex-col">
-                <h2 className="text-2xl font-bold">Horarios</h2>
-                <p>Viernes y Sábados: <br /> 11:30 a.m. - 14:30 p.m. <br /> 8:30 p.m. - 12 a.m.</p>
-                <p>Domingos: <br /> 11:30 a.m. - 14:30 p.m.</p>
-            </div>
-            <div className="mt-4 md:mt-0">
-                <h2 className="text-2xl font-bold">¿Dónde estamos?</h2>
-                <iframe 
-                    src="https://www.google.com/maps/embed?pb=..." 
-                    width="300" 
-                    height="200" 
-                    allowFullScreen="">
-                </iframe>
-            </div>
-            <button className="mt-4 bg-[#A65D03] px-4 py-2 rounded">Hacé tu reserva</button>
-        </section>
-    );
-};
+export default function Horarios() {
+  return (
+    <section className="bg-[#1c1c1c] text-white py-12">
+      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 px-6">
+        
+        {/* Horarios */}
+        <div className="bg-[#2c2c2c] rounded-lg p-6 shadow-md">
+          <h2 className="flex items-center text-xl font-bold mb-4">
+            <span className="mr-2">🕒</span> Horarios
+          </h2>
+          <ul className="space-y-3">
+            <li>
+              <p className="font-semibold">Viernes y Sábados</p>
+              <p className="text-gray-300">11:30 a.m - 2:30 p.m</p>
+              <p className="text-gray-300">8:30 p.m - 12 a.m</p>
+            </li>
+            <li>
+              <p className="font-semibold">Domingos</p>
+              <p className="text-gray-300">11:30 a.m - 2:30 p.m</p>
+            </li>
+          </ul>
+          <button className="mt-6 bg-yellow-200 text-black px-4 py-2 rounded-lg font-semibold hover:bg-yellow-300">
+            Hacé tu reserva
+          </button>
+        </div>
 
-export default Horarios;
+        {/* Mapa */}
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <h2 className="text-black font-bold text-lg px-4 pt-4">¿Dónde estamos?</h2>
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18..."
+            className="w-full h-64 border-0 mt-2"
+            allowFullScreen=""
+            loading="lazy"
+          ></iframe>
+        </div>
+
+      </div>
+    </section>
+  );
+}
