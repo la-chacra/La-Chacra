@@ -3,6 +3,7 @@
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 use database;
+use Productos;
 
 class Stock extends Productos{
 
@@ -23,12 +24,12 @@ class Stock extends Productos{
      * 
      * @return true|false Según se pudo realizar la operación o no
      */
-    public function registrar () : bool{
+    public function registrarInventario () : bool{
         $conexion_bd = new database;
 
         return $conexion_bd->ejecutarConsulta(
             // Los ":" al lado de los parámetros los hace poder insertarse con arrays asociativos. 
-            "INSERT INTO cliente (cantidadActual, cantidadMinima) VALUES (:cantidadActual, :cantidadMinima)", 
+            "INSERT INTO inventario (cantidadActual, cantidadMinima) VALUES (:cantidadActual, :cantidadMinima)", 
             [
                 'cantidadActual' => $this->cantidadActual, 
                 'cantidadMinima' => $this->cantidadMinima, 
@@ -47,10 +48,24 @@ class Stock extends Productos{
    
 
     public function actualizarStock(){
-        
+        $conexion_bd = new Database;
+        // $consulta = "UPDATE inventario SET  cantidadActual = :cantidadActual, cantidadMinima = :cantidadMinima WHERE producto_id = {$this->producto_id}"
+ ;
     }
     public function verificarStock(){
-        
+        $conexion_bd = new Database();
+       $consulta = "SELECT * FROM inventario 
+                    WHERE cantidadMinima = :cantidadMinima 
+                    AND cantidadActual = :cantidadActual 
+                    ";
+                    // Poner limit en sql sentence
+        $resultado = $conexion_bd->realizarConsulta($consulta);
+
+        if ($consulta)  {
+            $errores[] = "Esta reserva ya existe"; // La reserva ya existe
+        } else {
+            return true; // Se puede hacer la reserva
+        }
     }
    
 

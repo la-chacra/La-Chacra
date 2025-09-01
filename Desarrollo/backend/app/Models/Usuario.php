@@ -5,7 +5,7 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 use database;
 use Reservas;
 
-abstract class Usuario {
+class Usuario {
 
     private int $usuario_id;
     private string $nombre;
@@ -91,12 +91,18 @@ abstract class Usuario {
         return $resultado ? true : false;
     }
 
-    public function actualizarDatos (array $columnas = []) {
+    public function actualizarDatos () {
         $conexion_bd = new Database;
 
         return $conexion_bd->ejecutarConsulta(
-            "UPDATE usuarios SET {} WHERE usuario_id = {$this->usuario_id}",
-
+            "UPDATE usuarios SET nombre = nombre = :nombre, apellido = :apellido, correo = :correo, contrasena = :contrasena, fechaNacimiento = :fecha_nacimiento  WHERE usuario_id = {$this->usuario_id}",
+            [
+                'nombre'          => $this->nombre, 
+                'apellido'        => $this->apellido, 
+                'correo'          => $this->correo, 
+                'contrasena'      => $this->contrasena, 
+                'fechaNacimiento' => $this->fechaNacimiento
+            ]
         );
     }
 
@@ -114,25 +120,12 @@ abstract class Usuario {
         );
     }
 
-
-    //  ______________________________________________________________________
-    // |                                                                      |
-    // |                  Metodos orientados a las reservas                   |
-    // |______________________________________________________________________|
-
-    public function realizarReserva() {
-
-    }
-
-
     //  _________________
     // |                 |
     // | Getter y Setter |
     // |_________________|
 
-    public function getId(): int {
-        return $this->usuario_id;
-    }
+   
 
     public function setId(int $usuario_id) {
         $this->usuario_id = $usuario_id;

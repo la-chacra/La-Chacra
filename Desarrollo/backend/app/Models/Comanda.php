@@ -18,15 +18,15 @@ class Comanda{
     //self:: Errores
     protected static $errores = [];
 
-    private int $id_comanda;
-    private int $id_mesa; 
+    private int $comanda_id;
+    private int $n_mesa; 
     private estado $estado;
     private string $nota; 
     private DateTime $fecha;
 
-    public function __construct(int $id_comanda, int $id_mesa, estado $estado, string $nota, string $fecha) {
-        $this->id_comanda = $id_comanda;
-        $this->id_mesa = $id_mesa;
+    public function __construct(int $comanda_id, int $n_mesa, estado $estado, string $nota, string $fecha) {
+        $this->comanda_id = $comanda_id;
+        $this->n_mesa = $n_mesa;
         $this->estado = $estado;
         $this->nota = $nota;
         $this->fecha = new DateTime($fecha);
@@ -44,47 +44,56 @@ class Comanda{
         $conexion_bd = new Database;
 
         return $conexion_bd->ejecutarConsulta(
-            "INSERT INTO comanda (id_comanda, id_mesa, estado, nota, fecha) VALUES (:id_comanda, :id_mesa, :estado, :nota, :fecha)", 
-            ['id_comanda' => $comanda->id_comanda, '$id_mesa' => $comanda->id_mesa, 'estado' => $comanda->estado, 'nota' => $comanda->nota,
-             'fecha' => $comanda->fecha]
+            "INSERT INTO comanda (n_mesa estado, nota, fecha) VALUES (:n_mesa :estado, :nota, :fecha)", 
+            [
+                '$n_mesa'      => $comanda->n_mesa,
+                'estado'        => $comanda->estado, 
+                'nota'          => $comanda->nota,
+                'fecha'         => $comanda->fecha
+            ]
         );
     }
 
-    public function crearComanda() {
-        $query = "SELECT * FROM comanda";
-        
-}
     public function modificarComanda() {
-        $query = "SELECT * FROM comanda";
-        
-}
+        $conexion_bd = new Database;
+
+        return $conexion_bd->ejecutarConsulta(
+            "UPDATE comanda SET n_mesa = :n_mesa, estado = :estado, fecha WHERE comanda_id = {$this->comanda_id}", 
+            [
+                '$id_mesa'      => $this->n_mesa,
+                'estado'        => $this->estado, 
+                'nota'          => $this->nota,
+                'fecha'         => $this->fecha
+            ]
+        );
+    }
+
     public function eliminarComanda() {
         $query = "SELECT * FROM comanda";
-        
-}
+    }
+
     public function imprimirComanda() {
         $query = "SELECT * FROM comanda";
-        
-}
+    }
 
     
 
     /**
-     * Get the value of id_comanda
+     * Get the value of comanda_id
      */ 
-    public function getId_comanda()
+    public function getcomanda_id()
     {
-        return $this->id_comanda;
+        return $this->comanda_id;
     }
 
     /**
-     * Set the value of id_comanda
+     * Set the value of comanda_id
      *
      * @return  self
      */ 
-    public function setId_comanda($id_comanda)
+    public function setcomanda_id($comanda_id)
     {
-        $this->id_comanda = $id_comanda;
+        $this->comanda_id = $comanda_id;
 
         return $this;
     }
@@ -94,7 +103,7 @@ class Comanda{
      */ 
     public function getId_mesa()
     {
-        return $this->id_mesa;
+        return $this->n_mesa;
     }
 
     /**
@@ -102,9 +111,9 @@ class Comanda{
      *
      * @return  self
      */ 
-    public function setId_mesa($id_mesa)
+    public function setId_mesa($n_mesa)
     {
-        $this->id_mesa = $id_mesa;
+        $this->n_mesa = $n_mesa;
 
         return $this;
     }
