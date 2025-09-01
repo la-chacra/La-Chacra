@@ -2,8 +2,8 @@
   "name": "frontend",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
+    "build:css": "postcss src/index.css -o src/output.css",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
