@@ -1,33 +1,25 @@
-import React from "react";
-import Footer from "../../components/Footer";
+import React from 'react';
+import popularImg from '../../assets/hero.jpeg';
+import Footer from '../../components/Footer'; 
 
-const platos = [
-  { nombre: "Pizza a la Piedra", img: "https://via.placeholder.com/150", masVendido: true },
-  { nombre: "Hamburguesa Doble Queso", img: "https://via.placeholder.com/150", masVendido: false },
-  { nombre: "Napolitana", img: "https://via.placeholder.com/150", masVendido: true },
-  { nombre: "Lomo de Cerdo", img: "https://via.placeholder.com/150", masVendido: false },
-];
+const MasVendidos = () => {
+    return (
+        <div className="flex flex-col min-h-screen">
+            <section className="p-8 flex-grow">
+                <h2 className="text-2xl font-bold mb-4">Nuestros Mejores Platos</h2>
+                <div className="flex space-x-4 overflow-x-auto">
+                    <div className="border p-4 rounded min-w-[200px]">
+                        <img src={popularImg} alt="Pizza a la Piedra" />
+                        <h3 className="mt-2 font-semibold">Pizza a la Piedra</h3>
+                        <span className="text-red-600 font-bold">Más Vendido</span>
+                    </div>
+                    {/* Agregar más platos aquí */}
+                </div>
+            </section>
 
-export default function MejoresPlatos() {
-  return (
-    <section className="bg-orange-700 py-12 text-white">
-      <div className="max-w-6xl mx-auto px-6">
-        <h2 className="text-2xl font-bold mb-8">Nuestros Mejores Platos</h2>
-        
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {platos.map((plato, i) => (
-            <div key={i} className="bg-white text-black rounded-lg shadow-md p-4 relative">
-              {plato.masVendido && (
-                <span className="absolute top-2 left-2 bg-orange-500 text-white px-2 py-1 text-xs rounded">
-                  Más Vendido 🔥
-                </span>
-              )}
-              <img src={plato.img} alt={plato.nombre} className="rounded-lg w-full h-32 object-cover mb-3" />
-              <p className="font-semibold text-center">{plato.nombre}</p>
-            </div>
-          ))}
+            <Footer /> 
         </div>
-      </div>
-    </section>
-  );
-}
+    );
+};
+
+export default MasVendidos;

@@ -470,18 +470,6 @@
   }
 
   .footer-right {
-    gap: 10px;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    text-align: center;
-    font-size: 14px;
-    font-weight: bold;
-    color: #fff;
-    background-color: #1D1D1B;
-
 
   }
 
