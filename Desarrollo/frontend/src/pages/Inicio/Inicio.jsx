@@ -4,7 +4,6 @@ import Mision from "./Mision";
 import Horarios from "./Horarios";
 import Productos from "./Productos";
 import MasVendidos from "./MasVendidos";
-import Footer from "../../components/Footer";
 
 const Inicio = () => {
   return (
@@ -14,7 +13,6 @@ const Inicio = () => {
       <Horarios />
       <Productos />
       <MasVendidos />
-      <Footer />
     </>
   );
 };
