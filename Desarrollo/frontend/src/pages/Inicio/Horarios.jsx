@@ -30,7 +30,7 @@ export default function Horarios() {
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <h2 className="text-black font-bold text-lg px-4 pt-4">¿Dónde estamos?</h2>
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18..."
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3445.546731919751!2d-57.59506732521384!3d-30.278493474806517!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95acd7fae122a4d3%3A0xaea5a6f448772d48!2sLa%20Chacra!5e0!3m2!1ses!2suy!4v1757120390819!5m2!1ses!2suy"
             className="w-full h-64 border-0 mt-2"
             allowFullScreen=""
             loading="lazy"

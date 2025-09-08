@@ -1,11 +1,16 @@
 import React from "react";
 import Footer from "../../components/Footer";
 
+import braserito from "../../assets/braserito.png";
+import chivito from "../../assets/chivito.jpeg";
+import napolitana from "../../assets/napolitana.jpeg";
+import lomo from "../../assets/lomo-de-cerdo.jpg";
+
 const platos = [
-  { nombre: "Pizza a la Piedra", img: "https://via.placeholder.com/150", masVendido: true },
-  { nombre: "Hamburguesa Doble Queso", img: "https://via.placeholder.com/150", masVendido: false },
-  { nombre: "Napolitana", img: "https://via.placeholder.com/150", masVendido: true },
-  { nombre: "Lomo de Cerdo", img: "https://via.placeholder.com/150", masVendido: false },
+  { nombre: "Braserito", img: braserito, masVendido: true },
+  { nombre: "Chivito La Chacra", img: chivito, masVendido: true },
+  { nombre: "Napolitana", img: napolitana, masVendido: false },
+  { nombre: "Lomo de Cerdo", img: lomo, masVendido: false },
 ];
 
 export default function MejoresPlatos() {
@@ -13,7 +18,7 @@ export default function MejoresPlatos() {
     <section className="bg-orange-700 py-12 text-white">
       <div className="max-w-6xl mx-auto px-6">
         <h2 className="text-2xl font-bold mb-8">Nuestros Mejores Platos</h2>
-        
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {platos.map((plato, i) => (
             <div key={i} className="bg-white text-black rounded-lg shadow-md p-4 relative">
