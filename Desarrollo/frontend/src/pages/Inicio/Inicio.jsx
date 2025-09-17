@@ -11,8 +11,8 @@ const Inicio = () => {
   return (
     <>
       <Hero />
-      <Mision />
       <Horarios />
+      <Mision />
       <Productos />
       <MasVendidos />
       <Footer /> 

@@ -188,7 +188,6 @@
   align-items: center;
   background-color: transparent;
   padding: 10px 0;
-  border-bottom: 1px solid #444;
 }
 
 .product-img {
@@ -550,4 +549,24 @@
 
 .underline-center:hover::after {
   width: 100%;
+}
+
+/* Archivo: index.css o global.css */
+::-webkit-scrollbar {
+  width: 8px;            /* ancho de la barra */
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f0f0;   /* color del fondo del scroll */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #1f2937; /* color del “thumb” (parte que se mueve) */
+  border-radius: 10px;       /* redondeado */
+  border: 2px solid #f0f0f0; /* espacio entre thumb y track */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #374151; /* color al pasar el mouse */
 }

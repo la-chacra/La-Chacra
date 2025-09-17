@@ -3,7 +3,6 @@
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 use database;
-use Reservas;
 
 class Usuario {
 
@@ -23,10 +22,9 @@ class Usuario {
         $this->fechaNacimiento = new DateTime($fechaNacimiento);
     }
 
-    //  ______________________________________________________________________
-    // |                                                                      |
-    // | Metodos general de un usuario (Registro, Autenticación, Eliminación) |
-    // |______________________________________________________________________|
+    // ------------------------------------------------------------------
+    //  Metodos general de un usuario (Registro, Autenticación, Eliminación)
+    // ------------------------------------------------------------------
 
     /**
      * Realizar el registro de un usuario en la Base de Datos
@@ -91,6 +89,11 @@ class Usuario {
         return $resultado ? true : false;
     }
 
+    /**
+     * Actualizar datos de un Usuario en una Base de Datos.
+     * 
+     * @return true|false Si el usuario existe o no
+     */
     public function actualizarDatos () {
         $conexion_bd = new Database;
 
@@ -120,12 +123,10 @@ class Usuario {
         );
     }
 
-    //  _________________
-    // |                 |
-    // | Getter y Setter |
-    // |_________________|
+    // ------------------------------------------------------------------
+    //  Getters y Setters 
+    // ------------------------------------------------------------------
 
-   
 
     public function setId(int $usuario_id) {
         $this->usuario_id = $usuario_id;

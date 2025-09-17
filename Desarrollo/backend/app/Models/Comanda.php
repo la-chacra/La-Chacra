@@ -5,7 +5,7 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 use Database;
 
 
-//Se necesita espeficiar antes los valores del enum, para poder asignarlos en la clase
+// Se necesita espeficiar antes los valores del enum, para poder asignarlos en la clase
 enum Estado {
     case EnProceso;
     case Finalizado;
