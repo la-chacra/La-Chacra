@@ -2,25 +2,22 @@
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-use database;
+class Administrador extends Empleado{}
 
-class Administrador extends Empleado{
-
-   
-    public function gestionarUsuarios(){
+   // Comentados : deben ser controladores
+    // public function gestionarUsuarios(){
         
-    }
-    public function gestionarStock(){
+    // }
+    // public function gestionarStock(){
         
-    }
-    public function gestionarPlatos(){
+    // }
+    // public function gestionarPlatos(){
         
-    }
-    public function verEstadisticas(){
+    // }
+    // public function verEstadisticas(){
         
-    }
+    // }
 
 
   
 
-}
