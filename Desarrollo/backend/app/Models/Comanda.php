@@ -69,11 +69,15 @@ class Comanda{
     }
 
     public function eliminarComanda() {
-        $query = "SELECT * FROM comanda";
+    $conexion_bd = new Database();
+    $consulta = "DELETE FROM comanda WHERE comanda_id = :comanda_id";
+    $parametros = [':comanda_id' => $this->comanda_id];
+    
+    return $conexion_bd->ejecutarConsulta($consulta, $parametros);
     }
 
     public function imprimirComanda() {
-        $query = "SELECT * FROM comanda";
+        $query = "SELECT * FROM comanda"; //Se ve mas adelante (INCLUYE TICKETTERA)
     }
 
     

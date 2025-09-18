@@ -58,12 +58,17 @@ class Estadistica{
     }
 
     public function generarReporte() {
-        $query = "SELECT * FROM Estadistica";
-        
+    $conexion_bd = new Database();
+    $consulta = "SELECT * FROM Estadistica";
+    $resultado = $conexion_bd->ejecutarConsulta($consulta);
+
+    return $resultado; 
 }
-    public function obtenerTopClientes() {
-        $query = "SELECT * FROM Estadistica";
-        
+
+   public function obtenerTopClientes() {
+    $conexion_bd = new Database();
+    $consulta = "SELECT * FROM Cliente ORDER BY puntos DESC LIMIT 5";  // Se debe decidir la variable "puntos", ej: reservas
+    return $conexion_bd->ejecutarConsulta($consulta);
 }
 
 

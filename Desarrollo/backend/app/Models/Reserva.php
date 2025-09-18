@@ -61,14 +61,14 @@ class Reserva{
         $conexion_bd = new Database();
         $consulta = "INSERT INTO reservas (id_reserva, id_mesa, estado,hora,fecha) 
         VALUES (:id_reserva, :id_mesa, :estado, :hora, :fecha)";
-        $resultado = $conexion_bd->ejecutarConsulta($consulta);
+         return $conexion_bd->ejecutarConsulta($consulta);
 }
     
 
     public function cancelarReserva () {
         $conexion_bd = new Database();
         $consulta = "DELETE FROM reservas WHERE id_reserva = :id_reserva";
-        $resultado = $conexion_bd->ejecutarConsulta($consulta); 
+         return $conexion_bd->ejecutarConsulta($consulta); 
     
     }
 
@@ -79,7 +79,7 @@ class Reserva{
                     AND hora = :hora 
                     AND id_usuario = :id_usuario 
                     AND cantPersonas = :cantPersonas";
-        $resultado = $conexion_bd->realizarConsulta($consulta);
+     return $conexion_bd->realizarConsulta($consulta);
 
         if ($consulta)  {
             $errores[] = "Esta reserva ya existe"; // La reserva ya existe

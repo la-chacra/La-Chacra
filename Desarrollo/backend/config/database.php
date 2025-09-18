@@ -11,6 +11,7 @@ use Dotenv\Dotenv;
 
 // Se hace así porque __DIR__ = config, y el ".env" está en "backend"
 $dotenv = Dotenv::createImmutable(dirname(__DIR__));
+
 $dovenv->load();
 
 class Database {
