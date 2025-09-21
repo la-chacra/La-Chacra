@@ -5,6 +5,7 @@ import Inicio from "./pages/Inicio/Inicio";
 import Carta from './pages/Carta/Carta';
 import Login from './pages/LoginRegistro/Login';
 
+
 // (cuando agreguen más páginas, las importas acá)
 
 function App() {
