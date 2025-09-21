@@ -1,75 +1,89 @@
 <?php
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+namespace App\Models;
 
-use Database;
+use App\Models\ModeloBase;
 
-
-//Se necesita espeficiar antes los valores del enum, para poder asignarlos en la clase
-enum Periodo {
-    case Verano;
-    case Otono;
-    case Primavera;
-    
-}
-enum TemporadasAltas {
-    case VacacionesVerano;
-    case VacacionesInvierno;
-    case Turismo;
-    case FiestasFinAno;
-    
+// ENUMS como Backed Enum (más fácil para BD)
+enum Periodo: string {
+    case Verano = 'Verano';
+    case Otono = 'Otono';
+    case Primavera = 'Primavera';
 }
 
-class Estadistica{
+enum TemporadasAltas: string {
+    case VacacionesVerano = 'VacacionesVerano';
+    case VacacionesInvierno = 'VacacionesInvierno';
+    case Turismo = 'Turismo';
+    case FiestasFinAno = 'FiestasFinAno';
+}
 
-    //self:: Errores
-    protected static $errores = [];
+class Estadistica extends ModeloBase {
 
-    private int $id_estadistica;
-    private int $ventasPorProducto; 
+    // Configuración de la tabla
+    protected static string $pk_bd = "id_estadistica";
+    protected static string $tabla_bd = "estadistica";
+    protected static array $columnas_bd = [
+        "id_estadistica", 
+        "ventasPorProducto", 
+        "periodo", 
+        "productosMasVendidos", 
+        "temporadasAltas"
+    ];
+
+    // Errores
+    protected static array $errores = [];
+
+    // Atributos de la clase
+    private ?int $id_estadistica = null;
+    private string $ventasPorProducto;
     private Periodo $periodo;
-    private string $productosMasVendidos; 
+    private string $productosMasVendidos;
     private TemporadasAltas $temporadasAltas;
 
-    public function __construct(int $id_estadistica, int $ventasPorProducto, Periodo $periodo, string $productosMasVendidos, TemporadasAltas $temporadasAltas) {
-        $this->id_estadistica = $id_estadistica;
-        $this->ventasPorProducto = $ventasPorProducto;
-        $this->periodo = $periodo;
-        $this->productosMasVendidos = $productosMasVendidos;
-        $this->temporadasAltas = $temporadasAltas;
-
-
+    public function __construct(array $datos = []) {
+        $this->id_estadistica       = $datos["id_estadistica"] ?? null;
+        $this->ventasPorProducto    = $datos["ventasPorProducto"] ?? "";
+        $this->periodo              = isset($datos["periodo"]) 
+                                        ? Periodo::from($datos["periodo"]) 
+                                        : Periodo::Verano;
+        $this->productosMasVendidos = $datos["productosMasVendidos"] ?? "";
+        $this->temporadasAltas      = isset($datos["temporadasAltas"]) 
+                                        ? TemporadasAltas::from($datos["temporadasAltas"]) 
+                                        : TemporadasAltas::Turismo;
     }
 
     /**
-     * Realizar el registro de un Estadistica en la Base de Datos
-     * 
-     * @param Estadistica $Estadistica Recibe una solicitud
-     * @return bool Verdadero o Falso según se pudo realizar la operación o no
+     * Registra una nueva estadística en la base de datos.
      */
-    public function registrarEstadistica (Estadistica $estadistica) : bool{
-        $conexion_bd = new Database;
-
-        return $conexion_bd->ejecutarConsulta(
-            "INSERT INTO estadistica (id_estadistica, ventasPorProducto, periodo, productosMasVendidos, temporadasAltas) VALUES (:id_estadistica, :ventasPorProducto, :Periodo, :productosMasVendidos, :temporadasAltas)", 
-            ['id_estadistica' => $estadistica->id_estadistica, 'ventasPorProducto' => $estadistica->ventasPorProducto, 'periodo' => $estadistica->periodo, 'productosMasVendidos' => $estadistica->productosMasVendidos,
-             'temporadasAltas' => $estadistica->temporadasAltas]
-        );
+    public function registrarEstadistica(): bool {
+        return $this->crearRegistro([
+            "id_estadistica"       => $this->id_estadistica,
+            "ventasPorProducto"    => $this->ventasPorProducto,
+            "periodo"              => $this->periodo->value, // guardamos como string
+            "productosMasVendidos" => $this->productosMasVendidos,
+            "temporadasAltas"      => $this->temporadasAltas->value // guardamos como string
+        ]);
     }
 
-    public function generarReporte() {
-    $conexion_bd = new Database();
-    $consulta = "SELECT * FROM Estadistica";
-    $resultado = $conexion_bd->ejecutarConsulta($consulta);
+    /**
+     * Generar reporte de todas las estadísticas
+     */
+    public static function generarReporte(): array {
+        return (new self())->traerTodos();
+    }
 
-    return $resultado; 
-}
+    /**
+     * Obtener top clientes por puntos
+     */
+    public static function obtenerTopClientes(): array {
+        $consulta = "SELECT * FROM cliente ORDER BY puntos DESC LIMIT 5";
+        return static::$conexion_bd->realizarConsulta($consulta);
+    }
 
-   public function obtenerTopClientes() {
-    $conexion_bd = new Database();
-    $consulta = "SELECT * FROM Cliente ORDER BY puntos DESC LIMIT 5";  // Se debe decidir la variable "puntos", ej: reservas
-    return $conexion_bd->ejecutarConsulta($consulta);
-}
+      // ------------------------------------------------------------------
+    //  Getters y Setters 
+    // ------------------------------------------------------------------
 
 
     /**
@@ -172,3 +186,9 @@ class Estadistica{
         return $this;
     }
 }
+   
+
+
+
+
+

@@ -2,97 +2,88 @@
 
 namespace App\Models;
 
+use App\Models\ModeloBase;
 use DateTime;
 
-// Se necesita espeficiar antes los valores del enum, para poder asignarlos en la clase
-
-// Estados de una Comanda
-enum Estado {
-    case EnProceso;
-    case Finalizado;
-    case Cancelado;
-    
+// Estados de una Comanda (enum backed con string, más práctico para BD)
+enum Estado: string {
+    case EnProceso = 'EnProceso';
+    case Finalizado = 'Finalizado';
+    case Cancelado = 'Cancelado';
 }
 
-
-/**
- * @todo Arreglar errores e implementar ModeloBase
- */
 class Comanda extends ModeloBase {
 
-    //self:: Errores
-    protected static $errores = [];
+    // Configuración de la tabla
+    protected static string $pk_bd = "comanda_id";
+    protected static string $tabla_bd = "comanda";
+    protected static array $columnas_bd = ["comanda_id", "n_mesa", "estado", "nota", "fecha"];
 
-    private int $comanda_id;
+    // Errores
+    protected static array $errores = [];
+
+    // Atributos de la clase
+    private ?int $comanda_id = null;
     private int $n_mesa; 
-    private estado $estado;
+    private Estado $estado;
     private string $nota; 
     private DateTime $fecha;
 
-    public function __construct(int $comanda_id, int $n_mesa, estado $estado, string $nota, string $fecha) {
-        $this->comanda_id = $comanda_id;
-        $this->n_mesa = $n_mesa;
-        $this->estado = $estado;
-        $this->nota = $nota;
-        $this->fecha = new DateTime($fecha);
+    public function __construct(array $datos = []) {
+        $this->comanda_id = $datos["comanda_id"] ?? null;
+        $this->n_mesa     = $datos["n_mesa"] ?? 0;
+        $this->estado     = isset($datos["estado"]) ? Estado::from($datos["estado"]) : Estado::EnProceso;
+        $this->nota       = $datos["nota"] ?? "";
+        $this->fecha      = isset($datos["fecha"]) ? new DateTime($datos["fecha"]) : new DateTime();
     }
 
     /**
-     * Realizar el registro de un comanda en la Base de Datos
-     * 
-     * @return bool Verdadero o Falso según se pudo realizar la operación o no
+     * Registrar una nueva comanda en la BD
      */
-    public function registrarComanda () : bool{
-        $conexion_bd = new Database;
-
-        return $conexion_bd->ejecutarConsulta(
-            "INSERT INTO comanda (n_mesa, estado, nota, fecha) VALUES (:n_mesa, :estado, :nota, :fecha)", 
-            [
-                '$n_mesa' => $this->n_mesa,
-                'estado'  => $this->estado, 
-                'nota'    => $this->nota,
-                'fecha'   => $this->fecha
-            ]
-        );
+    public function registrarComanda(): bool {
+        return $this->crearRegistro([
+            "comanda_id" => $this->comanda_id,
+            "n_mesa"     => $this->n_mesa,
+            "estado"     => $this->estado->value,
+            "nota"       => $this->nota,
+            "fecha"      => $this->fecha->format("Y-m-d H:i:s")
+        ]);
     }
 
     /**
-     * Realizar la modificación de una comanda en la Base de Datos
-     * 
-     * @return bool Verdadero o Falso según se pudo realizar la operación o no
+     * Modificar comanda en la BD
      */
-    public function modificarComanda() : bool{
-        $conexion_bd = new Database;
-
-        return $conexion_bd->ejecutarConsulta(
-            "UPDATE comanda SET n_mesa = :n_mesa, estado = :estado, fecha WHERE comanda_id = {$this->comanda_id};", 
-            [
-                '$id_mesa'      => $this->n_mesa,
-                'estado'        => $this->estado, 
-                'nota'          => $this->nota,
-                'fecha'         => $this->fecha
-            ]
-        );
+    public function modificarComanda(): bool {
+        return $this->actualizar([
+            "comanda_id" => $this->comanda_id,
+            "n_mesa"     => $this->n_mesa,
+            "estado"     => $this->estado->value,
+            "nota"       => $this->nota,
+            "fecha"      => $this->fecha->format("Y-m-d H:i:s")
+        ]);
     }
 
-    public function eliminarComanda() {
-    $conexion_bd = new Database();
-    $consulta = "DELETE FROM comanda WHERE comanda_id = :comanda_id";
-    $parametros = [':comanda_id' => $this->comanda_id];
-    
-    return $conexion_bd->ejecutarConsulta($consulta, $parametros);
+    /**
+     * Eliminar una comanda
+     */
+    public function eliminarComanda(): bool {
+        return $this->eliminar($this->comanda_id);
     }
 
-    public function imprimirComanda() {
-        $query = "SELECT * FROM comanda"; //Se ve mas adelante (INCLUYE TICKETTERA)
+    // Se necesirta ticketera 
+    public static function imprimirComanda(){
+        
     }
 
-    
+    // ------------------------------------------------------------------
+    //  Getters y Setters 
+    // ------------------------------------------------------------------
+
 
     /**
      * Get the value of comanda_id
      */ 
-    public function getcomanda_id()
+    public function getComanda_id()
     {
         return $this->comanda_id;
     }
@@ -102,7 +93,7 @@ class Comanda extends ModeloBase {
      *
      * @return  self
      */ 
-    public function setcomanda_id($comanda_id)
+    public function setComanda_id($comanda_id)
     {
         $this->comanda_id = $comanda_id;
 
@@ -110,19 +101,19 @@ class Comanda extends ModeloBase {
     }
 
     /**
-     * Get the value of id_mesa
+     * Get the value of n_mesa
      */ 
-    public function getId_mesa()
+    public function getN_mesa()
     {
         return $this->n_mesa;
     }
 
     /**
-     * Set the value of id_mesa
+     * Set the value of n_mesa
      *
      * @return  self
      */ 
-    public function setId_mesa($n_mesa)
+    public function setN_mesa($n_mesa)
     {
         $this->n_mesa = $n_mesa;
 
@@ -189,3 +180,6 @@ class Comanda extends ModeloBase {
         return $this;
     }
 }
+
+  
+    

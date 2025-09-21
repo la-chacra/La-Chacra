@@ -1,136 +1,264 @@
 <?php
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+namespace App\Models;
 
-use Database;
+use App\Models\ModeloBase;
+use DateTime;
 use App\Models\Usuario;
 
-
-//Se necesita espeficiar antes los valores del enum, para poder asignarlos en la clase
+// Enum para estado de la reserva
 enum EstadoReserva {
     case Pendiente;
     case Confirmada;
     case Cancelada;
 }
 
-class Reserva{
+class Reserva extends ModeloBase {
 
-    //self:: Errores
-    protected static $errores = [];
-    private Usuario $usuario;
-    private int $id_reserva;
-    private int $id_mesa; 
+    // Configuración de la tabla
+    protected static string $pk_bd      = "id_reserva";
+    protected static string $tabla_bd   = "reservas";
+    protected static array  $columnas_bd = [
+        "id_reserva",
+        "id_mesa",
+        "id_usuario",
+        "estado",
+        "hora",
+        "fecha",
+        "cantPersonas"
+    ];
+
+    // Errores
+    protected static array $errores = [];
+
+    // Atributos
+    private ?int $id_reserva = null;
+    private int $id_mesa;
+    private ?Usuario $usuario = null;
     private EstadoReserva $estado;
-    private int $cantPersonas; 
-    private DateTime $hora; 
+    private int $cantPersonas;
+    private DateTime $hora;
     private DateTime $fecha;
 
-    public function __construct(string $id_reserva, string $id_mesa, EstadoReserva $estado, string $hora, string $fecha, int $cantPersonas) {
-        $this->id_reserva = $id_reserva;
-        $this->id_mesa = $id_mesa;
-        $this->cantPersonas = $cantPersonas;
-        $this->estado = $estado;
-        $this->hora = new DateTime($hora);
-        $this->fecha = new DateTime($fecha);
-
-
+    public function __construct(array $datos = []) {
+        $this->id_reserva   = $datos["id_reserva"] ?? null;
+        $this->id_mesa      = $datos["id_mesa"] ?? 0;
+        $this->usuario      = $datos["usuario"] ?? null; // Usuario o null
+        $this->estado       = $datos["estado"] ?? EstadoReserva::Pendiente;
+        $this->cantPersonas = $datos["cantPersonas"] ?? 1;
+        $this->hora         = isset($datos["hora"]) ? new DateTime($datos["hora"]) : new DateTime();
+        $this->fecha        = isset($datos["fecha"]) ? new DateTime($datos["fecha"]) : new DateTime();
     }
 
     /**
-     * Realizar el registro de un reserva en la Base de Datos
-     * 
-     * @param Reserva $reserva Recibe una solicitud
-     * @return bool Verdadero o Falso según se pudo realizar la operación o no
+     * Registrar nueva reserva
      */
-    public function registrarReserva (Reserva $reserva) : bool{
-        $conexion_bd = new Database;
-
-        return $conexion_bd->ejecutarConsulta(
-            "INSERT INTO reserva (id_reserva, id_mesa, estado, hora, fecha) VALUES (:id_reserva, :id_mesa, :estado, :hora, :fecha)", 
-            ['id_reserva' => $reserva->id_reserva, 'id_mesa' => $reserva->id_mesa, 'estado' => $reserva->estado, 'hora' => $reserva->hora,
-             'fecha' => $reserva->fecha]
-        );
-    }
-    private function getIdUsuario(): int {
-    // Aquí se obtiene el id_usuario desde la clase Usuario
-    return $this->usuario->getId();
-}
-
-
-    public function crearReserva () {
-        $conexion_bd = new Database();
-        $consulta = "INSERT INTO reservas (id_reserva, id_mesa, estado,hora,fecha) 
-        VALUES (:id_reserva, :id_mesa, :estado, :hora, :fecha)";
-         return $conexion_bd->ejecutarConsulta($consulta);
-}
-    
-
-    public function cancelarReserva () {
-        $conexion_bd = new Database();
-        $consulta = "DELETE FROM reservas WHERE id_reserva = :id_reserva";
-         return $conexion_bd->ejecutarConsulta($consulta); 
-    
+    public function registrarReserva(): bool {
+        return $this->crearRegistro([
+            "id_reserva"   => $this->id_reserva,
+            "id_mesa"      => $this->id_mesa,
+            "id_usuario"   => $this->usuario->getId(),
+            "estado"       => $this->estado->name,
+            "hora"         => $this->hora->format('H:i:s'),
+            "fecha"        => $this->fecha->format('Y-m-d'),
+            "cantPersonas" => $this->cantPersonas
+        ]);
     }
 
-    public function validarReserva () {
-       $conexion_bd = new Database();
-       $consulta = "SELECT * FROM reservas 
-                    WHERE fecha = :fecha 
-                    AND hora = :hora 
-                    AND id_usuario = :id_usuario 
-                    AND cantPersonas = :cantPersonas";
-     return $conexion_bd->realizarConsulta($consulta);
+    /**
+     * Modificar una reserva existente
+     */
+    public function modificarReserva(): bool {
+        return $this->actualizar([
+            "id_reserva"   => $this->id_reserva,
+            "id_mesa"      => $this->id_mesa,
+            "id_usuario"   => $this->usuario->getId(),
+            "estado"       => $this->estado->name,
+            "hora"         => $this->hora->format('H:i:s'),
+            "fecha"        => $this->fecha->format('Y-m-d'),
+            "cantPersonas" => $this->cantPersonas
+        ]);
+    }
 
-        if ($consulta)  {
-            $errores[] = "Esta reserva ya existe"; // La reserva ya existe
-        } else {
-            return true; // Se puede hacer la reserva
+    /**
+     * Eliminar reserva
+     */
+    public function eliminarReserva(): bool {
+        return $this->eliminar($this->id_reserva);
+    }
+
+    /**
+     * Validar si ya existe una reserva en la misma mesa, fecha y hora
+     */
+    public function validarReserva(): bool {
+        $consulta = "SELECT * FROM reservas 
+                     WHERE fecha = :fecha 
+                       AND hora = :hora 
+                       AND id_mesa = :id_mesa";
+
+        $resultado = static::$conexion_bd->realizarConsulta($consulta, [
+            ":fecha"   => $this->fecha->format('Y-m-d'),
+            ":hora"    => $this->hora->format('H:i:s'),
+            ":id_mesa" => $this->id_mesa
+        ]);
+
+        if (!empty($resultado)) {
+            self::$errores[] = "Ya existe una reserva en esa mes";
+            return false;
         }
-    
-       
+
+        return true;
     }
 
+    /**
+     * Obtener errores de validación
+     */
+    public static function getErrores(): array {
+        return self::$errores;
+    }
 
-    
-
-    // Getters y Setters
-    public function getid_reserva () : int {
+    /**
+     * Get the value of id_reserva
+     */ 
+    public function getId_reserva()
+    {
         return $this->id_reserva;
     }
 
-    public function setid_reserva (int $id_reserva) {
+    /**
+     * Set the value of id_reserva
+     *
+     * @return  self
+     */ 
+    public function setId_reserva($id_reserva)
+    {
         $this->id_reserva = $id_reserva;
-    }
-    public function getcantPersonas () : int {
-        return $this->cantPersonas;
+
+        return $this;
     }
 
-    public function setcantPersonas (int $cantPersonas) {
-        $this->cantPersonas = $cantPersonas;
+    /**
+     * Get the value of id_mesa
+     */ 
+    public function getId_mesa()
+    {
+        return $this->id_mesa;
     }
 
-    public function getestado () : EstadoReserva {
+    /**
+     * Set the value of id_mesa
+     *
+     * @return  self
+     */ 
+    public function setId_mesa($id_mesa)
+    {
+        $this->id_mesa = $id_mesa;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of usuario
+     */ 
+    public function getUsuario()
+    {
+        return $this->usuario;
+    }
+
+    /**
+     * Set the value of usuario
+     *
+     * @return  self
+     */ 
+    public function setUsuario($usuario)
+    {
+        $this->usuario = $usuario;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of estado
+     */ 
+    public function getEstado()
+    {
         return $this->estado;
     }
 
-    public function setestado (EstadoReserva $estado) {
+    /**
+     * Set the value of estado
+     *
+     * @return  self
+     */ 
+    public function setEstado($estado)
+    {
         $this->estado = $estado;
+
+        return $this;
     }
 
-    public function gethora () : DateTime {
+    /**
+     * Get the value of cantPersonas
+     */ 
+    public function getCantPersonas()
+    {
+        return $this->cantPersonas;
+    }
+
+    /**
+     * Set the value of cantPersonas
+     *
+     * @return  self
+     */ 
+    public function setCantPersonas($cantPersonas)
+    {
+        $this->cantPersonas = $cantPersonas;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of hora
+     */ 
+    public function getHora()
+    {
         return $this->hora;
     }
 
-    public function sethora (DateTime $hora) {
+    /**
+     * Set the value of hora
+     *
+     * @return  self
+     */ 
+    public function setHora($hora)
+    {
         $this->hora = $hora;
+
+        return $this;
     }
 
-    public function getfecha () : DateTime {
+    /**
+     * Get the value of fecha
+     */ 
+    public function getFecha()
+    {
         return $this->fecha;
     }
 
-    public function setFechaNacimient (DateTime $fecha) {
+    /**
+     * Set the value of fecha
+     *
+     * @return  self
+     */ 
+    public function setFecha($fecha)
+    {
         $this->fecha = $fecha;
-    }
 
+        return $this;
+    }
 }
+
+
+    
+
+ 
