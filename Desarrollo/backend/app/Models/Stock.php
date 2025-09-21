@@ -47,11 +47,19 @@ class Stock extends Productos{
      */
    
 
-    public function actualizarStock(){
-        $conexion_bd = new Database;
-        // $consulta = "UPDATE inventario SET  cantidadActual = :cantidadActual, cantidadMinima = :cantidadMinima WHERE producto_id = {$this->producto_id}"
- ;
-    }
+    public function actualizarStock() {
+    $conexion_bd = new Database();
+    $consulta = "UPDATE inventario 
+                 SET cantidadActual = :cantidadActual, 
+                     cantidadMinima = :cantidadMinima  ";
+
+    $parametros = [
+        ':cantidadActual' => $this->cantidadActual,
+        ':cantidadMinima' => $this->cantidadMinima,
+    ];
+
+    return $conexion_bd->ejecutarConsulta($consulta, $parametros);
+}
     public function verificarStock(){
         $conexion_bd = new Database();
        $consulta = "SELECT * FROM inventario 
@@ -59,7 +67,7 @@ class Stock extends Productos{
                     AND cantidadActual = :cantidadActual 
                     ";
                     // Poner limit en sql sentence
-        $resultado = $conexion_bd->realizarConsulta($consulta);
+        return $conexion_bd->realizarConsulta($consulta);
 
         if ($consulta)  {
             $errores[] = "Esta reserva ya existe"; // La reserva ya existe

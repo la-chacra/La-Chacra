@@ -53,7 +53,17 @@ class Productos{
     }
 
     public function actualizarDisponibilidad() {
-        $query = "SELECT * FROM productos";
+    $conexion_bd = new Database();
+    $consulta = "UPDATE productos 
+              SET disponible = :disponible 
+              WHERE id_producto = :id_producto";
+
+    $parametros = [
+        ':disponible' => $this->disponible,  // puede ser 1 = disponible, 0 = no disponible
+        ':id_producto' => $this->id_producto
+    ];
+
+    return $conexion_bd->ejecutarConsulta($consulta, $parametros);
         
 }
 
