@@ -1,25 +1,35 @@
 <?php
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+namespace App\Models;
 
-use database;
+use App\Models\ModeloBase;
+use DateTime;
 
-class Usuario {
+class Usuario extends ModeloBase {
 
-    private int $usuario_id;
+    // Atributos para Base de Datos
+    protected static string $pk_bd = "usuario_id";
+    protected static string $tabla_bd = "usuario";
+    protected static array $columnas_bd = ["usuario_id", "nombre", "apellido", "correo", "contrasena", "fecha_nacimiento", "tipo"];
+
+    // -- Atributos de Usuario
+    private ?int $usuario_id; // El ? antes de INT sirve para indicar que puede o no ser INT.
     private string $nombre;
     private string $apellido;
     private string $correo;
     private string $contrasena;
-    private DateTime $fechaNacimiento;
+    private string $tipo;
+    private DateTime $fecha_nacimiento;
 
-    public function __construct(int $usuario_id, string $nombre, string $apellido, string $correo, string $contrasena, string $fechaNacimiento) {
-        $this->usuario_id = $usuario_id;
+    // -- Constructor
+    public function __construct(string $nombre, string $apellido, string $correo, string $contrasena, string $fecha_nacimiento, string $tipo) {
+        $this->usuario_id = null; // Es NULL porque al crear uno, no tiene ID todavia.
         $this->nombre = $nombre;
         $this->apellido = $apellido;
         $this->correo = $correo;
         $this->contrasena = $contrasena;
-        $this->fechaNacimiento = new DateTime($fechaNacimiento);
+        $this->tipo = $tipo;
+        $this->fecha_nacimiento = new DateTime($fecha_nacimiento);
     }
 
     // ------------------------------------------------------------------
@@ -27,50 +37,45 @@ class Usuario {
     // ------------------------------------------------------------------
 
     /**
-     * Realizar el registro de un usuario en la Base de Datos
-     * 
-     * @return true|false Según se pudo realizar la operación o no
-     */
-    public function registrar () : bool{
-        $conexion_bd = new database;
-
-        return $conexion_bd->ejecutarConsulta(
-            // Los ":" al lado de los parámetros los hace poder insertarse con arrays asociativos. 
-            "INSERT INTO usuario (nombre, apellido, correo, contrasena, fechaNacimiento) VALUES (:nombre, :apellido, :correo, :contrasena, :fechaNacimiento)", 
-            [
-                'nombre'          => $this->nombre, 
-                'apellido'        => $this->apellido, 
-                'correo'          => $this->correo, 
-                'contrasena'      => $this->contrasena, 
-                'fechaNacimiento' => $this->fechaNacimiento
-            ]
-        );
-    }
-
-     public function getId(): int {
-        return $this->usuario_id;
-    }
-
-
-    /**
      * Realizar la autenticación de un usuario en la Base de Datos
      * 
-     * @return null Si el usuario no existe
+     * @return null Si el usuario no se pudo encontrar
      * @return true|false Si la autenticación es válida o no
      */
-    public function autenticar () : bool|null{
-        $conexion_bd = new Database;
-        
-        $resultado = $conexion_bd->realizarConsulta(
-            "SELECT * FROM usuarios WHERE correo = :correo",
-            ['correo' => $this->correo]
-        );
+    public static function autenticarSesion (string $correo, string $contrasena) : bool|null{        
+        $resultado = self::encontrarPorCorreo($correo);
 
         if (!$resultado):
             return null;
         endif;
 
-        return $resultado['contrasena'] == $this->contrasena;
+        return $resultado["contrasena"] === $contrasena;
+    }
+
+    /**
+     * Realizar el registro de un usuario en la Base de Datos
+     * 
+     * @todo Se agregó que cuando se registre, localmente agregue la ID, trayendola usando el correo. Hay que probarlo.
+     * 
+     * @return true|false Según se pudo realizar la operación o no
+     */
+    public function registrar () : bool{
+        return $this->crearRegistro (
+            [
+                'nombre'           => $this->nombre, 
+                'apellido'         => $this->apellido, 
+                'correo'           => $this->correo, 
+                'contrasena'       => $this->contrasena, 
+                'fecha_nacimiento' => $this->fecha_nacimiento->format('Y-m-d'),
+                'tipo'             => $this->tipo
+            ]
+        );
+
+        
+        $id = $this->encontrarPorCorreo($this->correo);
+        $id = $id[$pk_bd];
+
+        $this->set_id($id);
     }
 
     /**
@@ -79,32 +84,25 @@ class Usuario {
      * @return true|false Si el usuario existe o no
      */
     public function esExistente(): bool{
-        $conexion_bd = new Database;
-
-        $resultado = $conexion_bd->realizarConsulta(
-            "SELECT * FROM usuarios WHERE usuario_id = :id",
-            ['id' => $this->usuario_id]
-        );
-
-        return $resultado ? true : false;
+        $resultado = $this->encontrarPorID($this->usuario_id);
+        return !empty($resultado);
     }
 
     /**
      * Actualizar datos de un Usuario en una Base de Datos.
      * 
-     * @return true|false Si el usuario existe o no
+     * @return true|false Si se pudo realizar la operación o no
      */
     public function actualizarDatos () {
-        $conexion_bd = new Database;
-
-        return $conexion_bd->ejecutarConsulta(
-            "UPDATE usuarios SET nombre = nombre = :nombre, apellido = :apellido, correo = :correo, contrasena = :contrasena, fechaNacimiento = :fecha_nacimiento  WHERE usuario_id = {$this->usuario_id}",
+        return $this->actualizar(
             [
-                'nombre'          => $this->nombre, 
-                'apellido'        => $this->apellido, 
-                'correo'          => $this->correo, 
-                'contrasena'      => $this->contrasena, 
-                'fechaNacimiento' => $this->fechaNacimiento
+                'usuario_id'       => $this->usuario_id,
+                'nombre'           => $this->nombre, 
+                'apellido'         => $this->apellido, 
+                'correo'           => $this->correo, 
+                'contrasena'       => $this->contrasena, 
+                'fecha_nacimiento' => $this->fecha_nacimiento->format('Y-m-d'),
+                'tipo'             => $this->tipo
             ]
         );
     }
@@ -115,12 +113,7 @@ class Usuario {
      * @return true|false Si la eliminación fue éxitosa o no
      */
     public function eliminarCuenta () {
-        $conexion_bd = new Database;
-
-        return $conexion_bd->ejecutarConsulta(
-            "DELETE FROM usuarios WHERE usuario_id = :id",
-            ['id' => $this->usuario_id]
-        );
+        return $this->eliminar($this->usuario_id);
     }
 
     // ------------------------------------------------------------------
@@ -128,48 +121,52 @@ class Usuario {
     // ------------------------------------------------------------------
 
 
-    public function setId(int $usuario_id) {
+    public function set_id(int $usuario_id) {
         $this->usuario_id = $usuario_id;
     }
 
-    public function getNombre () : string {
+    public function get_id() {
+        return $this->usuario_id;
+    }
+
+    public function get_nombre () : string {
         return $this->nombre;
     }
 
-    public function setNombre (string $nombre) {
+    public function set_nombre (string $nombre) {
         $this->nombre = $nombre;
     }
 
-    public function getApellido () : string {
+    public function get_apellido () : string {
         return $this->apellido;
     }
 
-    public function setApellido (string $apellido) {
+    public function set_apellido (string $apellido) {
         $this->apellido = $apellido;
     }
 
-    public function getCorreo () : string {
+    public function get_correo () : string {
         return $this->correo;
     }
 
-    public function setCorreo (string $correo) {
+    public function set_correo (string $correo) {
         $this->correo = $correo;
     }
 
-    public function getContrasena () : string {
+    public function get_contrasena () : string {
         return $this->contrasena;
     }
 
-    public function setContrasena (string $contrasena) {
+    public function set_contrasena (string $contrasena) {
         $this->contrasena = $contrasena;
     }
 
-    public function getFechaNacimiento () : DateTime {
-        return $this->fechaNacimiento;
+    public function get_fecha_nacimiento () : string {
+        return $this->fecha_nacimiento->format('Y-m-d');
     }
 
-    public function setFechaNacimient (DateTime $fechaNacimiento) {
-        $this->fechaNacimiento = $fechaNacimiento;
+    public function set_fecha_nacimiento (string $fecha_nacimiento) {
+        $this->fecha_nacimiento = new DateTime($fecha_nacimiento);
     }
 
 }

@@ -3,7 +3,7 @@
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 use Database;
-use Usuario;
+use App\Models\Usuario;
 
 
 //Se necesita espeficiar antes los valores del enum, para poder asignarlos en la clase

@@ -1,8 +1,14 @@
 <?php
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+namespace App\Models;
 
-class Administrador extends Empleado{}
+use App\Models\Usuario;
+
+class Administrador extends Usuario {
+   public function __construct (string $nombre, string $apellido, string $correo, string $contrasena, string $fecha_nacimiento) {
+      parent::__construct($nombre, $apellido, $correo, $contrasena, $fecha_nacimiento, "A");
+   }
+}
 
    // Comentados : deben ser controladores
     // public function gestionarUsuarios(){
@@ -17,7 +23,3 @@ class Administrador extends Empleado{}
     // public function verEstadisticas(){
         
     // }
-
-
-  
-

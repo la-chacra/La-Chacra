@@ -1,11 +1,12 @@
 <?php
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+namespace App\Models;
 
-use Database;
-
+use DateTime;
 
 // Se necesita espeficiar antes los valores del enum, para poder asignarlos en la clase
+
+// Estados de una Comanda
 enum Estado {
     case EnProceso;
     case Finalizado;
@@ -13,7 +14,11 @@ enum Estado {
     
 }
 
-class Comanda{
+
+/**
+ * @todo Arreglar errores e implementar ModeloBase
+ */
+class Comanda extends ModeloBase {
 
     //self:: Errores
     protected static $errores = [];
@@ -30,35 +35,37 @@ class Comanda{
         $this->estado = $estado;
         $this->nota = $nota;
         $this->fecha = new DateTime($fecha);
-
-
     }
 
     /**
      * Realizar el registro de un comanda en la Base de Datos
      * 
-     * @param comanda $comanda Recibe una solicitud
      * @return bool Verdadero o Falso según se pudo realizar la operación o no
      */
-    public function registrarComanda (Comanda $comanda) : bool{
+    public function registrarComanda () : bool{
         $conexion_bd = new Database;
 
         return $conexion_bd->ejecutarConsulta(
-            "INSERT INTO comanda (n_mesa estado, nota, fecha) VALUES (:n_mesa :estado, :nota, :fecha)", 
+            "INSERT INTO comanda (n_mesa, estado, nota, fecha) VALUES (:n_mesa, :estado, :nota, :fecha)", 
             [
-                '$n_mesa'      => $comanda->n_mesa,
-                'estado'        => $comanda->estado, 
-                'nota'          => $comanda->nota,
-                'fecha'         => $comanda->fecha
+                '$n_mesa' => $this->n_mesa,
+                'estado'  => $this->estado, 
+                'nota'    => $this->nota,
+                'fecha'   => $this->fecha
             ]
         );
     }
 
-    public function modificarComanda() {
+    /**
+     * Realizar la modificación de una comanda en la Base de Datos
+     * 
+     * @return bool Verdadero o Falso según se pudo realizar la operación o no
+     */
+    public function modificarComanda() : bool{
         $conexion_bd = new Database;
 
         return $conexion_bd->ejecutarConsulta(
-            "UPDATE comanda SET n_mesa = :n_mesa, estado = :estado, fecha WHERE comanda_id = {$this->comanda_id}", 
+            "UPDATE comanda SET n_mesa = :n_mesa, estado = :estado, fecha WHERE comanda_id = {$this->comanda_id};", 
             [
                 '$id_mesa'      => $this->n_mesa,
                 'estado'        => $this->estado, 
