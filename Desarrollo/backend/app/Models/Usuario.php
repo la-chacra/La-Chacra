@@ -115,6 +115,10 @@ class Usuario extends ModeloBase {
     public function eliminarCuenta () {
         return $this->eliminar($this->usuario_id);
     }
+    
+    public function getId(): ?int {
+    return $this->usuario_id ?? null;
+}
 
     // ------------------------------------------------------------------
     //  Getters y Setters 
