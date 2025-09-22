@@ -102,6 +102,16 @@ abstract class ModeloBase {
     }
 
     /**
+     * Obtiene el ID del último registro insertado en la base de datos.
+     *
+     * @return int El ID del último registro insertado.
+     */
+    public function encontrarUltimoRegistro() : int {
+        $pdo = self::$conexion_bd->getPDO;
+        return (int) $pdo->lastInsertId();
+    }
+
+    /**
      * Obtiene todos los registros de una tabla de la base de datos.
      * 
      * @return array Un arreglo asociativo con todos los registros de una tabla_bd.

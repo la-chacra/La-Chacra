@@ -17,6 +17,7 @@ class Comanda extends ModeloBase {
     // Configuración de la tabla
     protected static string $pk_bd = "comanda_id";
     protected static string $tabla_bd = "comanda";
+    // @todo arreglar columnas
     protected static array $columnas_bd = ["comanda_id", "n_mesa", "estado", "nota", "fecha"];
 
     // Errores
