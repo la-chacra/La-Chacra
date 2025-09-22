@@ -5,7 +5,14 @@ namespace App\Models;
 use App\Models\ModeloBase;
 use DateTime;
 
-// Estados de una Comanda (enum backed con string, más práctico para BD)
+/**
+ * Enum Estado
+ *
+ * Representa los posibles estados de una comanda.
+ * Cada valor del enum corresponde a un estado específico en el ciclo de vida de una comanda.
+ *
+ * @package App\Models
+ */
 enum Estado: string {
     case EnProceso = 'EnProceso';
     case Finalizado = 'Finalizado';
@@ -19,8 +26,7 @@ class Comanda extends ModeloBase {
     protected static string $tabla_bd = "comanda";
     protected static array $columnas_bd = ["comanda_id", "n_mesa", "estado", "nota", "fecha"];
 
-    // Errores
-    protected static array $errores = [];
+    
 
     // Atributos de la clase
     private ?int $comanda_id = null;
@@ -37,8 +43,11 @@ class Comanda extends ModeloBase {
         $this->fecha      = isset($datos["fecha"]) ? new DateTime($datos["fecha"]) : new DateTime();
     }
 
+    
     /**
-     * Registrar una nueva comanda en la BD
+     * Registra una nueva comanda en el sistema.
+     *
+     * @return bool Retorna true si la comanda se registró correctamente, false en caso contrario.
      */
     public function registrarComanda(): bool {
         return $this->crearRegistro([
@@ -50,8 +59,11 @@ class Comanda extends ModeloBase {
         ]);
     }
 
+    
     /**
-     * Modificar comanda en la BD
+     * Modifies the current Comanda instance.
+     *
+     * @return bool Returns true if the modification was successful, false otherwise.
      */
     public function modificarComanda(): bool {
         return $this->actualizar([
@@ -63,8 +75,11 @@ class Comanda extends ModeloBase {
         ]);
     }
 
+    
     /**
-     * Eliminar una comanda
+     * Elimina la comanda actual.
+     *
+     * @return bool Retorna true si la comanda fue eliminada exitosamente, false en caso contrario.
      */
     public function eliminarComanda(): bool {
         return $this->eliminar($this->comanda_id);
