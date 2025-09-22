@@ -4,7 +4,17 @@ namespace App\Models;
 
 use App\Models\ModeloBase;
 
-// ENUMS como Backed Enum (más fácil para BD)
+
+/**
+ * Enum Periodo
+ *
+ * Representa los diferentes periodos de tiempo utilizados en las estadísticas.
+ * Cada valor del enum corresponde a un periodo específico, identificado por una cadena.
+ *
+ * 
+ *
+ * @package App\Models
+ */
 enum Periodo: string {
     case Verano = 'Verano';
     case Otono = 'Otono';
@@ -53,8 +63,11 @@ class Estadistica extends ModeloBase {
                                         : TemporadasAltas::Turismo;
     }
 
+   
     /**
      * Registra una nueva estadística en la base de datos.
+     *
+     * @return bool Retorna true si la estadística fue registrada exitosamente, false en caso contrario.
      */
     public function registrarEstadistica(): bool {
         return $this->crearRegistro([
@@ -66,15 +79,21 @@ class Estadistica extends ModeloBase {
         ]);
     }
 
+    
     /**
-     * Generar reporte de todas las estadísticas
+     * Genera un reporte estadístico.
+     *
+     * @return array El reporte generado en forma de arreglo.
      */
     public static function generarReporte(): array {
         return (new self())->traerTodos();
     }
 
+
     /**
-     * Obtener top clientes por puntos
+     * Obtiene una lista de los clientes con mayor actividad o compras.
+     *
+     * @return array Lista de los clientes destacados según el criterio definido.
      */
     public static function obtenerTopClientes(): array {
         $consulta = "SELECT * FROM cliente ORDER BY puntos DESC LIMIT 5";

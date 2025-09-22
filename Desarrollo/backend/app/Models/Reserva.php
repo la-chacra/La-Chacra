@@ -50,8 +50,11 @@ class Reserva extends ModeloBase {
         $this->fecha        = isset($datos["fecha"]) ? new DateTime($datos["fecha"]) : new DateTime();
     }
 
+   
     /**
-     * Registrar nueva reserva
+     * Registra una nueva reserva en el sistema.
+     *
+     * @return bool Retorna true si la reserva se registró exitosamente, false en caso contrario.
      */
     public function registrarReserva(): bool {
         return $this->crearRegistro([
@@ -66,7 +69,9 @@ class Reserva extends ModeloBase {
     }
 
     /**
-     * Modificar una reserva existente
+     * Registra una nueva reserva en el sistema.
+     *
+     * @return bool Retorna true si la reserva se registró correctamente, false en caso contrario.
      */
     public function modificarReserva(): bool {
         return $this->actualizar([
@@ -81,7 +86,9 @@ class Reserva extends ModeloBase {
     }
 
     /**
-     * Eliminar reserva
+     * Elimina la reserva actual.
+     *
+     * @return bool Retorna true si la reserva fue eliminada exitosamente, false en caso contrario.
      */
     public function eliminarReserva(): bool {
         return $this->eliminar($this->id_reserva);
@@ -103,7 +110,7 @@ class Reserva extends ModeloBase {
         ]);
 
         if (!empty($resultado)) {
-            self::$errores[] = "Ya existe una reserva en esa mes";
+            self::$errores[] = "Ya existe una reserva en esa mesita";
             return false;
         }
 

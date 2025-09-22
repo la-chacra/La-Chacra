@@ -1,89 +1,103 @@
 <?php
+namespace App\Models;
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+use App\Models\ModeloBase;
+use DateTime;
 
-use Database;
-
-
-//Se necesita espeficiar antes los valores del enum, para poder asignarlos en la clase
-enum Categoria {
-    case Carne;
-    case Bebida;
-    case Aderezos;
-    case Accesorios;
+enum Categoria: string {
+    case Carne = 'Carne';
+    case Bebida = 'Bebida';
+    case Aderezos = 'Aderezos';
+    case Accesorios = 'Accesorios';
 }
 
-class Productos{
+class Producto extends ModeloBase {
 
-    //self:: Errores
-    protected static $errores = [];
+    // Atributos para Base de Datos
+    protected static string $pk_bd = "producto_id";
+    protected static string $tabla_bd = "productos";
+    protected static array $columnas_bd = [
+        "producto_id",
+        "precio",
+        "categoria",
+        "nombre",
+        "ingredientes",
+        "disponible"
+    ];
 
-    private int $id_producto;
+    // Propiedades
+    private int $producto_id;
     private int $precio; 
     private Categoria $categoria;
-    private int $nombre; 
+    private string $nombre; 
     private string $ingredientes; 
     private bool $disponible;
 
-    public function __construct(int $id_producto, int $precio, Categoria $categoria, string $ingredientes, bool $disponible, string $nombre) {
-        $this->id_producto = $id_producto;
-        $this->precio = $precio;
-        $this->nombre = $nombre;
-        $this->categoria = $categoria;
-        $this->ingredientes = $ingredientes;
-        $this->disponible = $disponible;
-
-
+    public function __construct(array $datos = []) {
+        $this->producto_id  = $datos["producto_id"] ?? 0;
+        $this->precio       = $datos["precio"] ?? 0;
+        $this->categoria    = isset($datos["categoria"]) ? Categoria::from($datos["categoria"]) : Categoria::Carne;
+        $this->nombre       = $datos["nombre"] ?? "";
+        $this->ingredientes = $datos["ingredientes"] ?? "";
+        $this->disponible   = $datos["disponible"] ?? true;
     }
 
+   
     /**
-     * Realizar el registro de un productos en la Base de Datos
-     * 
-     * @param productos $productos Recibe una solicitud
-     * @return bool Verdadero o Falso según se pudo realizar la operación o no
+     * Registra un nuevo producto en la base de datos.
+     *
+     * @return bool Retorna true si el producto fue registrado exitosamente, false en caso contrario.
      */
-    public function registrarProductos (Productos $productos) : bool{
-        $conexion_bd = new Database;
-
-        return $conexion_bd->ejecutarConsulta(
-            "INSERT INTO productos (id_producto, precio, categoria, ingredientes, fecha) VALUES (:id_producto, :precio, :categoria, :ingredientes, :fecha)", 
-            ['id_producto' => $productos->id_producto, 'precio' => $productos->precio, 'categoria' => $productos->categoria, 'ingredientes' => $productos->ingredientes,
-             'disponible' => $productos->disponible]
-        );
+    public function registrarProducto(): bool {
+        return $this->crearRegistro([
+            "producto_id"  => $this->producto_id,
+            "precio"       => $this->precio,
+            "categoria"    => $this->categoria->value,
+            "nombre"       => $this->nombre,
+            "ingredientes" => $this->ingredientes,
+            "disponible"   => $this->disponible ? 1 : 0
+        ]);
     }
 
-    public function actualizarDisponibilidad() {
-    $conexion_bd = new Database();
-    $consulta = "UPDATE productos 
-              SET disponible = :disponible 
-              WHERE id_producto = :id_producto";
-
-    $parametros = [
-        ':disponible' => $this->disponible,  // puede ser 1 = disponible, 0 = no disponible
-        ':id_producto' => $this->id_producto
-    ];
-
-    return $conexion_bd->ejecutarConsulta($consulta, $parametros);
-        
-}
-
-    // Getters y Setters
+    
     /**
-     * Get the value of id_producto
+     * Actualiza la disponibilidad del producto.
+     *
+     * Este método verifica y actualiza el estado de disponibilidad del producto
+     * según las condiciones definidas en la lógica interna.
+     *
+     * @return bool Retorna true si la disponibilidad fue actualizada correctamente, false en caso contrario.
+     */
+    public function actualizarDisponibilidad(): bool {
+        return $this->actualizar([
+            "producto_id" => $this->producto_id,
+            "disponible"  => $this->disponible ? 1 : 0
+        ]);
+    }
+
+
+    
+    // ------------------------------------------------------------------
+    //  Getters y Setters 
+    // ------------------------------------------------------------------
+
+
+    /**
+     * Get the value of producto_id
      */ 
-    public function getId_producto()
+    public function getProducto_id()
     {
-        return $this->id_producto;
+        return $this->producto_id;
     }
 
     /**
-     * Set the value of id_producto
+     * Set the value of producto_id
      *
      * @return  self
      */ 
-    public function setId_producto($id_producto)
+    public function setProducto_id($producto_id)
     {
-        $this->id_producto = $id_producto;
+        $this->producto_id = $producto_id;
 
         return $this;
     }
