@@ -254,6 +254,8 @@
   flex-wrap: wrap;
 }
 
+
+
 .logo-img {
   height: 70px;
   width: auto;
@@ -401,6 +403,29 @@
     margin-left: 0.75rem;
   }
 }
+
+/* Wave styling */
+.wave {
+  position: absolute;
+  width: 100%;
+  height: 80px;
+  overflow: hidden;
+  pointer-events: none; /* prevents blocking clicks */
+  line-height: 0;
+  z-index: 1; /* sits above background but below content */
+}
+
+.wave svg {
+  position: relative;
+  display: block;
+  width: calc(100% + 1px);
+  height: 100%;
+}
+
+.wave path {
+  fill: #0D0F10; /* same color as header background */
+}
+
 
 /*FOOTER*/
 .footer {
@@ -678,7 +703,7 @@ input {
   color: #fff;
 }
 .auth-btn, .switch-btn {
-  background: #eee;
+  background: #F6F1E7;
   color: #000;
   padding: 12px;
   border: none;
@@ -689,7 +714,7 @@ input {
   transition: background 0.3s;
 }
 .auth-btn:hover, .switch-btn:hover {
-  background: #fff;
+  background: #facb73;
 }
 .social-login {
   display: flex;
@@ -729,6 +754,7 @@ input {
   width: 100%;
   margin-bottom: 20px;
   font-size: 26px;
+  color: #F6F1E7;
 }
 
 .auth-logo img {
@@ -783,12 +809,27 @@ input {
     font-size: 22px;
   }
 
-  .auth-logo img {
-    max-width: 180px;
-    margin-bottom: 20px;
-  }
-
   .auth-or {
     margin: 10px 0;
   }
+}
+
+/* overlay de fuego */
+.fuego-gif {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease-in-out;
+  z-index: -1; 
+}
+
+
+.fuego-gif.show {
+  opacity: 0.7;
 }

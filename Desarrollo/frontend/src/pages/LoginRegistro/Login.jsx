@@ -4,9 +4,11 @@ import { faGoogle, faFacebookF } from "@fortawesome/free-brands-svg-icons";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import logo2 from "../../assets/logo2.png";
+import fuego from "../../assets/fuego.gif";
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
+  const [hoveredPanel, setHoveredPanel] = useState(null);
 
   return (
     <>
@@ -69,6 +71,8 @@ const Auth = () => {
               </div>
             </form>
           </div>
+
+          {/* overlay */}
           <div className="overlay-container">
             <div className="overlay">
               <div className="overlay-panel overlay-left">
@@ -79,10 +83,20 @@ const Auth = () => {
                 <button
                   className="switch-btn"
                   onClick={() => setIsSignUp(false)}
+                  onMouseEnter={() => setHoveredPanel("left")}
+                  onMouseLeave={() => setHoveredPanel(null)}
                 >
                   INICIA SESIÓN
                 </button>
+                <img
+                  src={fuego}
+                  alt="Fuego"
+                  className={`fuego-gif ${
+                    hoveredPanel === "left" ? "show" : ""
+                  }`}
+                />
               </div>
+
               <div className="overlay-panel overlay-right">
                 <div className="auth-logo">
                   <img src={logo2} alt="La Chacra Logo" />
@@ -91,9 +105,18 @@ const Auth = () => {
                 <button
                   className="switch-btn"
                   onClick={() => setIsSignUp(true)}
+                  onMouseEnter={() => setHoveredPanel("right")}
+                  onMouseLeave={() => setHoveredPanel(null)}
                 >
                   REGISTRATE
                 </button>
+                <img
+                  src={fuego}
+                  alt="Fuego"
+                  className={`fuego-gif ${
+                    hoveredPanel === "right" ? "show" : ""
+                  }`}
+                />
               </div>
             </div>
           </div>
