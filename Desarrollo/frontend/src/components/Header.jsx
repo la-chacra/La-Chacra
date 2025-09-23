@@ -30,7 +30,9 @@ const Header = () => {
           <Link to="/login" className="btn login">
           INICIAR SESIÓN
           </Link>
-          <button className="btn register">REGISTRARSE</button>
+          <Link to="/login" className="btn register">
+          REGISTRARSE
+          </Link>
         </div>
 
         <div className="lang-wrapper">
