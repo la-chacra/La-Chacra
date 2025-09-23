@@ -27,7 +27,9 @@ const Header = () => {
 
       <div className="right-controls">
         <div className="auth-controls">
-          <button className="btn login">INICIAR SESIÓN</button>
+          <Link to="/login" className="btn login">
+          INICIAR SESIÓN
+          </Link>
           <button className="btn register">REGISTRARSE</button>
         </div>
 
