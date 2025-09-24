@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\ModeloBase;
+use App\Service\ContrasenaService;
 use DateTime;
 
 class Usuario extends ModeloBase {
@@ -17,17 +18,17 @@ class Usuario extends ModeloBase {
     private string $nombre;
     private string $apellido;
     private string $correo;
-    private string $contrasena;
+    private string $hashContrasena;
     private string $tipo;
     private DateTime $fechaNacimiento;
 
     // -- Constructor
-    public function __construct(string $nombre, string $apellido, string $correo, string $contrasena, string $fechaNacimiento, string $tipo) {
+    public function __construct(string $nombre, string $apellido, string $correo, string $contrasena, string $fechaNacimiento, string $tipo, ContrasenaService $service) {
         $this->usuario_id = null; // Es NULL porque al crear uno, no tiene ID todavia.
         $this->nombre = $nombre;
         $this->apellido = $apellido;
         $this->correo = $correo;
-        $this->contrasena = $contrasena;
+        $this->hashContrasena = $service->hash($contrasena);
         $this->tipo = $tipo;
         $this->fechaNacimiento = new DateTime($fechaNacimiento);
     }
@@ -45,7 +46,7 @@ class Usuario extends ModeloBase {
                 'nombre'           => $this->nombre, 
                 'apellido'         => $this->apellido, 
                 'correo'           => $this->correo, 
-                'contrasena'       => $this->contrasena, 
+                'contrasena'       => $this->hashContrasena, 
                 'fecha_nacimiento' => $this->fechaNacimiento->format('Y-m-d'),
                 'tipo'             => $this->tipo
             ]
@@ -69,7 +70,7 @@ class Usuario extends ModeloBase {
                 'nombre'           => $this->nombre, 
                 'apellido'         => $this->apellido, 
                 'correo'           => $this->correo, 
-                'contrasena'       => $this->contrasena, 
+                'contrasena'       => $this->hashContrasena, 
                 'fecha_nacimiento' => $this->fechaNacimiento->format('Y-m-d'),
                 'tipo'             => $this->tipo
             ]
@@ -116,14 +117,14 @@ class Usuario extends ModeloBase {
      * @return null Si el usuario no se pudo encontrar
      * @return true|false Si la autenticación es válida o no
      */
-    public static function autenticarSesion (string $correo, string $contrasena) : bool|null{        
+    public static function autenticarSesion (string $correo, string $contrasena, ContrasenaService $service) : bool|null{        
         $resultado = self::encontrarPorCorreo($correo);
 
         if (!$resultado):
             return null;
         endif;
 
-        return $resultado["contrasena"] === $contrasena;
+        return $service->verificarPass($contrasena, $resultado["contrasena"]);
     }
 
     //  Getters y Setters 
@@ -161,11 +162,11 @@ class Usuario extends ModeloBase {
     }
 
     public function getContrasena () : string {
-        return $this->contrasena;
+        return $this->hashContrasena;
     }
 
     public function setContrasena (string $contrasena) {
-        $this->contrasena = $contrasena;
+        $this->hashContrasena = $contrasena;
     }
 
     public function getFchaNacimiento () : string {
