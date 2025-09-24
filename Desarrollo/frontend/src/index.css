@@ -765,29 +765,29 @@ input {
 
 /* MOBILE RESPONSIVE */
 @media (max-width: 768px) {
-  .auth-container {
-    width: 100%;
-    min-height: 100vh;
-    flex-direction: column;
-    border-radius: 0;
+  .sign-in-container,
+  .sign-up-container,
+  .overlay-container {
+    display: none; /* Oculta versión desktop */
+  }
+  .auth-container label,
+  .form-container-mobile label {
+    color: #fff;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
   }
 
-  .form-container {
-    position: relative;
+  .form-container-mobile {
+    display: block;
     width: 100%;
     padding: 20px;
-    top: 0;
-    height: auto;
   }
 
-  .sign-in-container, .sign-up-container {
-    transform: translateX(0) !important;
-    opacity: 1 !important;
-    z-index: 5 !important;
-  }
-
-  .overlay-container {
-    display: none;
+  .mobile-switch {
+    text-align: center;
+    margin: 10px 0 20px 0;
+    color:white;
   }
 
   .input-group {
@@ -814,7 +814,8 @@ input {
   }
 }
 
-/* overlay de fuego */
+
+/* overlay de fuego */  
 .fuego-gif {
   position: absolute;
   bottom: 0;
