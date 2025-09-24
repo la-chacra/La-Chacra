@@ -83,7 +83,7 @@ const Carta = () => {
 
   return (
     <div className="carta-page">
-      <Header />
+      <Header/>
 
       <div className="carta-wrapper">
         <div className="sidebar left-sidebar"></div>
@@ -98,7 +98,7 @@ const Carta = () => {
         <div className="sidebar right-sidebar"></div>
       </div>
 
-      <Footer />
+      <Footer/>
     </div>
   );
 };
