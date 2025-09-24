@@ -64,8 +64,12 @@ const Header = () => {
             <hr className="mobile-divider" />
 
             <div className="mobile-auth">
-              <button className="btn login">INICIAR SESIÓN</button>
-              <button className="btn register">REGISTRARSE</button>
+            <Link to="/login" className="btn login">
+              INICIAR SESIÓN
+            </Link>
+            <Link to="/login" className="btn register">
+              REGISTRARSE
+            </Link>
             </div>
           </nav>
         </div>
