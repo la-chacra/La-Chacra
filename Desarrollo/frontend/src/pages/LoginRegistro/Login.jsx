@@ -10,6 +10,16 @@ const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [hoveredPanel, setHoveredPanel] = useState(null);
 
+  
+
+  /* Estados para Registro */
+  const [nombre, setNombre] = useState("");
+  const [apellido, setApellido] = useState("");
+  const [regEmail, setRegEmail] = useState("");
+  const [regPassword, setRegPassword] = useState("");
+  const [fecha, setFecha] = useState("");
+
+
   return (
     <>
       <Header />
@@ -21,20 +31,21 @@ const Auth = () => {
             <form>
               <h2 className="auth-title">REGISTRO</h2>
               <div className="input-group">
-                <input type="text" placeholder="Nombre" />
-                <input type="text" placeholder="Apellido" />
+                <input type="text" name="nombre" placeholder="Nombre" />
+                <input type="text" name="apellido" placeholder="Apellido" />
               </div>
               <div className="input-group">
-                <input type="email" placeholder="Correo" />
+                <input type="email" name="RegCorreo" placeholder="Correo electrónico" />
                 <input
                   type="text"
+                  name="fechaNacimiento"
                   placeholder="__/__/____"
                   onFocus={(e) => (e.target.type = "date")}
                   onBlur={(e) => (e.target.type = "text")}
                 />
               </div>
-              <input type="password" placeholder="Contraseña" />
-              <input type="password" placeholder="Confirme su contraseña" />
+              <input type="password" name="RegContrasena" placeholder="Contraseña" />
+              <input type="password" name="confContrasena" placeholder="Confirme su contraseña" />
               <button type="submit" className="auth-btn">
                 REGISTRARSE
               </button>
@@ -53,10 +64,10 @@ const Auth = () => {
           <div className="form-container sign-in-container">
             <form>
               <h2 className="auth-title">INICIO DE SESIÓN</h2>
-              <label>Correo Electrónico</label>
-              <input type="email" placeholder="Ingrese su correo electrónico" />
-              <label>Contraseña</label>
-              <input type="password" placeholder="Ingrese su contraseña" />
+              <label for="LogCorreo">Correo Electrónico</label>
+              <input type="email" id="LogCorreo" name="LoginCorreo" placeholder="Ingrese su correo electrónico" />
+              <label for="LogContrasena">Contraseña</label>
+              <input type="password" id="LogContrasena" name="LoginContrasena" placeholder="Ingrese su contraseña" />
               <button type="submit" className="auth-btn">
                 INICIAR SESIÓN
               </button>
@@ -123,20 +134,21 @@ const Auth = () => {
               <form className="sign-up-container-mobile">
                 <h2 className="auth-title">REGISTRO</h2>
                 <div className="input-group">
-                  <input type="text" placeholder="Nombre" />
-                  <input type="text" placeholder="Apellido" />
+                  <input type="text" name="nombre" placeholder="Nombre" />
+                  <input type="text" name="apellido" placeholder="Apellido" />
                 </div>
                 <div className="input-group">
-                  <input type="email" placeholder="Correo" />
+                  <input type="email" name="RegCorreo" placeholder="Correo" />
                   <input
                     type="text"
+                    name="fechaNacimiento"
                     placeholder="__/__/____"
                     onFocus={(e) => (e.target.type = "date")}
                     onBlur={(e) => (e.target.type = "text")}
                   />
                 </div>
-                <input type="password" placeholder="Contraseña" />
-                <input type="password" placeholder="Confirme su contraseña" />
+                <input type="password" name="RegContrasena" placeholder="Contraseña" />
+                <input type="password" name="confContrasena" placeholder="Confirme su contraseña" />
                 <button type="submit" className="auth-btn">
                   REGISTRARSE
                 </button>
@@ -154,9 +166,9 @@ const Auth = () => {
               <form className="sign-in-container-mobile">
                 <h2 className="auth-title">INICIO DE SESIÓN</h2>
                 <label>Correo Electrónico</label>
-                <input type="email" placeholder="Ingrese su correo electrónico" />
+                <input type="email" name="LoginCorreo" placeholder="Ingrese su correo electrónico" />
                 <label>Contraseña</label>
-                <input type="password" placeholder="Ingrese su contraseña" />
+                <input type="password" name="LoginContrasena" placeholder="Ingrese su contraseña" />
                 <button type="submit" className="auth-btn">
                   INICIAR SESIÓN
                 </button>
