@@ -14,7 +14,7 @@ use App\Models\Administrador; // remover despues
 $router = new Router();
 
 $router->post("/login", [LoginController::class, "login"]);
-$router->post("/registro", [RegistroController::class, "login"]);
+$router->post("/registro", [RegistroController::class, "registro"]);
 
 $router->despachar();
 
