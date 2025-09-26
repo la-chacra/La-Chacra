@@ -27,19 +27,22 @@ class Router {
             $controlador = null;
         }
 
-        if($controlador) {
-            if(is_array($controlador)) {
+        if ($controlador) {
+            if (is_array($controlador)) {
                 [$clase, $funcion] = $controlador;
-
                 $instancia = new $clase();
-                echo call_user_func([$instancia, $funcion], $this);
+                $resultado = call_user_func([$instancia, $funcion], $this);
             } else {
-                echo call_user_func($controlador, $this);
+                $resultado = call_user_func($controlador, $this);
             }
+
+            header("Content-Type: application/json; charset=utf-8");
+            echo json_encode($resultado);
         } else {
             http_response_code(404);
             echo json_encode(["error" => "Ruta no encontrada"]);
         }
+
 
     }
 }

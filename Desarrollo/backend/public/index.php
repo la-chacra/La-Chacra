@@ -1,6 +1,8 @@
 <?php
+session_start();
+
 ini_set('display_errors', 1);
-error_reporting(E_ALL); // reportar todos los errores
+error_reporting(E_ALL);
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -9,19 +11,33 @@ use Config\Database;
 use App\Models\ModeloBase;
 use App\Controllers\LoginController;
 use App\Controllers\RegistroController;
-use App\Models\Administrador; // remover despues
+use App\Controllers\AuthController;
+
+$db = new Database();
+ModeloBase::setDB($db);
 
 $router = new Router();
 
-$router->post("/login", [LoginController::class, "login"]);
-$router->post("/registro", [RegistroController::class, "registro"]);
+// Ruta raíz de testing
+$router->get("/", function() {
+    return json_encode(["message" => "API La Chacra corriendo "]);
+});
+
+$router->post("/api/login", [LoginController::class, "login"]);
+$router->post("/api/registro", [RegistroController::class, "registrar"]);
+$router->post("/api/logout", [AuthController::class, "logout"]);
+$router->post("/api/estadoSesion", [AuthController::class, "me"]);
+
+
+$allowedOrigin = "http://localhost:5173";
+header("Access-Control-Allow-Origin: $allowedOrigin");
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
 $router->despachar();
-
-// Testing
-// $admin = new Administrador("Kehian", "Martins", "asdasd@gmail.com", "9asdkas", "1987-03-20");
-
-// $admin->registrar();
-
-// echo $admin->get_id();
-
