@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\ModeloBase;
+use App\Services\ContrasenaService;
 use DateTime;
 
 class Usuario extends ModeloBase {
@@ -10,14 +11,14 @@ class Usuario extends ModeloBase {
     // -- Atributos para Base de Datos
     protected static string $pk_bd = "usuario_id";
     protected static string $tabla_bd = "usuario";
-    protected static array $columnas_bd = ["usuario_id", "nombre", "apellido", "correo", "contrasena", "fechaNacimiento", "tipo", "activo"];
+    protected static array $columnas_bd = ["usuario_id", "nombre", "apellido", "correo", "contrasena", "fecha_nacimiento", "tipo", "activo"];
 
     // -- Atributos de Usuario
     private ?int $usuario_id; // El ? antes de INT sirve para indicar que puede o no ser INT.
     private string $nombre;
     private string $apellido;
     private string $correo;
-    private string $contrasena;
+    private string $hashContrasena;
     private string $tipo;
     private DateTime $fechaNacimiento;
 
@@ -27,7 +28,7 @@ class Usuario extends ModeloBase {
         $this->nombre = $nombre;
         $this->apellido = $apellido;
         $this->correo = $correo;
-        $this->contrasena = $contrasena;
+        $this->hashContrasena = ContrasenaService::hash($contrasena);
         $this->tipo = $tipo;
         $this->fechaNacimiento = new DateTime($fechaNacimiento);
     }
@@ -45,7 +46,7 @@ class Usuario extends ModeloBase {
                 'nombre'           => $this->nombre, 
                 'apellido'         => $this->apellido, 
                 'correo'           => $this->correo, 
-                'contrasena'       => $this->contrasena, 
+                'contrasena'       => $this->hashContrasena, 
                 'fecha_nacimiento' => $this->fechaNacimiento->format('Y-m-d'),
                 'tipo'             => $this->tipo
             ]
@@ -69,7 +70,7 @@ class Usuario extends ModeloBase {
                 'nombre'           => $this->nombre, 
                 'apellido'         => $this->apellido, 
                 'correo'           => $this->correo, 
-                'contrasena'       => $this->contrasena, 
+                'contrasena'       => $this->hashContrasena, 
                 'fecha_nacimiento' => $this->fechaNacimiento->format('Y-m-d'),
                 'tipo'             => $this->tipo
             ]
@@ -110,22 +111,6 @@ class Usuario extends ModeloBase {
         return !empty($resultado);
     }
 
-    /**
-     * Realizar la autenticación de un usuario en la Base de Datos
-     * 
-     * @return null Si el usuario no se pudo encontrar
-     * @return true|false Si la autenticación es válida o no
-     */
-    public static function autenticarSesion (string $correo, string $contrasena) : bool|null{        
-        $resultado = self::encontrarPorCorreo($correo);
-
-        if (!$resultado):
-            return null;
-        endif;
-
-        return $resultado["contrasena"] === $contrasena;
-    }
-
     //  Getters y Setters 
 
     public function setId(int $usuario_id) {
@@ -161,11 +146,19 @@ class Usuario extends ModeloBase {
     }
 
     public function getContrasena () : string {
-        return $this->contrasena;
+        return $this->hashContrasena;
     }
 
     public function setContrasena (string $contrasena) {
-        $this->contrasena = $contrasena;
+        $this->hashContrasena = $contrasena;
+    }
+
+    public function getTipo () : string {
+        return $this->tipo;
+    }
+
+    public function setTipo (string $tipo) {
+        $this->tipo = $tipo;
     }
 
     public function getFchaNacimiento () : string {
