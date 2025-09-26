@@ -8,12 +8,12 @@ use App\Services\ContrasenaService;
 class RegistroController {
     public function registrar($router): array {
 
-        $data = json_decode(file_get_contents("php://input"), true);
-        $nombre = $data["nombre"] ?? "";
-        $apellido = $data["apellido"] ?? "";
-        $correo = $data["correo"] ?? "";
-        $contrasena = $data["contrasena"] ?? "";
-        $fechaNacimiento = $data["fechaNacimiento"];
+        $datos = json_decode(file_get_contents("php://input"), true);
+        $nombre = $datos["nombre"] ?? "";
+        $apellido = $datos["apellido"] ?? "";
+        $correo = $datos["correo"] ?? "";
+        $contrasena = $datos["contrasena"] ?? "";
+        $fechaNacimiento = $datos["fechaNacimiento"];
 
         if (empty($nombre) || empty($apellido) || empty($correo) || empty($contrasena) || empty($fechaNacimiento)) {
             return ["success" => false, "message" => "Faltan datos obligatorios"];

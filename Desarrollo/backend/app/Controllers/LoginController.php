@@ -8,9 +8,9 @@ use App\Services\ContrasenaService;
 class LoginController {
         public function login($router): array {
         
-        $data = json_decode(file_get_contents("php://input"), true);
-        $correo = $data["correo"] ?? "";
-        $contrasena = $data["contrasena"] ?? "";
+        $datos = json_decode(file_get_contents("php://input"), true);
+        $correo = $datos["correo"] ?? "";
+        $contrasena = $datos["contrasena"] ?? "";
 
         if (empty($correo) || empty($contrasena)){
             return ["success" => false, "message" => "Correo y contraseña son obligatorios"];
