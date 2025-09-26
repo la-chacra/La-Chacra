@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Services;
 
 /**
  * Servicio para gestionar el hash y la verificación de contraseñas utilizando bcrypt.
@@ -14,7 +14,7 @@ namespace App\Service;
  */
 final class ContrasenaService {
 
-    private $opciones = [
+    private static $opciones = [
         "cost" => 12 // el costo es la cantidad de veces que se aplica el algoritmo de hashing de bcrypt
     ];
 
@@ -25,8 +25,8 @@ final class ContrasenaService {
      * @param string $pass La contraseña en texto plano para hashear.
      * @return string La contraseña hasheada.
      */
-    public function hash(string $pass) {
-        return password_hash($pass, PASSWORD_BCRYPT, $this->opciones);
+    public static function hash(string $pass) {
+        return password_hash($pass, PASSWORD_BCRYPT, self::$opciones);
     }
 
     /**
@@ -36,7 +36,7 @@ final class ContrasenaService {
      * @param string $passEnBD El hash de la contraseña almacenado en la base de datos.
      * @return bool True si la contraseña es válida, false en caso contrario.
      */
-    public function verificarPass(string $passIngresada, string $passEnBD) {
+    public static function verificarPass(string $passIngresada, string $passEnBD) {
         return password_verify($passIngresada, $passEnBD);
     }
 }
