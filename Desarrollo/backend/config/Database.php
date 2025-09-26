@@ -21,16 +21,16 @@ class Database {
 
         // Se hace así porque __DIR__ = config, y el ".env" está en "backend"
 
-        if (!isset($_ENV['DB_HOST'])) {
+        if (!isset($_ENV["DB_HOST"])) {
             $dotenv = Dotenv::createImmutable(dirname(__DIR__));
             $dotenv->load();
         }
         
         try {
             $this->db = new PDO(
-                "mysql:host={$_ENV['DB_HOST']};dbname={$_ENV['DB_NAME']};charset=utf8mb4",
-                $_ENV['DB_USER'],   // usuario
-                $_ENV['DB_PASS']    // contraseña
+                "mysql:host={$_ENV["DB_HOST"]};dbname={$_ENV["DB_NAME"]};charset=utf8mb4",
+                $_ENV["DB_USER"],   // usuario
+                $_ENV["DB_PASS"]    // contraseña
             );
 
             // Hace que si hay un error, PDO lance una excepción
