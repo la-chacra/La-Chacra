@@ -136,6 +136,7 @@ const Auth = () => {
             </form>
           </div>
 
+          {/* FORMULARIO LOGIN */}
           <div className="form-container sign-in-container">
             <form onSubmit={handleLogin}>
               <h2 className="auth-title">INICIO DE SESIÓN</h2>
@@ -158,7 +159,7 @@ const Auth = () => {
             </form>
           </div>
 
-          {/* OVERLAY DESKTOP */}
+          {/* OVERLAY */}
           <div className="overlay-container">
             <div className="overlay">
               <div className="overlay-panel overlay-left">
