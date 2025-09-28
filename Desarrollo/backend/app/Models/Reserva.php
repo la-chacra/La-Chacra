@@ -8,10 +8,10 @@ use DateTime;
 
 // Enum para estado de la reserva
 enum EstadoReserva : string {
-    case Pendiente = "Pendiente";
-    case Confirmada = "Confirmada";
-    case Cancelada = "Cancelada";
-    case Finalizada = "Finalizada";
+    case PENDIENTE = "Pendiente";
+    case CONFIRMADA = "Confirmada";
+    case CANCELADA = "Cancelada";
+    case FINALIZADA = "Finalizada";
 }
 
 class Reserva extends ModeloBase {

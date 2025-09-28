@@ -9,6 +9,7 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 use Router\Router;
 use Config\Database;
 use App\Models\ModeloBase;
+use App\Controllers\ReservaController;
 use App\Controllers\LoginController;
 use App\Controllers\RegistroController;
 use App\Controllers\AuthController;
@@ -23,10 +24,13 @@ $router->get("/", function() {
     return json_encode(["message" => "API La Chacra corriendo "]);
 });
 
+// API Usuario
 $router->post("/api/login", [LoginController::class, "login"]);
 $router->post("/api/registro", [RegistroController::class, "registrar"]);
 $router->post("/api/logout", [AuthController::class, "logout"]);
 $router->post("/api/estadoSesion", [AuthController::class, "me"]);
+// API Reserva
+$router->post("/api/reserva/crear", [ReservaController::class, "registrar"]);
 
 
 $allowedOrigin = "http://localhost:5173";
