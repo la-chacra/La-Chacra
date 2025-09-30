@@ -97,7 +97,7 @@ const Auth = () => {
     <>
       <Header />
       <div className="auth-page">
-        <div className={`auth-container ${esRegistrado ? "right-panel-active" : ""}`}>
+        <div className={`auth-container fade-in-up ${esRegistrado ? "right-panel-active" : ""}`}>
           
           {/* FORMULARIOS PARA DESKTOP */}
           <div className="form-container sign-up-container">
