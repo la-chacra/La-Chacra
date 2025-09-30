@@ -1,64 +1,114 @@
 import React, { useState } from "react";
+import logo from "../../assets/logo2.png";
 
 export default function HistorialRes() {
   const [filter, setFilter] = useState("Todos");
 
   const reservas = [
     { id: 1, nombre: "Roberto Juan", correo: "robertojuan@gmail.com", personas: 4, fecha: "hoy, 22:20", estado: "Pendiente" },
-    { id: 2, nombre: "Roberto Juan", correo: "robertojuan@gmail.com", personas: 4, fecha: "ayer, 20:30", estado: "Confirmada" },
-    { id: 3, nombre: "Roberto Juan", correo: "robertojuan@gmail.com", personas: 4, fecha: "30 ago, 20:30", estado: "Cancelada" },
+    { id: 2, nombre: "Roberto Juan", correo: "robertojuan@gmail.com", personas: 4, fecha: "hoy, 20:30", estado: "Advertencia" },
+    { id: 3, nombre: "Roberto Juan", correo: "robertojuan@gmail.com", personas: 4, fecha: "ayer, 20:30", estado: "Confirmada" },
+    { id: 4, nombre: "Roberto Juan", correo: "robertojuan@gmail.com", personas: 4, fecha: "30 ago, 20:30", estado: "Cancelada" },
   ];
 
   const filtered =
     filter === "Todos" ? reservas : reservas.filter((r) => r.estado === filter);
 
-  const estadoStyle = {
-    Pendiente: "text-blue-600",
-    Confirmada: "text-green-600",
-    Cancelada: "text-red-600",
+  const estadoIcon = {
+    Pendiente: (
+      <div className="flex justify-center">
+        <span className="rounded-full bg-blue-100 px-2 py-1">⏰</span>
+      </div>
+    ),
+    Confirmada: (
+      <div className="flex justify-center">
+        <span className="rounded-full bg-green-100 px-2 py-1">✔️</span>
+      </div>
+    ),
+    Cancelada: (
+      <div className="flex justify-center">
+        <span className="rounded-full bg-red-100 px-2 py-1">❌</span>
+      </div>
+    ),
+    Advertencia: (
+      <div className="flex justify-center">
+        <span className="rounded-full bg-yellow-100 px-2 py-1">❗</span>
+      </div>
+    ),
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-yellow-100">
       {/* Navbar */}
-      <nav className="flex items-center justify-between bg-green-900 text-white px-6 py-3">
-        <span className="font-bold text-lg">La Chacra</span>
-        <div className="flex gap-4">
-          <button className="hover:underline">Inventario</button>
-          <button className="hover:underline">Empleados</button>
-          <button className="hover:underline">Estadísticas</button>
-          <button className="underline font-semibold">Reservas</button>
-          <button className="hover:underline">Comanda</button>
+      <nav className="flex items-center justify-between bg-black text-white px-6 py-3">
+        <div className="flex items-center gap-8">
+          {/* LOGO */}
+          <a href="/" className="flex items-center">
+            <img
+              src="/logo.png"
+              alt="La Chacra"
+              className="h-10 w-auto"
+            />
+          </a>
+
+          {/* Menu */}
+          <div className="flex gap-2">
+             <button className="px-3 py-2 rounded-md hover:bg-green-700 transition-colors duration-200">📦 Inventario</button>
+            <button className="px-3 py-2 rounded-md hover:bg-green-700 transition-colors duration-200">👥 Empleados</button>
+            <button className="px-3 py-2 rounded-md hover:bg-green-700 transition-colors duration-200">📊 Estadísticas</button>
+            <button className="px-3 py-2 rounded-md bg-green-700 font-semibold">📋 Reservas</button>
+            <button className="px-3 py-2 rounded-md hover:bg-green-700 transition-colors duration-200">🍽️ Comanda</button>
+          </div>
         </div>
+
+        <button className="px-3 py-2 rounded-md hover:bg-green-700 transition font-semibold">
+          ⚙️ GESTIÓN
+        </button>
       </nav>
 
       {/* Panel principal */}
-      <div className="max-w-7xl mx-auto mt-6 bg-yellow-100 shadow rounded-lg p-6">
-        <div className="flex justify-between items-center mb-4">
+      <div className="max-w-7xl mx-auto mt-6 p-6">
+        {/* Header con Exportar */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
           <h2 className="text-xl font-bold text-gray-800">Historial de Reservas</h2>
           <button className="flex items-center gap-1 bg-white border border-gray-300 px-3 py-2 rounded shadow hover:bg-gray-100">
-            Exportar ⬇
+            ⬇️ Exportar
           </button>
         </div>
 
         {/* Filtros */}
-        <div className="flex gap-3 mb-4">
-          <input
-            type="text"
-            placeholder="Buscar"
-            className="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
-          />
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
-          >
-            <option value="Todos">Estado</option>
-            <option value="Pendiente">Pendiente</option>
-            <option value="Confirmada">Confirmada</option>
-            <option value="Cancelada">Cancelada</option>
-          </select>
-        </div>
+<div className="flex flex-col sm:flex-row gap-3 mb-4">
+  {/* Input de búsqueda con botón */}
+  <div className="flex flex-1">
+    <input
+      type="text"
+      placeholder="Ingrese Nombre o Correo"
+      className="flex-1 border border-gray-300 rounded-l px-3 py-2 bg-white focus:outline-none focus:ring focus:border-blue-300 h-11"
+    />
+    <button className="px-4 bg-black text-white font-semibold rounded-r hover:bg-green-700 transition-colors duration-200 h-11">
+      Buscar
+    </button>
+  </div>
+
+  {/* Botón Filtrar */}
+  <button className="flex items-center gap-1 border border-gray-300 rounded px-3 py-2 bg-white hover:bg-gray-100 h-11">
+    ⚙️ Filtrar
+  </button>
+
+  {/* Select Estado */}
+  <select
+    value={filter}
+    onChange={(e) => setFilter(e.target.value)}
+    className="border border-gray-300 rounded px-3 py-2 bg-white focus:outline-none focus:ring focus:border-blue-300 h-11"
+  >
+    <option value="Todos">Estado</option>
+    <option value="Pendiente">Pendiente</option>
+    <option value="Advertencia">Advertencia</option>
+    <option value="Confirmada">Confirmada</option>
+    <option value="Cancelada">Cancelada</option>
+  </select>
+</div>
+
 
         {/* Tabla */}
         <div className="overflow-x-auto">
@@ -84,14 +134,14 @@ export default function HistorialRes() {
                   <td className="px-3 py-2 border">{r.correo}</td>
                   <td className="px-3 py-2 border text-center">{r.personas}</td>
                   <td className="px-3 py-2 border">{r.fecha}</td>
-                  <td className={`px-3 py-2 border font-medium ${estadoStyle[r.estado]}`}>
-                    {r.estado === "Pendiente" && "⏰"}
-                    {r.estado === "Confirmada" && "✔"}
-                    {r.estado === "Cancelada" && "❌"}
+                  <td className="px-3 py-2 border text-center">
+                    {estadoIcon[r.estado]}
                   </td>
-                  <td className="px-3 py-2 border flex gap-2">
-                    <button className="text-red-500 hover:text-red-700">🗑</button>
-                    <button className="text-gray-600 hover:text-gray-800">✏</button>
+                  <td className="px-3 py-2 border">
+                    <div className="flex justify-center gap-3">
+                      <button className="text-red-500 hover:text-red-700">🗑</button>
+                      <button className="text-gray-600 hover:text-gray-800">✏</button>
+                    </div>
                   </td>
                 </tr>
               ))}
