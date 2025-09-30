@@ -12,7 +12,7 @@ const MenuSection = ({ title, categories, products }) => {
 
   return (
     <section className="menu-section font-overlock fade-in-up">
-      <h2 className="section-title">{title}</h2>
+      <h2 className="menu-section-title">{title}</h2>
       {categories && (
         <CategoryNav
           categories={categories}
