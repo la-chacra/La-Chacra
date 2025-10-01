@@ -25,35 +25,37 @@ const ReservaMesas = () => {
 
   return (
     <div className="reserva-mesas-page">
-      <Header />
-      
-      <div className="reserva-container font-montserrat">
-      <br></br>
-        <h1 className="reserva-title font-overlock fade-in">RESERVA DE MESAS</h1>
-        
-        <div className="reserva-content fade-in-up">
-          <DateSelector 
-            selectedDate={selectedDate}
-            onDateChange={handleDateChange}
-          />
-          
-          <TimeSelector 
-            selectedDate={selectedDate}
-            selectedTime={selectedTime}
-            onTimeChange={handleTimeChange}
-          />
-          
-          <TableReservationMain 
-            selectedDate={selectedDate}
-            selectedTime={selectedTime}
-            selectedTable={selectedTable}
-            onTableChange={handleTableChange}
-          />
-        </div>
+  <Header />
+
+  <div className="reserva-center-wrapper">
+    <div className="reserva-container font-montserrat">
+      <h1 className="reserva-title font-overlock fade-in">RESERVA DE MESAS</h1>
+
+      <div className="reserva-content fade-in-up">
+        <DateSelector
+          selectedDate={selectedDate}
+          onDateChange={handleDateChange}
+        />
+
+        <TimeSelector
+          selectedDate={selectedDate}
+          selectedTime={selectedTime}
+          onTimeChange={handleTimeChange}
+        />
+
+        <TableReservationMain
+          selectedDate={selectedDate}
+          selectedTime={selectedTime}
+          selectedTable={selectedTable}
+          onTableChange={handleTableChange}
+        />
       </div>
-      
-      <Footer />
     </div>
+  </div>
+
+  <Footer />
+</div>
+
   )
 }
 
