@@ -45,7 +45,7 @@ export default function HistorialRes() {
           {/* LOGO */}
           <a href="/" className="flex items-center">
             <img
-              src="/logo.png"
+              src="/logo2.png"
               alt="La Chacra"
               className="h-10 w-auto"
             />
