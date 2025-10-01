@@ -46,6 +46,7 @@ function App() {
         <Route path="/" element={<Inicio/>}/>
         <Route path="/carta" element={<Carta/>}/>
         <Route path="/login" element={<Login/>}/>
+        <Route path="/reserva" element={<Reserva/>}/>
         <Route path="/admin/reserva" element={<HistorialRes/>}/>
         {/* Ejemplo de otras rutas futuras */}
         {/* <Route path="/carta" element={<Carta />} /> */}
