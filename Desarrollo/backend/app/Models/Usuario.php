@@ -52,7 +52,7 @@ class Usuario extends ModeloBase {
             ]
         );
 
-        $id = $this->encontrarPorCorreo($this->correo);
+        $id = self::encontrarPorCorreo($this->correo);
         $this->usuario_id = $id[static::$pk_bd] ?? null;
 
         return $resultado;
@@ -107,7 +107,7 @@ class Usuario extends ModeloBase {
      * @return true|false Si el usuario existe o no
      */
     public function esExistente(): bool{
-        $resultado = $this->encontrarPorID($this->usuario_id);
+        $resultado = self::encontrarPorID($this->usuario_id);
         return !empty($resultado);
     }
 
