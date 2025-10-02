@@ -254,8 +254,6 @@
   flex-wrap: wrap;
 }
 
-
-
 .logo-img {
   height: 70px;
   width: auto;
@@ -1266,8 +1264,16 @@ input {
 
 
 /* MAIN RESERVA */
+.reserva-center-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  min-height: calc(100vh - 160px);
+}
+
 .reserva-mesas-page {
-  min-height: 100vh;
   background-color: #1D1D1C;
   color: white;
 }
@@ -1307,4 +1313,135 @@ input {
   .reserva-content {
     gap: 20px;
   }
+}
+
+/* HEADER ADMIN */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0D0F10;
+  padding: 0.75rem 1rem;
+  color: #fff;
+  position: relative;
+  flex-wrap: wrap;
+}
+
+.admin-logo-img {
+  height: 60px;
+  width: auto;
+}
+
+/* Desktop Nav */
+.admin-nav-links {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1rem;
+  font-family: "Overlock", sans-serif;
+}
+
+.admin-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  color: #888;
+  padding: 0.5rem 0.9rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: clamp(14px, 1.6vw, 18px);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.admin-nav-link:hover {
+  color: #ffffff;
+}
+
+.admin-nav-link.active {
+  background-color: #1a1d1f; /* slightly lighter than header */
+  color: white;
+}
+
+/* Nav Icons */
+.admin-nav-icon {
+  font-size: 1rem;
+}
+
+/* Mobile hamburger */
+.admin-hamburger {
+  display: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  margin-left: auto;
+  font-weight: 600;
+}
+
+/* Mobile menu */
+.admin-mobile-menu {
+  width: 100%;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.5s ease, opacity 0.4s ease;
+}
+
+.admin-mobile-menu.open {
+  max-height: 500px;
+  opacity: 1;
+}
+
+.admin-mobile-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0;
+  font-family: "Overlock", sans-serif;
+  gap: 0.75rem;
+}
+
+.admin-mobile-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  text-decoration: none;
+  font-size: clamp(16px, 2.5vw, 20px);
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+}
+
+.admin-mobile-link:hover {
+  color: #ffffff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-nav-links {
+    display: none;
+  }
+  .admin-hamburger {
+    display: block;
+  }
+}
+
+/* Right Gestión */
+.admin-gestion {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+  font-size: clamp(15px, 1.6vw, 18px);
+  color: #ffffff;
+  cursor: default;
+}
+
+.gestion-icon {
+  font-size: 1.2rem;
+  color: #ffffff;
+}
+
+.gestion-text {
+  letter-spacing: 1px;
 }

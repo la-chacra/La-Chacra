@@ -6,6 +6,7 @@ import Carta from './pages/Carta/Carta';
 import Reserva from './pages/ReservaUsuario/Reserva';
 import Login from './pages/LoginRegistro/Login';
 import HistorialRes from './pages/Reserva/HistorialRes';
+import Test from './pages/Admin/test';
 
 // (cuando agreguen más páginas, las importas acá)
 
@@ -47,6 +48,8 @@ function App() {
         <Route path="/carta" element={<Carta/>}/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/admin/reserva" element={<HistorialRes/>}/>
+        <Route path="/reserva" element={<Reserva/>}/>
+        <Route path="/test" element={<Test/>}/>
         {/* Ejemplo de otras rutas futuras */}
         {/* <Route path="/carta" element={<Carta />} /> */}
         {/* <Route path="/contacto" element={<Contacto />} /> */}
