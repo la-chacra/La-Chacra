@@ -84,7 +84,7 @@ abstract class ModeloBase {
      * @param int $id El identificador único del registro a buscar.
      * @return array El registro encontrado como un arreglo asociativo, o un arreglo vacío si no se encuentra.
      */
-    public function encontrarPorID(int $id) : array {
+    public  function encontrarPorID(int $id) : array {
         $consulta = "SELECT * FROM " . static::$tabla_bd . " WHERE " . static::$pk_bd . " = :id LIMIT 1";
         return static::$conexion_bd->realizarConsulta($consulta, ["id" => $id]);
     }
