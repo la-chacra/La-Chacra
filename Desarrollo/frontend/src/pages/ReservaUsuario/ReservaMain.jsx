@@ -25,20 +25,49 @@ const TableReservationMain = ({ selectedDate, selectedTime, selectedTable, onTab
     }
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedDate || !selectedTime || !selectedTable) {
       alert('Por favor completa todos los campos antes de continuar')
       return
     }
     
     // aqui iria la logica para enviar la reserva al backend. se tiene que conectar con los usuarios tambien
+    
+    // Convierte del formato de JS (ej: Fri Oct 17 2025 00:00:00 GMT-0300) al formato ISO
+    // en formato ISO queda, por ej: 2025-10-17T03:00:00.000Z, entonces se usa split() para
+    // separar y obtener obtener un array con la fecha completa en la posición 0 y lo demás después 
+    // de la "T" en la 1.
+    const fecha = new Date(selectedDate).toISOString().split("T")[0];
+
+    const datosReserva = {
+      fecha: fecha,
+      hora: selectedTime,
+      cantidadPersonas: selectedTable
+    }
+    
+    try {
+      const respuesta = await fetch("/api/reserva/crear", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(datosReserva),
+      });
+
+      const dataRes = await respuesta.json();
+
+      if (dataRes.success) {
+        alert("Reserva exitosa");
+      } else {
+        alert("Error: " + dataRes.message);
+      }
+    } catch (error) {
+      alert("Error de conexión con el servidor");
+    }
     /*console.log('Reservation data:', {
       date: selectedDate,
       time: selectedTime,
       tableCount: selectedTable
     })*/
-    
-    alert('Reserva enviada correctamente')
   }
 
   const canMakeReservation = selectedDate && selectedTime && selectedTable

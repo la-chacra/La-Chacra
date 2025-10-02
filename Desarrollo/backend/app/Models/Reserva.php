@@ -4,15 +4,8 @@ namespace App\Models;
 
 use App\Models\ModeloBase;
 use App\Models\Usuario;
+use App\Models\Enums\EstadoReserva;
 use DateTime;
-
-// Enum para estado de la reserva
-enum EstadoReserva : string {
-    case PENDIENTE = "Pendiente";
-    case CONFIRMADA = "Confirmada";
-    case CANCELADA = "Cancelada";
-    case FINALIZADA = "Finalizada";
-}
 
 class Reserva extends ModeloBase {
 
@@ -20,25 +13,25 @@ class Reserva extends ModeloBase {
     protected static string $pk_bd      = "reserva_id";
     protected static string $tabla_bd   = "reserva";
     protected static array  $columnas_bd = [
-        "id_reserva",
-        "id_usuario",
+        "reserva_id",
+        "usuario_id",
         "fecha_hora",
-        "cantPersonas",
+        "cant_personas",
         "estado",
         "activa"
     ];
 
     // -- Atributos
     private ?int $reserva_id;
-    private ?Usuario $usuario;
+    private int $usuario_id;
     private DateTime $fechaHora;
     private int $cantPersonas;
     private EstadoReserva $estado;
 
     // -- Constructor
-    public function __construct(?Usuario $usuario = null, string $fechaHora, int $cantPersonas, EstadoReserva $estado) {
+    public function __construct(int $usuario_id, string $fechaHora, int $cantPersonas, EstadoReserva $estado) {
         $this->reserva_id = null;
-        $this->usuario = $usuario;
+        $this->usuario_id = $usuario_id;
         $this->fechaHora = new DateTime($fechaHora);
         $this->cantPersonas = $cantPersonas;
         $this->estado = $estado;
@@ -48,8 +41,7 @@ class Reserva extends ModeloBase {
      * Buscar una reserva por ID y devolver un objeto Reserva
      */
     public static function buscarPorId(int $reserva_id): ?Reserva {
-        $modelo = new static(null, date('Y-m-d H:i:s'), 1, EstadoReserva::PENDIENTE);
-        $data = $modelo->encontrarPorID($reserva_id);
+        $data = self::encontrarPorID($reserva_id);
         if (empty($data)) {
             return null;
         }
@@ -64,19 +56,6 @@ class Reserva extends ModeloBase {
     }
 
     /**
-     * Guardar cambios en la BD
-     */
-    public function guardar(): bool {
-        return $this->actualizar([
-            "reserva_id" => $this->reserva_id,
-            "fechaHora" => $this->fechaHora,
-            "cantPersonas" => $this->cantPersonas,
-            "estado" => $this->estado
-        ]);
-    }
-
-   
-    /**
      * Registra una nueva reserva en el sistema.
      *
      * @return bool Retorna true si la reserva se registró exitosamente, false en caso contrario.
@@ -84,10 +63,10 @@ class Reserva extends ModeloBase {
     public function registrarReserva(): bool {
         $resultado = $this->crearRegistro(
             [
-            "id_usuario"   => $this->usuario->getId(),
+            "usuario_id"   => $this->usuario_id,
             "fecha_hora"   => $this->fechaHora->format('Y-m-d H:i:s'),
-            "cantPersonas" => $this->cantPersonas,
-            "estado"       => $this->estado,
+            "cant_personas" => $this->cantPersonas,
+            "estado"       => $this->estado->value,
             ]
         );
 
@@ -106,10 +85,10 @@ class Reserva extends ModeloBase {
     public function actualizarDatos (): bool {
         return $this->actualizar(
             [
-            "id_usuario"   => $this->usuario->getId(),
+            "usuario_id"   => $this->usuario_id,
             "fecha_hora"   => $this->fechaHora->format('Y-m-d H:i:s'),
-            "cantPersonas" => $this->cantPersonas,
-            "estado"       => $this->estado,
+            "cant_personas" => $this->cantPersonas,
+            "estado"       => $this->estado->value,
             ]
         );
     }
@@ -136,12 +115,12 @@ class Reserva extends ModeloBase {
 
 
     // Getter y setter de usuario
-    public function getUsuario() : Usuario {
-        return $this->usuario;
+    public function getUsuario() : int {
+        return $this->usuario_id;
     }
 
-    public function setUsuario($usuario) {
-        $this->usuario = $usuario;
+    public function setUsuario(int $usuario_id) {
+        $this->usuario_id = $usuario_id;
     }
 
     // Getter y setter de estado

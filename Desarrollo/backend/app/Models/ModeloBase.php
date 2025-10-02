@@ -84,7 +84,7 @@ abstract class ModeloBase {
      * @param int $id El identificador único del registro a buscar.
      * @return array El registro encontrado como un arreglo asociativo, o un arreglo vacío si no se encuentra.
      */
-    public  function encontrarPorID(int $id) : array {
+    public static function encontrarPorID(int $id) : array {
         $consulta = "SELECT * FROM " . static::$tabla_bd . " WHERE " . static::$pk_bd . " = :id LIMIT 1";
         return static::$conexion_bd->realizarConsulta($consulta, ["id" => $id]);
     }
@@ -107,7 +107,7 @@ abstract class ModeloBase {
      * @return int El ID del último registro insertado.
      */
     public function encontrarUltimoRegistro() : int {
-        $pdo = self::$conexion_bd->getPDO;
+        $pdo = self::$conexion_bd->getPDO();
         return (int) $pdo->lastInsertId();
     }
 
@@ -116,7 +116,7 @@ abstract class ModeloBase {
      * 
      * @return array Un arreglo asociativo con todos los registros de una tabla_bd.
      */
-    public function traerTodos() : array {
+    public static function traerTodos() : array {
         $consulta = "SELECT * FROM " . static::$tabla_bd;
         return static::$conexion_bd->realizarConsulta($consulta);
     }

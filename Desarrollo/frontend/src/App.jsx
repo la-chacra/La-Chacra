@@ -16,7 +16,7 @@ function App() {
 
   useEffect(() => {
     // Consultar al backend si hay sesión
-    fetch("/api/me", { credentials: "include" })
+    fetch("/api/estadoSesion", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         if (data.authenticated) {
