@@ -27,14 +27,14 @@ $router->get("/", function() {
 // API Usuario
 $router->post("/api/login", [LoginController::class, "login"]);
 $router->post("/api/registro", [RegistroController::class, "registrar"]);
-$router->post("/api/logout", [AuthController::class, "logout"]);
-$router->post("/api/estadoSesion", [AuthController::class, "me"]);
+$router->get("/api/logout", [AuthController::class, "logout"]);
+$router->get("/api/estadoSesion", [AuthController::class, "estadoSesion"]);
 
 // API Reserva
 $router->post("/api/reserva/crear", [ReservaController::class, "registrar"]);
-$router->post("/api/reserva/crear", [ReservaController::class, "actualizar"]);
+$router->post("/api/reserva/actualizar", [ReservaController::class, "actualizar"]);
 $router->post("/api/reserva/cancelar", [ReservaController::class, "cancelar"]);
-$router->post("/api/reserva/gestion/historialReservas", [ReservaController::class, "obtenerRegistros"]);
+$router->get("/api/reserva/gestion/historialReservas", [ReservaController::class, "obtenerRegistros"]);
 
 
 $allowedOrigin = "http://localhost:5173";

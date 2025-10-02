@@ -107,7 +107,7 @@ abstract class ModeloBase {
      * @return int El ID del último registro insertado.
      */
     public function encontrarUltimoRegistro() : int {
-        $pdo = self::$conexion_bd->getPDO;
+        $pdo = self::$conexion_bd->getPDO();
         return (int) $pdo->lastInsertId();
     }
 

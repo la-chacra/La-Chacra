@@ -5,7 +5,7 @@ namespace App\Controllers;
 use DateTime;
 use App\Models\Reserva;
 use App\Models\Usuario;
-use App\Models\EstadoReserva;
+use App\Models\Enums\EstadoReserva;
 
 /**
  * Controlador para gestionar las reservas.
@@ -38,11 +38,12 @@ class ReservaController {
     public function registrar($router): array {
 
         $datos = json_decode(file_get_contents("php://input"), true);
-        $fechaHora = $datos["fechaHora"] ?? "";
+        $fecha = $datos["fecha"] ?? "";
+        $hora = $datos["hora"] ?? "";
         $cantidadPersonas = $datos["cantidadPersonas"] ?? "";
-        $estado = $datos["estado"] ?? "";
+        $estado = EstadoReserva::CONFIRMADA;
 
-        if (empty($fechaHora) || empty($cantidadPersonas) || empty($estado)) {
+        if (empty($fecha) || empty($hora) || empty($cantidadPersonas)) {
             return ["success" => false, "message" => "Faltan datos obligatorios"];
         }
         
@@ -52,16 +53,15 @@ class ReservaController {
             return ["success" => false, "message" => "Error de sesión."];
         }
 
-        if($estado != EstadoReserva::CANCELADA || $estado != EstadoReserva::CONFIRMADA || $estado != EstadoReserva::PENDIENTE || $estado != EstadoReserva::FINALIZADA) {
-            return ["success" => false, "message" => "Error en el estado de reserva."];
-        }
+        // Se agrega ":00" para coincidir con el formato de DATETIME de MySQL
+        $fechaHora = $fecha . " " . $hora . ":00";
 
         // Crear instancia del modelo Reserva
         $reserva = new Reserva(
             $usuario_id,
             $fechaHora,
-            $cantidadPersonas,
-            $estado ?? EstadoReserva::CONFIRMADA,
+            (int)$cantidadPersonas,
+            $estado,
         );
 
         // Registrar en BD
