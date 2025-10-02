@@ -23,7 +23,7 @@ class Reserva extends ModeloBase {
         "id_reserva",
         "id_usuario",
         "fecha_hora",
-        "cantPersonas",
+        "cantidad_personas",
         "estado",
         "activa"
     ];
