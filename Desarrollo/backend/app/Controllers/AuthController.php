@@ -7,7 +7,7 @@ class AuthController {
             return [
                 "authenticated" => true,
                 "usuario" => [
-                    "id" => $_SESSION["usuario_id"],
+                    "usuario_id" => $_SESSION["usuario_id"],
                     "nombre" => $_SESSION["nombre"] ?? null,
                     "tipo" => $_SESSION["tipo"] ?? null
                 ]
