@@ -56,16 +56,48 @@ class ReservaController {
      * @todo @mateoparentini @kehianmartins Funcion de Cancelar reserva.
      */
     public function cancelar($router) :  array {
+        $datos = json_decode(file_get_contents("php://input"), true);
+        $reserva_id = $datos["reserva_id"] ?? null;
 
-        return [];
+        $reserva = Reserva::buscarPorId($reserva_id);
+        if (!$reserva) {
+            return ["success" => false, "message" => "Reserva no encontrada."];
+        }
+
+        $reserva->setEstado(EstadoReserva::CANCELADA);
+        $resultado = $reserva->actualizarDatos();
+
+        return $resultado
+            ? ["success" => true, "message" => "Reserva cancelada correctamente."]
+            : ["success" => false, "message" => "No se pudo cancelar la reserva."];
     }
-
     /**
      * @todo @mateoparentini @kehianmartins Funcion de Actualizar reserva.
      */
     public function actualizar($router) :  array {
+        $datos = json_decode(file_get_contents("php://input"), true);
+        $reserva_id = $datos["reserva_id"] ?? null;
+        $fechaHora = $datos["fechaHora"] ?? null;
+        $cantidadPersonas = $datos["cantidadPersonas"] ?? null;
+        $estado = $datos["estado"] ?? null;
 
-        return [];
+        if (empty($reserva_id) || empty($fechaHora) || empty($cantidadPersonas) || empty($estado)) {
+            return ["success" => false, "message" => "Faltan datos obligatorios para actualizar la reserva."];
+        }
+
+        $reserva = Reserva::buscarPorId($reserva_id);
+        if (!$reserva) {
+            return ["success" => false, "message" => "Reserva no encontrada."];
+        }
+
+        $reserva->setFechaHora($fechaHora);
+        $reserva->setCantPersonas((int)$cantidadPersonas);
+        $reserva->setEstado($estado);
+        $resultado = $reserva->actualizarDatos();
+
+        return $resultado
+            ? ["success" => true, "message" => "Reserva actualizada correctamente."]
+            : ["success" => false, "message" => "No se pudo actualizar la reserva."];
     }
 
 }

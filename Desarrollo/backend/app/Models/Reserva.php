@@ -44,6 +44,37 @@ class Reserva extends ModeloBase {
         $this->estado = $estado;
     }
 
+    /**
+     * Buscar una reserva por ID y devolver un objeto Reserva
+     */
+    public static function buscarPorId(int $reserva_id): ?Reserva {
+        $modelo = new static(null, date('Y-m-d H:i:s'), 1, EstadoReserva::PENDIENTE);
+        $data = $modelo->encontrarPorID($reserva_id);
+        if (empty($data)) {
+            return null;
+        }
+        $reserva = new Reserva(
+            $data[0]["usuario_id"] ?? null,
+            $data[0]["fechaHora"] ?? null,
+            $data[0]["cantPersonas"] ?? null,
+            $data[0]["estado"] ?? null
+        );
+        $reserva->reserva_id = $data[0]["reserva_id"];
+        return $reserva;
+    }
+
+    /**
+     * Guardar cambios en la BD
+     */
+    public function guardar(): bool {
+        return $this->actualizar([
+            "reserva_id" => $this->reserva_id,
+            "fechaHora" => $this->fechaHora,
+            "cantPersonas" => $this->cantPersonas,
+            "estado" => $this->estado
+        ]);
+    }
+
    
     /**
      * Registra una nueva reserva en el sistema.
