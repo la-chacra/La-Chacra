@@ -28,9 +28,9 @@ class RegistroController {
             $fechaNacimiento ?? date("Y-m-d"),
         );
 
-        if($usuario->esExistente()) {
-            return ["success" => false, "message" => "El usuario ya está registrado"];
-        }
+        // if($usuario->esExistente()) {
+        //     return ["success" => false, "message" => "El usuario ya está registrado"];
+        // }
 
         // Registrar en BD
         $resultado = $usuario->registrarUsuario();
