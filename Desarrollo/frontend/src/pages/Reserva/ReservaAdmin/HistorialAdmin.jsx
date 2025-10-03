@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import logo from "../../../assets/logo2.png";
+import AdminHeader from "../../../components/HeaderAdmin";
 
 export default function HistorialRes() {
   const [filter, setFilter] = useState("Todos");
@@ -39,32 +40,7 @@ export default function HistorialRes() {
 
   return (
     <div className="min-h-screen bg-yellow-100">
-      {/* Navbar */}
-      <nav className="flex items-center justify-between bg-black text-white px-6 py-3">
-        <div className="flex items-center gap-8">
-          {/* LOGO */}
-          <a href="/" className="flex items-center">
-            <img
-              src="/logo2.png"
-              alt="La Chacra"
-              className="h-10 w-auto"
-            />
-          </a>
-
-          {/* Menu */}
-          <div className="flex gap-2">
-             <button className="px-3 py-2 rounded-md hover:bg-green-700 transition-colors duration-200">📦 Inventario</button>
-            <button className="px-3 py-2 rounded-md hover:bg-green-700 transition-colors duration-200">👥 Empleados</button>
-            <button className="px-3 py-2 rounded-md hover:bg-green-700 transition-colors duration-200">📊 Estadísticas</button>
-            <button className="px-3 py-2 rounded-md bg-green-700 font-semibold">📋 Reservas</button>
-            <button className="px-3 py-2 rounded-md hover:bg-green-700 transition-colors duration-200">🍽️ Comanda</button>
-          </div>
-        </div>
-
-        <button className="px-3 py-2 rounded-md hover:bg-green-700 transition font-semibold">
-          ⚙️ GESTIÓN
-        </button>
-      </nav>
+      <AdminHeader />
 
       {/* Panel principal */}
       <div className="max-w-7xl mx-auto mt-6 p-6">
