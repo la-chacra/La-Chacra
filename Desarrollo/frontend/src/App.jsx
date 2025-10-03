@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Inicio from "./pages/Inicio/Inicio";
 import Carta from './pages/Carta/Carta';
-import Reserva from './pages/ReservaUsuario/Reserva';
+import Reserva from './pages/Reserva/ReservaUsuario/Reserva';
 import Login from './pages/LoginRegistro/Login';
-import HistorialRes from './pages/Reserva/HistorialRes';
-import Test from './pages/Admin/test';
+import HistorialRes from './pages/Reserva/ReservaAdmin/HistorialAdmin';
+import Test from './pages/Admin/Test';
 
 // (cuando agreguen más páginas, las importas acá)
 
@@ -47,7 +47,7 @@ function App() {
         <Route path="/" element={<Inicio/>}/>
         <Route path="/carta" element={<Carta/>}/>
         <Route path="/login" element={<Login/>}/>
-        <Route path="/admin/reserva" element={<HistorialRes/>}/>
+        <Route path="/gestion/reserva" element={<HistorialRes/>}/>
         <Route path="/reserva" element={<Reserva/>}/>
         <Route path="/test" element={<Test/>}/>
         {/* Ejemplo de otras rutas futuras */}

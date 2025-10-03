@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import logo from "../../assets/logo2.png";
+import logo from "../../../assets/logo2.png";
 
 export default function HistorialRes() {
   const [filter, setFilter] = useState("Todos");

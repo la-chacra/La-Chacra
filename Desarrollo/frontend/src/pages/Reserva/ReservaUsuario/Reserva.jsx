@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import Header from "../../components/Header"
-import Footer from "../../components/Footer"
-import DateSelector from '../../components/DatePicker'
-import TimeSelector from '../../components/TimePicker'
+import Header from "../../../components/Header"
+import Footer from "../../../components/Footer"
+import DateSelector from '../../../components/DatePicker'
+import TimeSelector from '../../../components/TimePicker'
 import TableReservationMain from './ReservaMain'
 
 const ReservaMesas = () => {
