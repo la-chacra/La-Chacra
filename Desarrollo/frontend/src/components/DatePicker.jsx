@@ -11,7 +11,7 @@ const DateSelector = ({ selectedDate, onDateChange }) => {
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
   ]
 
-  const weekDays = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+  const weekDays = ['D', 'L', 'M', 'W', 'J', 'V', 'S']
 
   useEffect(() => {
     generateCalendar()
