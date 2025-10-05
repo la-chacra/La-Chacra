@@ -33,7 +33,7 @@ class RecuperarController {
         file_put_contents($this->archivoCodigos, json_encode($data));
     }
 
-    //Enviar código al correo
+    
     /**
      * Envía un código de recuperación al usuario.
      *
@@ -101,7 +101,6 @@ class RecuperarController {
         }
     }
 
-    // Verificar código y actualizar contraseña
     /**
      * Cambia la contraseña de un usuario.
      *
