@@ -9,6 +9,7 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 use Router\Router;
 use Config\Database;
 use App\Models\ModeloBase;
+use App\Services\AuthMiddleware;
 use App\Controllers\ReservaController;
 use App\Controllers\LoginController;
 use App\Controllers\RegistroController;
@@ -48,4 +49,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-$router->despachar();
+AuthMiddleware::verificarSesion();
+AuthMiddleware::verificarPermisos();
+
+try {
+    $router->despachar();
+} catch (Throwable $e) {
+    http_response_code(500);
+    echo json_encode([
+        "error" => "Error interno del servidor."
+        // para debug: "detalle" => $e->getMessage()
+    ]);
+}
