@@ -14,6 +14,8 @@ use App\Controllers\ReservaController;
 use App\Controllers\LoginController;
 use App\Controllers\RegistroController;
 use App\Controllers\AuthController;
+use App\Controllers\ComandaController;
+use App\Controllers\RecuperarController;
 
 $db = new Database();
 ModeloBase::setDB($db);
@@ -36,6 +38,14 @@ $router->post("/api/reserva/crear", [ReservaController::class, "registrar"]);
 $router->post("/api/reserva/actualizar", [ReservaController::class, "actualizar"]);
 $router->post("/api/reserva/cancelar", [ReservaController::class, "cancelar"]);
 $router->get("/api/reserva/gestion/historialReservas", [ReservaController::class, "obtenerRegistros"]);
+
+//API Comanda
+$router->post("/api/comanda/crear", [ComandaController::class, "crear"]);
+$router->post("/api/comanda/actualizar/(:num)", [ComandaController::class, "actualizar"]);
+
+//API Recuperar Contraseña
+$router->post("/api/recuperar/enviarCodigo", [RecuperarController::class, "enviarCodigo"]);
+$router->post("/api/recuperar/cambiarPassword", [RecuperarController::class, "cambiarPassword"]);   
 
 
 $allowedOrigin = "http://localhost:5173";

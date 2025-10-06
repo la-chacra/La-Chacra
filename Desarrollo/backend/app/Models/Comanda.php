@@ -21,60 +21,48 @@ enum Estado: string {
 
 class Comanda extends ModeloBase {
 
-    // Configuración de la tabla
     protected static string $pk_bd = "comanda_id";
     protected static string $tabla_bd = "comanda";
-    // @todo arreglar columnas
-    protected static array $columnas_bd = ["comanda_id", "n_mesa", "estado", "nota", "fecha"];
+    protected static array $columnas_bd = ["comanda_id", "n_mesa", "numPersonas", "estado", "nota", "fecha"];
 
-    
-
-    // Atributos de la clase
     private ?int $comanda_id = null;
-    private int $n_mesa; 
+    private int $n_mesa;
+    private int $numPersonas; // Se necesita ya que este atributo se comunica con el frintend
     private Estado $estado;
-    private string $nota; 
+    private string $nota;
     private DateTime $fecha;
 
     public function __construct(array $datos = []) {
-        $this->comanda_id = $datos["comanda_id"] ?? null;
-        $this->n_mesa     = $datos["n_mesa"] ?? 0;
-        $this->estado     = isset($datos["estado"]) ? Estado::from($datos["estado"]) : Estado::EnProceso;
-        $this->nota       = $datos["nota"] ?? "";
-        $this->fecha      = isset($datos["fecha"]) ? new DateTime($datos["fecha"]) : new DateTime();
+        $this->comanda_id  = $datos["comanda_id"] ?? null;
+        $this->n_mesa      = $datos["n_mesa"] ?? 0;
+        $this->numPersonas  = $datos["numPersonas"] ?? 1; // por defecto 1 persona
+        $this->estado      = isset($datos["estado"]) ? Estado::from($datos["estado"]) : Estado::EnProceso;
+        $this->nota        = $datos["nota"] ?? "";
+        $this->fecha       = isset($datos["fecha"]) ? new DateTime($datos["fecha"]) : new DateTime();
     }
 
-    
-    /**
-     * Registra una nueva comanda en el sistema.
-     *
-     * @return bool Retorna true si la comanda se registró correctamente, false en caso contrario.
-     */
     public function registrarComanda(): bool {
         return $this->crearRegistro([
-            "comanda_id" => $this->comanda_id,
-            "n_mesa"     => $this->n_mesa,
-            "estado"     => $this->estado->value,
-            "nota"       => $this->nota,
-            "fecha"      => $this->fecha->format("Y-m-d H:i:s")
+            "comanda_id"   => $this->comanda_id,
+            "n_mesa"       => $this->n_mesa,
+            "numPersonas"   => $this->numPersonas,
+            "estado"       => $this->estado->value,
+            "nota"         => $this->nota,
+            "fecha"        => $this->fecha->format("Y-m-d H:i:s")
         ]);
     }
 
-    
-    /**
-     * Modifies the current Comanda instance.
-     *
-     * @return bool Returns true if the modification was successful, false otherwise.
-     */
     public function modificarComanda(): bool {
         return $this->actualizar([
-            "comanda_id" => $this->comanda_id,
-            "n_mesa"     => $this->n_mesa,
-            "estado"     => $this->estado->value,
-            "nota"       => $this->nota,
-            "fecha"      => $this->fecha->format("Y-m-d H:i:s")
+            "comanda_id"   => $this->comanda_id,
+            "n_mesa"       => $this->n_mesa,
+            "numPersonas"   => $this->numPersonas,
+            "estado"       => $this->estado->value,
+            "nota"         => $this->nota,
+            "fecha"        => $this->fecha->format("Y-m-d H:i:s")
         ]);
     }
+
 
     
     /**
@@ -192,6 +180,26 @@ class Comanda extends ModeloBase {
     public function setFecha($fecha)
     {
         $this->fecha = $fecha;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of numPersonas
+     */ 
+    public function getnumPersonas()
+    {
+        return $this->numPersonas;
+    }
+
+    /**
+     * Set the value of numPersonas
+     *
+     * @return  self
+     */ 
+    public function setnumPersonas($numPersonas)
+    {
+        $this->numPersonas = $numPersonas;
 
         return $this;
     }
