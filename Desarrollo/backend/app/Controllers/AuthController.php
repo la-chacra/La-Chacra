@@ -13,9 +13,10 @@ class AuthController {
                 ]
             ];
         } else {
-            return [
-                "authenticated" => false
-            ];
+            http_response_code(401); // 401: unauthorized
+            header("Content-Type: application/json; charset=utf-8");
+            echo json_encode(["success" => false, "message" => "Sesión no iniciada."]);
+            exit;
         }
     }
 
