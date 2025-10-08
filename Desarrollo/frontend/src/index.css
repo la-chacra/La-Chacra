@@ -1445,3 +1445,299 @@ input {
 .gestion-text {
   letter-spacing: 1px;
 }
+
+/*COMANDA*/
+.om-order-management {
+  min-height: 100vh;
+  background-color: #1D1D1B;
+}
+
+.om-content {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.om-header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.om-export-button,
+.om-back-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #ffffff;
+  border: solid;
+  border-color: #A7A7B7;
+  border-width: 2px;
+  padding: 12px 20px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  color: #333;
+}
+
+.om-export-button:hover,
+.om-back-button:hover {
+  background-color: rgb(231, 231, 231);
+}
+
+.om-main-content {
+  display: flex;
+  gap: 20px;
+}
+
+.om-left-section {
+  flex: 1;
+  background-color: #E6E6F1;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.om-right-section {
+  width: 300px;
+}
+
+.om-mesa-section h3,
+.om-cdp-section h3,
+.om-articulos-section h3,
+.om-nota-section h3,
+.om-estado-section h3 {
+  margin: 0 0 15px 0;
+  font-size: 18px;
+  color: #333;
+  font-weight: 600;
+}
+
+.om-cdp-input,
+.om-search-input,
+.om-nota-textarea,
+.om-status-dropdown,
+.om-mesa-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #000;
+  background-color: white;
+}
+
+.om-status-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+}
+
+.om-nota-textarea {
+  min-height: 100px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.om-cdp-input:focus,
+.om-search-input:focus,
+.om-nota-textarea:focus,
+.om-mesa-input:focus {
+  outline: none;
+  border-color: #509ff3;
+}
+
+.om-search-container {
+  position: relative;
+}
+
+.om-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-100%);
+  color: #666;
+}
+
+.om-search-input {
+  padding: 12px 12px 12px 40px;
+}
+
+.om-available-items,
+.om-selected-items {
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: #0000000a;
+}
+
+.om-item-row,
+.om-selected-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background-color: white;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.om-item-row:hover {
+  background-color: #ebebeb;
+}
+
+.om-selected-item {
+  background-color: #fff7ac;
+  border-radius: 2px;
+}
+
+.om-item-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.om-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.om-item-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.om-item-price {
+  color: #666;
+  font-size: 14px;
+}
+
+.om-remove-item {
+  background: none;
+  border: none;
+  color: #dc3545;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.om-remove-item:hover {
+  color: #83040f;
+}
+
+.om-character-count {
+  text-align: right;
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+}
+
+.om-status-icon {
+  font-size: 16px;
+}
+
+.om-status-icon.om-blue {
+  color: #146fd1;
+}
+
+.om-status-icon.om-green {
+  color: #28a745;
+}
+
+.om-status-icon.om-red {
+  color: #dc3545;
+}
+
+.om-status-select {
+  flex: 1;
+  border: none;
+  background: none;
+  font-size: 14px;
+  color: #222222;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.om-status-select:focus {
+  outline: none;
+}
+
+.om-total-section {
+  background-color: #2C4A52;
+  color: white;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.om-total-section h3 {
+  margin: 0 0 15px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.om-total-amount {
+  font-size: 16px;
+  margin-bottom: 30px;
+  opacity: 0.9;
+}
+
+.om-action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.om-save-button,
+.om-save-print-button {
+  padding: 15px 20px;
+  border: none;
+  border-radius: 2px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.om-save-button {
+  background-color: #00000060;
+  color: #ffffff;
+}
+
+.om-save-button:hover {
+  background-color: #000000c9;
+}
+
+.om-save-print-button {
+  background-color: #ffffffb2;
+  color: rgb(0, 0, 0);
+}
+
+.om-save-print-button:hover {
+  background-color: #ffffffe3;
+}
+
+/* COMANDA RESPONSIVE */
+@media (max-width: 768px) {
+  .om-main-content {
+    flex-direction: column;
+  }
+  
+  .om-right-section {
+    width: 100%;
+  }
+  
+  .om-header-actions {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+  
+  .om-content {
+    padding: 15px;
+  }
+}
