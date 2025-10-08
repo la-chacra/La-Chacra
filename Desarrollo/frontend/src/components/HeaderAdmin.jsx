@@ -32,10 +32,10 @@ const AdminHeader = () => {
         <NavLink to="/admin/stock" className="admin-nav-link">
           <FontAwesomeIcon icon={faBoxesStacked} className="admin-nav-icon" /> Stock
         </NavLink>
-        <NavLink to="/admin/reservas" className="admin-nav-link">
+        <NavLink to="/gestion/reserva" className="admin-nav-link">
           <FontAwesomeIcon icon={faCalendarCheck} className="admin-nav-icon" /> Reservas
         </NavLink>
-        <NavLink to="/admin/comanda" className="admin-nav-link">
+        <NavLink to="/gestion/comanda" className="admin-nav-link">
           <FontAwesomeIcon icon={faConciergeBell} className="admin-nav-icon" /> Comanda
         </NavLink>
         <NavLink to="/admin/empleados" className="admin-nav-link">
