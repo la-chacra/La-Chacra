@@ -18,7 +18,7 @@ export default function ComandaPage() {
       status: i === 0 ? "Pendiente" : "Hecho",
       price: (Math.random() * 500 + 100).toFixed(2),
       table: Math.floor(Math.random() * 10) + 1,
-      date: "Hoy, 15:00" + i,
+      date: "Hoy, 15:0" + i,
       checked: false,
     }))
   );
