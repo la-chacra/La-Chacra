@@ -6,7 +6,7 @@ use App\Models\ModeloBase;
 use App\Services\ContrasenaService;
 use DateTime;
 
-class Usuario extends ModeloBase {
+abstract class Usuario extends ModeloBase {
 
     // -- Atributos para Base de Datos
     protected static string $pk_bd = "usuario_id";
@@ -104,6 +104,8 @@ class Usuario extends ModeloBase {
 
     /**
      * Verficar si existe un usuario en la base de datos
+     * 
+     * fix
      * 
      * @return true|false Si el usuario existe o no
      */

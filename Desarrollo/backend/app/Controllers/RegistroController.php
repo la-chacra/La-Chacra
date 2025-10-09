@@ -20,14 +20,15 @@ class RegistroController {
         }
 
         // Crear instancia del modelo Cliente (Default)
-        $usuario = new Cliente(
+        $usuario = new Cliente (
             $nombre,
             $apellido,
             $correo,
             $contrasena,
-            $fechaNacimiento ?? date("Y-m-d"),
+            $fechaNacimiento,
         );
 
+        // fix: da error
         // if($usuario->esExistente()) {
         //     return ["success" => false, "message" => "El usuario ya está registrado"];
         // }
