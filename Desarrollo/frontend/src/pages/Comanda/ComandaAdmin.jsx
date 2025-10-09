@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import AdminHeader from "../../components/HeaderAdmin";
-import { FaClock, FaCheck, FaTrash, FaPlus, FaDownload, FaSearch } from "react-icons/fa";
+import { FaClock, FaCheck, FaTrash, FaPlus, FaDownload } from "react-icons/fa";
 
 export default function ComandaPage() {
   const [orders, setOrders] = useState(
@@ -9,7 +9,8 @@ export default function ComandaPage() {
       status: i === 0 ? "Pendiente" : "Hecho",
       price: (Math.random() * 500 + 100).toFixed(2),
       table: Math.floor(Math.random() * 10) + 1,
-      date: "Hoy, 15:0" + i,
+      people: Math.floor(Math.random() * 5) + 1,
+      date: `2025-10-${(i + 1).toString().padStart(2, "0")}`,
       checked: false,
       items: [
         { name: "Producto A", quantity: 2 },
@@ -19,8 +20,10 @@ export default function ComandaPage() {
   );
 
   const [selectAll, setSelectAll] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [dateFilter, setDateFilter] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
   const [openOrderId, setOpenOrderId] = useState(null);
 
   const handleCheck = (id) => {
@@ -51,64 +54,79 @@ export default function ComandaPage() {
     0
   );
 
-  const filteredOrders = orders.filter(
-    (o) =>
-      (o.table.toString().includes(searchTerm) ||
-        o.status.toLowerCase().includes(searchTerm.toLowerCase())) &&
-      (statusFilter === "" || o.status === statusFilter)
-  );
+  const filteredOrders = orders.filter((o) => {
+    const withinStatus = statusFilter === "" || o.status === statusFilter;
+    const withinDate = dateFilter === "" || o.date === dateFilter;
+    const withinMin = minPrice === "" || Number(o.price) >= Number(minPrice);
+    const withinMax = maxPrice === "" || Number(o.price) <= Number(maxPrice);
+    return withinStatus && withinDate && withinMin && withinMax;
+  });
 
   const toggleItems = (id) => {
     setOpenOrderId(openOrderId === id ? null : id);
   };
 
   return (
-    <div className="om-order-management font-overlock">
+    <div className="om-order-management font-overlock bg-yellow-50 min-h-screen">
       <AdminHeader />
 
-      <div className="om-content">
-        {/* Barra de búsqueda y botones */}
-        {/* Filtro por fecha y precio, agregar tabla para cantidad de personas */}
-        <div className="om-header-actions mb-6 flex flex-wrap gap-3">
-          <div className="flex gap-2 flex-wrap flex-1">
-            <div className="relative flex-1">
-              <input
-                type="text"
-                placeholder="Buscar pedido..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="om-search-input pl-10"
-              />
-            </div>
-
+      <div className="max-w-6xl mx-auto p-6 space-y-6">
+        {/* FILTROS + BOTONES */}
+        <div className="bg-gray-100 border border-gray-300 rounded-lg shadow-sm p-4 flex flex-wrap justify-between items-center gap-4">
+          {/* Filtros */}
+          <div className="flex flex-wrap items-center gap-3">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="om-status-dropdown"
+              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
             >
               <option value="">Todos los estados</option>
               <option value="Pendiente">Pendiente</option>
               <option value="Hecho">Hecho</option>
             </select>
+
+            <input
+              type="date"
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+
+            <input
+              type="number"
+              placeholder="Precio mínimo"
+              value={minPrice}
+              onChange={(e) => setMinPrice(e.target.value)}
+              className="border border-gray-300 rounded-md px-3 py-2 w-36 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+
+            <input
+              type="number"
+              placeholder="Precio máximo"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+              className="border border-gray-300 rounded-md px-3 py-2 w-36 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
           </div>
 
+          {/* Botones */}
           <div className="flex gap-3 flex-wrap">
             <button
               onClick={() => alert("🆕 Añadir nuevo pedido...")}
-              className="om-export-button flex items-center gap-2"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md flex items-center gap-2 shadow"
             >
               Añadir <FaPlus />
             </button>
             <button
-              onClick={() => alert("⬇️ Exportando pedidos a CSV...")}
-              className="om-export-button flex items-center gap-2"
+              onClick={() => alert("⬇️ Exportando pedidos...")}
+              className="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-md flex items-center gap-2 shadow"
             >
               Exportar <FaDownload />
             </button>
           </div>
         </div>
 
-        {/* Tabla de pedidos */}
+        {/* TABLA */}
         <div className="overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
           <table className="w-full text-sm text-center border-collapse">
             <thead className="bg-gray-100">
@@ -125,6 +143,7 @@ export default function ComandaPage() {
                 <th className="px-3 py-2">Artículos</th>
                 <th className="px-3 py-2">Precio</th>
                 <th className="px-3 py-2">Mesa</th>
+                <th className="px-3 py-2">Personas</th>
                 <th className="px-3 py-2">Fecha</th>
                 <th className="px-3 py-2">Acciones</th>
               </tr>
@@ -147,9 +166,9 @@ export default function ComandaPage() {
                     </td>
                     <td className="px-3 py-2">
                       {order.status === "Pendiente" ? (
-                        <FaClock className="om-status-icon om-blue mx-auto" />
+                        <FaClock className="text-yellow-500 mx-auto" />
                       ) : (
-                        <FaCheck className="om-status-icon om-green mx-auto" />
+                        <FaCheck className="text-green-600 mx-auto" />
                       )}
                     </td>
                     <td
@@ -160,6 +179,7 @@ export default function ComandaPage() {
                     </td>
                     <td className="px-3 py-2">${order.price}</td>
                     <td className="px-3 py-2">{order.table}</td>
+                    <td className="px-3 py-2">{order.people}</td>
                     <td className="px-3 py-2">{order.date}</td>
                     <td className="px-3 py-2 flex justify-center gap-3">
                       <button onClick={() => handleDelete(order.id)}>
@@ -171,7 +191,7 @@ export default function ComandaPage() {
                   {/* Mostrar artículos */}
                   {openOrderId === order.id && (
                     <tr className="bg-gray-100">
-                      <td colSpan={7} className="px-3 py-2 text-left">
+                      <td colSpan={8} className="px-3 py-2 text-left">
                         <ul className="list-disc pl-6">
                           {order.items.map((item, idx) => (
                             <li key={idx}>
