@@ -2,9 +2,10 @@
 
 namespace App\Controllers;
 
-use App\Models\Comanda;
-use App\Models\Estado;
 use DateTime;
+use App\Models\Comanda;
+use App\Models\Enums\EstadoComanda;
+use App\Services\ControllerService;
 
 class ComandaController {
 
@@ -15,38 +16,59 @@ class ComandaController {
      * @return void
      */
     public function crear($router) {
-    $datos = json_decode(file_get_contents("php://input"), true);
+        $datos = json_decode(file_get_contents("php://input"), true);
+        date_default_timezone_set("America/Montevideo");
 
-    $comanda = new Comanda([
-        "n_mesa"      => $datos["n_mesa"] ?? 0,
-        "n_personas"  => $datos["n_personas"] ?? 1, 
-        "estado"      => $datos["estado"] ?? Estado::EnProceso->value,
-        "nota"        => $datos["nota"] ?? ""
-    ]);
+        $nMesa = $datos["nMesa"] ?? 0;
+        $numPersonas = $datos["numPersonas"] ?? 1;
+        $estado = $datos["estado"] ?? EstadoComanda::EnProceso->value;
+        $nota = $datos["nota"] ?? "";
+        $fecha = date("Y-m-d H:i:s");
 
-    $resultado = $comanda->registrarComanda();
+        $comanda = new Comanda(
+            $nMesa,
+            $numPersonas,
+            $estado,
+            $nota,
+            $fecha
+        );
 
-    echo json_encode([
-        "mensaje" => $resultado ? "Comanda creada correctamente" : "Error al crear comanda"
-    ]);
-}
+        $resultado = ControllerService::handlerErrorConexion(fn() => $comanda->registrarComanda());
 
-/**
- * Actualiza una comanda existente según el ID, y si tiene tiempo.
- *
- * @param Router $router Instancia del router para manejar la solicitud y respuesta.
- * @param int $id Identificador único de la comanda a actualizar.
- * @return void
- */
-public function actualizar($router, $comanda_id) {
-    $datos = json_decode(file_get_contents("php://input"), true);
+        return $resultado 
+            ? [
+                "success" => true, 
+                "mensaje" => "Comanda creada correctamente", 
+                "data" => [
+                    "comanda_id" => $comanda->getComandaId()
+                ]
+              ]
+            : ["success" => false, "message" => "Error al crear comanda"];
+    }
 
-    $comandaExistente = Comanda::encontrarPorID($comanda_id);
-    if (!$comandaExistente) {
+    /**
+     * Actualiza una comanda existente según el ID, y si tiene tiempo.
+     *
+     * @param Router $router Instancia del router para manejar la solicitud y respuesta.
+     * @return void
+     */
+    public function actualizar($router) {
+        $datos = json_decode(file_get_contents("php://input"), true);
+
+        $comanda_id = $datos["comanda_id"];
+
+        $comandaExistente = Comanda::encontrarPorID($comanda_id);
+
+        if (!$comandaExistente) {
             http_response_code(404);
-            echo json_encode(["error" => "Comanda no encontrada"]);
-            return;
+            return ["success" => false, "message" => "Comanda no encontrada"];
         }
+
+        $nMesa = $datos["nMesa"] ?? $comandaExistente["n_mesa"];
+        $numPersonas = $datos["numPersonas"] ?? $comandaExistente["numPersonas"];
+        $estado = $datos["estado"] ?? $comandaExistente["estado"];
+        $nota = $datos["nota"] ?? $comandaExistente["nota"];
+        $fecha = date("Y-m-d H:i:s");
 
         $fechaCreacion = new DateTime($comandaExistente["fecha"]);
         $ahora = new DateTime();
@@ -54,24 +76,24 @@ public function actualizar($router, $comanda_id) {
 
         if ($diferencia > 300) { // 300s = 5m
             http_response_code(403);
-            echo json_encode(["error" => "Pasaron mas de 5m"]);
-            return;
+            return ["success" => false, "message" => "Pasaron mas de 5m"];
         }
 
-    $comanda = new Comanda([
-        "comanda_id"   => $comanda_id,
-        "n_mesa"       => $datos["n_mesa"] ?? $comandaExistente["n_mesa"],
-        "n_personas"   => $datos["n_personas"] ?? $comandaExistente["n_personas"], 
-        "estado"       => $datos["estado"] ?? $comandaExistente["estado"],
-        "nota"         => $datos["nota"] ?? $comandaExistente["nota"],
-        "fecha"        => $comandaExistente["fecha"]
-    ]);
+        $comanda = new Comanda(
+            $nMesa,
+            $numPersonas,
+            $estado,
+            $nota,
+            $fecha
+        );
 
-    $resultado = $comanda->modificarComanda();
+        $comanda->setComandaId($comanda_id);
 
-    echo json_encode([
-        "mensaje" => $resultado ? "Comanda actualizada correctamente" : "Error al actualizar comanda"
-    ]);
-}
+        $resultado = ControllerService::handlerErrorConexion(fn() => $comanda->modificarComanda());
+
+        return $resultado
+            ? ["success" => false, "message" => "Comanda actualizada correctamente"]
+            : ["success" => false, "message" => "Error al actualizar comanda"];
+    }
 
 }

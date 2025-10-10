@@ -6,7 +6,7 @@ use App\Models\Cliente;
 use App\Services\ContrasenaService;
 
 class LoginController {
-        public function login($router): array {
+        public function login($router) : array {
         
         $datos = json_decode(file_get_contents("php://input"), true);
         $correo = $datos["correo"] ?? "";
@@ -34,7 +34,6 @@ class LoginController {
                 "success" => true,
                 "message" => "Login correcto",
                 "usuario"    => [
-                    "usuario_id" => $usuario["usuario_id"],
                     "nombre"     => $usuario["nombre"],
                     "apellido"   => $usuario["apellido"],
                     "correo"     => $usuario["correo"],
