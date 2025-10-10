@@ -71,8 +71,8 @@ export default function ComandaPage() {
       <AdminHeader />
 
       <div className="max-w-6xl mx-auto p-6 space-y-6">
-        {/* FILTROS + BOTONES */}
-        <div className="bg-gray-100 border border-gray-300 rounded-lg shadow-sm p-4 flex flex-wrap justify-between items-center gap-4">
+        {/* FILTROS + BOTONES (alineados en una sola fila) */}
+        <div className="bg-gray-100 border border-gray-300 rounded-lg shadow-sm p-4 flex flex-wrap justify-between items-center gap-3">
           {/* Filtros */}
           <div className="flex flex-wrap items-center gap-3">
             <select
@@ -110,7 +110,7 @@ export default function ComandaPage() {
           </div>
 
           {/* Botones */}
-          <div className="flex gap-3 flex-wrap">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => alert("🆕 Añadir nuevo pedido...")}
               className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md flex items-center gap-2 shadow"
@@ -221,3 +221,4 @@ export default function ComandaPage() {
     </div>
   );
 }
+ 
