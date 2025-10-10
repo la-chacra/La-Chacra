@@ -8,6 +8,7 @@ import Login from './pages/LoginRegistro/Login';
 import HistorialRes from './pages/Reserva/ReservaAdmin/HistorialAdmin';
 import Comanda from './pages/Comanda/Comanda';
 import Test from './pages/Admin/Test';
+import ComandaPage from './pages/Comanda/ComandaAdmin';
 
 // (cuando agreguen más páginas, las importas acá)
 
@@ -52,6 +53,7 @@ function App() {
         <Route path="/reserva" element={<Reserva/>}/>
         <Route path="/test" element={<Test/>}/>
         <Route path="/gestion/comanda" element={<Comanda/>}/>
+        <Route path="/admin/comanda" element={<ComandaPage/>}/>
         {/* Ejemplo de otras rutas futuras */}
         {/* <Route path="/carta" element={<Carta />} /> */}
         {/* <Route path="/contacto" element={<Contacto />} /> */}
