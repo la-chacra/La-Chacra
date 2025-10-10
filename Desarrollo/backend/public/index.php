@@ -40,8 +40,8 @@ $router->post("/api/reserva/cancelar", [ReservaController::class, "cancelar"]);
 $router->get("/api/reserva/gestion/historialReservas", [ReservaController::class, "obtenerRegistros"]);
 
 //API Comanda
-$router->post("/api/comanda/crear", [ComandaController::class, "crear"]);
-$router->post("/api/comanda/actualizar", [ComandaController::class, "actualizar"]);
+$router->post("/api/gestion/comanda/crear", [ComandaController::class, "crear"]);
+$router->post("/api/gestion/comanda/actualizar", [ComandaController::class, "actualizar"]);
 
 //API Recuperar Contraseña
 $router->post("/api/recuperar/enviarCodigo", [RecuperarController::class, "enviarCodigo"]);
@@ -67,7 +67,7 @@ try {
 } catch (Throwable $e) {
     http_response_code(500);
     echo json_encode([
-        "error" => "Error interno del servidor."
-        // para debug: "detalle" => $e->getMessage()
+        "error" => "Error interno del servidor.",
+        "detalle" => $e->getMessage()
     ]);
 }

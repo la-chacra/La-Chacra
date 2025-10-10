@@ -21,9 +21,11 @@ class ComandaController {
 
         $nMesa = $datos["nMesa"] ?? 0;
         $numPersonas = $datos["numPersonas"] ?? 1;
-        $estado = $datos["estado"] ?? EstadoComanda::EnProceso->value;
+        $estadoString = $datos["estado"];
         $nota = $datos["nota"] ?? "";
         $fecha = date("Y-m-d H:i:s");
+
+        $estado = EstadoComanda::tryFrom($estadoString) ?? EstadoComanda::REALIZADA;
 
         $comanda = new Comanda(
             $nMesa,
@@ -66,9 +68,11 @@ class ComandaController {
 
         $nMesa = $datos["nMesa"] ?? $comandaExistente["n_mesa"];
         $numPersonas = $datos["numPersonas"] ?? $comandaExistente["numPersonas"];
-        $estado = $datos["estado"] ?? $comandaExistente["estado"];
+        $estadoString = $datos["estado"] ?? $comandaExistente["estado"];
         $nota = $datos["nota"] ?? $comandaExistente["nota"];
         $fecha = date("Y-m-d H:i:s");
+
+        $estado = EstadoComanda::tryFrom($estadoString) ?? EstadoComanda::REALIZADA;
 
         $fechaCreacion = new DateTime($comandaExistente["fecha"]);
         $ahora = new DateTime();
