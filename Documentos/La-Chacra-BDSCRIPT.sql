@@ -11,7 +11,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema lachacra_db
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `lachacra_db` ;
+CREATE SCHEMA IF NOT EXISTS `lachacra_db` DEFAULT CHARACTER SET utf8 ;
 USE `lachacra_db` ;
 
 -- -----------------------------------------------------
@@ -24,9 +24,9 @@ CREATE TABLE IF NOT EXISTS `lachacra_db`.`usuario` (
   `correo` VARCHAR(70) NOT NULL,
   `contrasena` VARCHAR(60) NOT NULL,
   `fecha_nacimiento` DATE NOT NULL,
-  `tipo` ENUM('A', 'M', 'C') NOT NULL,
+  `tipo` ENUM('A', 'E', 'C') NOT NULL,
   `activo` TINYINT NOT NULL DEFAULT 1,
-  `fecha_registro` TIME NOT NULL,
+  `fecha_registro` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`usuario_id`),
   UNIQUE INDEX `correo_UNIQUE` (`correo` ASC) VISIBLE);
 
@@ -37,11 +37,11 @@ CREATE TABLE IF NOT EXISTS `lachacra_db`.`usuario` (
 CREATE TABLE IF NOT EXISTS `lachacra_db`.`productos_menu` (
   `producto_id` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
-  `precio` INT NOT NULL,
-  `ingredientes` VARCHAR(150) NULL,
+  `precio` SMALLINT UNSIGNED NOT NULL,
+  `ingredientes` VARCHAR(255) NULL,
   `categoria` ENUM('Bebida', 'Parrilla', 'Milanesas', 'Pastas', 'Postre', 'Chivitos', 'Entrada') NOT NULL,
-  `activo` TINYINT NOT NULL DEFAULT 1,
   `disponibilidad` TINYINT NOT NULL DEFAULT 1,
+  `activo` TINYINT NOT NULL DEFAULT 1,
   PRIMARY KEY (`producto_id`));
 
 
@@ -51,9 +51,11 @@ CREATE TABLE IF NOT EXISTS `lachacra_db`.`productos_menu` (
 CREATE TABLE IF NOT EXISTS `lachacra_db`.`comanda` (
   `comanda_id` INT NOT NULL AUTO_INCREMENT,
   `usuario_id` INT NOT NULL,
-  `n_mesa` TINYINT(2) NOT NULL,
-  `estado` ENUM('Activo', 'En espera', 'Cancelado') NOT NULL,
-  `fecha_hora` DATETIME NOT NULL,
+  `n_mesa` TINYINT UNSIGNED NOT NULL,
+  `n_personas` TINYINT UNSIGNED NOT NULL,
+  `estado` ENUM('Realizada', 'En proceso', 'Confirmada', 'Finalizada', 'Cancelada') NOT NULL,
+  `nota` VARCHAR(200) NULL,
+  `fecha_hora` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `activa` TINYINT NOT NULL DEFAULT 1,
   PRIMARY KEY (`comanda_id`),
   INDEX `fk_Comanda_Usuario1_idx` (`usuario_id` ASC) VISIBLE,
@@ -70,10 +72,12 @@ CREATE TABLE IF NOT EXISTS `lachacra_db`.`comanda` (
 CREATE TABLE IF NOT EXISTS `lachacra_db`.`inventario` (
   `insumo_id` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
-  `categoria` TINYINT(3) NULL,
+  `categoria` VARCHAR(70) NULL,
   `cantidad` DECIMAL(10,2) NOT NULL,
-  `unidad` VARCHAR(45) NULL,
-  `precio_unitario` INT NULL,
+  `cantidad_minima` DECIMAL(10,2) NOT NULL,
+  `unidad` VARCHAR(20) NULL,
+  `precio_unitario` DECIMAL(10,2) UNSIGNED NULL,
+  `activo` TINYINT NOT NULL DEFAULT '1',
   PRIMARY KEY (`insumo_id`));
 
 
@@ -83,8 +87,8 @@ CREATE TABLE IF NOT EXISTS `lachacra_db`.`inventario` (
 CREATE TABLE IF NOT EXISTS `lachacra_db`.`reserva` (
   `reserva_id` INT NOT NULL AUTO_INCREMENT,
   `usuario_id` INT NOT NULL,
-  `fecha` DATE NOT NULL,
-  `hora` TIME NOT NULL,
+  `fecha_hora` DATETIME NOT NULL,
+  `cant_personas` TINYINT NOT NULL,
   `estado` ENUM('Confirmada', 'Pendiente', 'Cancelada', 'Finalizada') NOT NULL,
   `activa` TINYINT NOT NULL DEFAULT 1,
   PRIMARY KEY (`reserva_id`),
@@ -102,20 +106,20 @@ CREATE TABLE IF NOT EXISTS `lachacra_db`.`reserva` (
 CREATE TABLE IF NOT EXISTS `lachacra_db`.`inventario_menu` (
   `insumo_id` INT NOT NULL,
   `producto_id` INT NOT NULL,
-  `cantidad_necesaria` TINYINT NOT NULL,
+  `cantidad_necesaria` TINYINT UNSIGNED NOT NULL,
   PRIMARY KEY (`insumo_id`, `producto_id`),
   INDEX `fk_Inventario_has_Menu_Menu1_idx` (`producto_id` ASC) VISIBLE,
   INDEX `fk_Inventario_has_Menu_Inventario1_idx` (`insumo_id` ASC) VISIBLE,
   CONSTRAINT `fk_Inventario_has_Menu_Inventario1`
     FOREIGN KEY (`insumo_id`)
     REFERENCES `lachacra_db`.`inventario` (`insumo_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Inventario_has_Menu_Menu1`
     FOREIGN KEY (`producto_id`)
     REFERENCES `lachacra_db`.`productos_menu` (`producto_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
 
 
 -- -----------------------------------------------------
@@ -124,8 +128,7 @@ CREATE TABLE IF NOT EXISTS `lachacra_db`.`inventario_menu` (
 CREATE TABLE IF NOT EXISTS `lachacra_db`.`detalle_comanda` (
   `comanda_id` INT NOT NULL,
   `producto_id` INT NOT NULL,
-  `cantidad` TINYINT NOT NULL DEFAULT 1,
-  `nota` VARCHAR(100) NULL,
+  `cantidad` TINYINT UNSIGNED NOT NULL DEFAULT 1,
   PRIMARY KEY (`comanda_id`, `producto_id`),
   INDEX `fk_Comanda_has_Menu_Menu1_idx` (`producto_id` ASC) VISIBLE,
   INDEX `fk_Comanda_has_Menu_Comanda1_idx` (`comanda_id` ASC) VISIBLE,
@@ -150,7 +153,7 @@ CREATE TABLE IF NOT EXISTS `lachacra_db`.`registro_actividades` (
   `insumo_id` INT NULL,
   `producto_id` INT NULL,
   `tipo_cambio` ENUM('AGREGAR', 'ELIMINAR', 'MODIFICAR', 'AJUSTE_CANTIDAD') NOT NULL,
-  `fecha_cambio` DATE NOT NULL,
+  `fecha_cambio` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `valor_antes` JSON NULL,
   `valor_despues` JSON NULL,
   `detalle` VARCHAR(255) NULL,
@@ -166,13 +169,13 @@ CREATE TABLE IF NOT EXISTS `lachacra_db`.`registro_actividades` (
   CONSTRAINT `fk_Registros_Inventario1`
     FOREIGN KEY (`insumo_id`)
     REFERENCES `lachacra_db`.`inventario` (`insumo_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE SET NULL
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_registro_actividades_productos_menu1`
     FOREIGN KEY (`producto_id`)
     REFERENCES `lachacra_db`.`productos_menu` (`producto_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
