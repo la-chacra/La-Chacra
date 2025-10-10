@@ -1,0 +1,8 @@
+[
+  { "id": 1, "nombre": "Empanada de carne", "precio": 2.5, "activo": true },
+  { "id": 2, "nombre": "Milanesa con papas", "precio": 7.9, "activo": true },
+  { "id": 3, "nombre": "Ensalada mixta", "precio": 4.0, "activo": true },
+  { "id": 4, "nombre": "Lomo al plato", "precio": 9.5, "activo": true },
+  { "id": 5, "nombre": "Coca Cola 500ml", "precio": 1.8, "activo": true },
+  { "id": 6, "nombre": "Postre del día", "precio": 3.2, "activo": true }
+]
