@@ -29,12 +29,12 @@ export function AuthProvider({ children }) {
 
   // logout(): destruye sesión en backend y limpia datos locales
   const logout = async () => {
-    // tu implementación
+    // todo: implementar
   };
 
-  // checkSesion(): consulta /api/estadoSesion para verificar sesión
+  // checkSesion(): consultar /api/estadoSesion para verificar sesión
   const checkSesion = async () => {
-    // tu implementación
+    // todo: implementar
   };
 
   // Al montar el componente, verificar sesión automáticamente
