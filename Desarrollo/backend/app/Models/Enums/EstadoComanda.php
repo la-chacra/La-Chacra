@@ -12,7 +12,7 @@ namespace App\Models\Enums;
  */
 enum EstadoComanda : string {
     case REALIZADA = "Realizada";
-    case EN_PROCESO = "EnProceso"; // ← No usarse por ahora
+    case EN_PROCESO = "En proceso"; // ← No usarse por ahora
     case CONFIRMADA = "Confirmada";
     case FINALIZADA = "Finalizada";
     case CANCELADA = "Cancelada";

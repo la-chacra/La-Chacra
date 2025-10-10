@@ -25,9 +25,12 @@ class ComandaController {
         $nota = $datos["nota"] ?? "";
         $fecha = date("Y-m-d H:i:s");
 
+        $usuario_id = $_SESSION["usuario_id"];
+
         $estado = EstadoComanda::tryFrom($estadoString) ?? EstadoComanda::REALIZADA;
 
         $comanda = new Comanda(
+            $usuario_id,
             $nMesa,
             $numPersonas,
             $estado,
@@ -72,6 +75,8 @@ class ComandaController {
         $nota = $datos["nota"] ?? $comandaExistente["nota"];
         $fecha = date("Y-m-d H:i:s");
 
+        $usuario_id = $_SESSION["usuario_id"];
+
         $estado = EstadoComanda::tryFrom($estadoString) ?? EstadoComanda::REALIZADA;
 
         $fechaCreacion = new DateTime($comandaExistente["fecha"]);
@@ -84,6 +89,7 @@ class ComandaController {
         }
 
         $comanda = new Comanda(
+            $usuario_id,
             $nMesa,
             $numPersonas,
             $estado,
