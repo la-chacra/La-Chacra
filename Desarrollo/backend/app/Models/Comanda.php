@@ -8,11 +8,9 @@ use App\Models\Enums\EstadoComanda;
 
 class Comanda extends ModeloBase {
 
-    // Configuración de la tabla
     protected static string $pk_bd = "comanda_id";
     protected static string $tabla_bd = "comanda";
-    // @todo arreglar columnas
-    protected static array $columnas_bd = ["comanda_id", "n_mesa", "estado", "nota", "fecha"];
+    protected static array $columnas_bd = ["comanda_id", "n_mesa", "numPersonas", "estado", "nota", "fecha"];
 
     // Atributos de la clase
     private ?int $comanda_id = null;
@@ -31,12 +29,6 @@ class Comanda extends ModeloBase {
         $this->fecha       = is_string($fecha) ? new DateTime($fecha) : $fecha;
     }
 
-    
-    /**
-     * Registra una nueva comanda en el sistema.
-     *
-     * @return bool Retorna true si la comanda se registró correctamente, false en caso contrario.
-     */
     public function registrarComanda(): bool {
         return $this->crearRegistro([
             "comanda_id"   => $this->comanda_id,
@@ -48,12 +40,6 @@ class Comanda extends ModeloBase {
         ]);
     }
 
-    
-    /**
-     * Modifies the current Comanda instance.
-     *
-     * @return bool Returns true if the modification was successful, false otherwise.
-     */
     public function modificarComanda(): bool {
         return $this->actualizar([
             "comanda_id"   => $this->comanda_id,
@@ -64,6 +50,7 @@ class Comanda extends ModeloBase {
             "fecha"        => $this->fecha->format("Y-m-d H:i:s")
         ]);
     }
+
 
     
     /**
@@ -181,6 +168,26 @@ class Comanda extends ModeloBase {
     public function setFecha($fecha)
     {
         $this->fecha = $fecha;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of numPersonas
+     */ 
+    public function getnumPersonas()
+    {
+        return $this->numPersonas;
+    }
+
+    /**
+     * Set the value of numPersonas
+     *
+     * @return  self
+     */ 
+    public function setnumPersonas($numPersonas)
+    {
+        $this->numPersonas = $numPersonas;
 
         return $this;
     }
