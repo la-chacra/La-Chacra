@@ -38,7 +38,7 @@ class ComandaController {
         return $resultado 
             ? [
                 "success" => true, 
-                "mensaje" => "Comanda creada correctamente", 
+                "message" => "Comanda creada correctamente", 
                 "data" => [
                     "comanda_id" => $comanda->getComandaId()
                 ]

@@ -2,9 +2,14 @@ import React, { useState, useEffect } from 'react';
 import Header from "../../components/HeaderAdmin";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faCheck, faTimes, faArrowLeft, faDownload, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from 'react-router-dom';
 
 const OrderManagement = () => {
+
+  const navigate = useNavigate();
+
   const [n_mesa, setN_mesa] = useState('');
+  const [comanda_id, setComandaId] = useState('');
   const [numPersonas, setNumPersonas] = useState('');
   const [selectedProductos, setSelectedProductos] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -53,16 +58,15 @@ const OrderManagement = () => {
     return selectedProductos.reduce((total, producto) => total + producto.precio, 0);
   };
 
-  const handleSaveComanda = () => {
+  const handleSaveComanda = async () => {
     const comandaData = { 
-      n_mesa, 
-      numPersonas, 
+      nMesa: n_mesa, 
+      numPersonas: numPersonas, 
       productos: selectedProductos, 
-      nota, 
-      estado, 
+      nota: nota, 
+      estado: estado, 
       total: calculateTotal() 
     };
-    console.log('Guardando comanda:', comandaData);
 
     /**
      * cuando el usuario guarde la comanda, esta información debe enviarse 
@@ -75,6 +79,26 @@ const OrderManagement = () => {
      * - estado
      * - total
      */
+
+    try {
+      const respuesta = await fetch("/api/comanda/crear", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(comandaData),
+      });
+
+      const dataRes = await respuesta.json();
+
+      if (dataRes.success) {
+        alert("Comanda exitosa");
+        setComandaId(dataRes["data"]["comanda_id"])
+      } else {
+        alert("Error: " + dataRes.message);
+      }
+    } catch (error) {
+      alert("Error de conexión con el servidor");
+    }
   };
 
   const handleSaveAndPrint = () => {
@@ -118,7 +142,7 @@ const OrderManagement = () => {
 
       <div className="om-content">
         <div className="om-header-actions">
-          <button className="om-back-button">
+          <button className="om-back-button" onClick={() => navigate("/gestion/comanda-historial")}>
             <FontAwesomeIcon icon={faArrowLeft} /> {/*se necesita pagina de historial de comanda*/}
             Volver a Historial de Comandas
           </button>

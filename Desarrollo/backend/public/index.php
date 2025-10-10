@@ -41,7 +41,7 @@ $router->get("/api/reserva/gestion/historialReservas", [ReservaController::class
 
 //API Comanda
 $router->post("/api/comanda/crear", [ComandaController::class, "crear"]);
-$router->post("/api/comanda/actualizar/(:num)", [ComandaController::class, "actualizar"]);
+$router->post("/api/comanda/actualizar", [ComandaController::class, "actualizar"]);
 
 //API Recuperar Contraseña
 $router->post("/api/recuperar/enviarCodigo", [RecuperarController::class, "enviarCodigo"]);

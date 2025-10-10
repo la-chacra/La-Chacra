@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import AdminHeader from "../../components/HeaderAdmin";
 import { FaClock, FaCheck, FaTrash, FaPlus, FaDownload } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export default function ComandaPage() {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState(
     Array.from({ length: 10 }).map((_, i) => ({
       id: i + 1,
@@ -112,7 +114,7 @@ export default function ComandaPage() {
           {/* Botones */}
           <div className="flex gap-3 flex-wrap">
             <button
-              onClick={() => alert("🆕 Añadir nuevo pedido...")}
+              onClick={() => navigate("/gestion/comanda")}
               className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md flex items-center gap-2 shadow"
             >
               Añadir <FaPlus />

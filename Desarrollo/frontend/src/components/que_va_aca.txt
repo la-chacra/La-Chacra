@@ -1,8 +1,0 @@
-Acá van componentes comunes
-
-Como deberían saber, en React se pueden crear componentes para reutilizarlos en distintas páginas
-
-Por ejemplo
-- Header.jsx
-
-Y después es solo reutilizar el header en todas las páginas, no precisa volver a escribir el código.
