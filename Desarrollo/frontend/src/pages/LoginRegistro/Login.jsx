@@ -42,7 +42,7 @@ const Auth = () => {
       });
 
       const dataRes = await res.json();
-      console.log("Login response:", dataRes);
+      // console.log("Login response:", dataRes);
 
       if (dataRes.success) {
         alert("Login exitoso");

@@ -1,4 +1,4 @@
-<?
+<?php
 
 namespace App\Services;
 
@@ -106,7 +106,7 @@ class AuthMiddleware {
         $tipo = $_SESSION["tipo"];
 
         if (empty($_SESSION["tipo"])) {
-            http_response_code(401);
+            http_response_code(401); // 401 : error de credenciales
             echo json_encode(["success" => false, "message" => "Sesión inválida o expirada."]);
             exit;
         }
