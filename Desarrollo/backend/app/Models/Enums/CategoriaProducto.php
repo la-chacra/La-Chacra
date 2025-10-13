@@ -2,8 +2,6 @@
 
 namespace App\Models\Enums;
 
-
-
 /**
  * Categoria
  *
