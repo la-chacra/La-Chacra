@@ -21,11 +21,16 @@ class ComandaController {
 
         $nMesa = $datos["nMesa"] ?? 0;
         $numPersonas = $datos["numPersonas"] ?? 1;
-        $estado = $datos["estado"] ?? EstadoComanda::EnProceso->value;
+        $estadoString = $datos["estado"];
         $nota = $datos["nota"] ?? "";
         $fecha = date("Y-m-d H:i:s");
 
+        $usuario_id = $_SESSION["usuario_id"];
+
+        $estado = EstadoComanda::tryFrom($estadoString) ?? EstadoComanda::REALIZADA;
+
         $comanda = new Comanda(
+            $usuario_id,
             $nMesa,
             $numPersonas,
             $estado,
@@ -38,7 +43,7 @@ class ComandaController {
         return $resultado 
             ? [
                 "success" => true, 
-                "mensaje" => "Comanda creada correctamente", 
+                "message" => "Comanda creada correctamente", 
                 "data" => [
                     "comanda_id" => $comanda->getComandaId()
                 ]
@@ -66,9 +71,13 @@ class ComandaController {
 
         $nMesa = $datos["nMesa"] ?? $comandaExistente["n_mesa"];
         $numPersonas = $datos["numPersonas"] ?? $comandaExistente["numPersonas"];
-        $estado = $datos["estado"] ?? $comandaExistente["estado"];
+        $estadoString = $datos["estado"] ?? $comandaExistente["estado"];
         $nota = $datos["nota"] ?? $comandaExistente["nota"];
         $fecha = date("Y-m-d H:i:s");
+
+        $usuario_id = $_SESSION["usuario_id"];
+
+        $estado = EstadoComanda::tryFrom($estadoString) ?? EstadoComanda::REALIZADA;
 
         $fechaCreacion = new DateTime($comandaExistente["fecha"]);
         $ahora = new DateTime();
@@ -80,6 +89,7 @@ class ComandaController {
         }
 
         $comanda = new Comanda(
+            $usuario_id,
             $nMesa,
             $numPersonas,
             $estado,

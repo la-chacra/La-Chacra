@@ -11,7 +11,9 @@ namespace App\Models\Enums;
  * @package App\Models\Enums
  */
 enum EstadoComanda : string {
-    case EnProceso = "EnProceso";
-    case Finalizado = "Finalizado";
-    case Cancelado = "Cancelado";
+    case REALIZADA = "Realizada";
+    case EN_PROCESO = "En proceso"; // ← No usarse por ahora
+    case CONFIRMADA = "Confirmada";
+    case FINALIZADA = "Finalizada";
+    case CANCELADA = "Cancelada";
 }

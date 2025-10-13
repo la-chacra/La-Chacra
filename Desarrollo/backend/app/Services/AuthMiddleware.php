@@ -42,13 +42,16 @@ class AuthMiddleware {
         ],
         "E" => [ // E = empleado
             "/api/comanda/crear",
+            "/api/comanda/actualizar",
             "/api/comanda/listar"
         ],
         "A" => [ // A = admin
             "/api/gestion/reserva",
-            "/api/gestion/empleados",
-            "/api/gestion/comanda",
-            "/api/gestion/estadisticas"
+            // Comanda
+            "/api/gestion/comanda/crear",
+            "/api/gestion/comanda/actualizar",
+            "/api/gestion/comanda/listar",
+            "/api/estadisticas"
         ]
     ];
 

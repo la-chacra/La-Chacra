@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Header from "../../components/HeaderAdmin";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock, faCheck, faTimes, faArrowLeft, faDownload, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faClipboardList, faCheckCircle, faCheckDouble, faTimesCircle, faCheck, faTimes, faArrowLeft, faDownload, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from 'react-router-dom';
 
 const OrderManagement = () => {
+
+  const navigate = useNavigate();
+
   const [n_mesa, setN_mesa] = useState('');
+  const [comanda_id, setComandaId] = useState('');
   const [numPersonas, setNumPersonas] = useState('');
   const [selectedProductos, setSelectedProductos] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -13,16 +18,27 @@ const OrderManagement = () => {
   const [availableProductos, setAvailableProductos] = useState([]);
 
   useEffect(() => {
-    /**
-     * aquí es donde se deben obtener los productos disponibles desde el backend.
-     * 
-     * el frontend necesita recibir una lista de productos activos y disponibles 
-     * para ser agregados a la comanda
-     * 
-     * una vez el backend esté listo, aquí debería hacerse la llamada 
-     * para obtener esos datos (por ejemplo, una solicitud al servidor 
-     * que devuelva la lista de productos).
-     */
+    // Para testing sin backend: cargar un JSON local con productos de prueba.
+    // Esto permite probar la UI y seleccionar productos mientras el backend
+    // no está disponible. Reemplazar por la llamada real al backend cuando
+    // se integre.
+    const loadLocalProducts = async () => {
+      try {
+        const resp = await fetch('/src/pages/Comanda/productos.json', { cache: 'no-store' });
+        if (!resp.ok) return;
+        const data = await resp.json();
+        // Filtrar solo productos activos y con precio numérico
+        const activos = Array.isArray(data)
+          ? data.filter(p => p.activo !== false && !isNaN(Number(p.precio)))
+          : [];
+        setAvailableProductos(activos);
+      } catch (err) {
+        // Silencioso en testing; si se quiere depurar, usar console.error
+        // console.error('Error cargando productos locales', err);
+      }
+    };
+
+    loadLocalProducts();
   }, []);
 
   const handleN_mesaChange = (e) => {
@@ -53,16 +69,15 @@ const OrderManagement = () => {
     return selectedProductos.reduce((total, producto) => total + producto.precio, 0);
   };
 
-  const handleSaveComanda = () => {
+  const handleSaveComanda = async () => {
     const comandaData = { 
-      n_mesa, 
-      numPersonas, 
+      nMesa: n_mesa, 
+      numPersonas: numPersonas, 
       productos: selectedProductos, 
-      nota, 
-      estado, 
+      nota: nota, 
+      estado: estado, 
       total: calculateTotal() 
     };
-    console.log('Guardando comanda:', comandaData);
 
     /**
      * cuando el usuario guarde la comanda, esta información debe enviarse 
@@ -75,6 +90,26 @@ const OrderManagement = () => {
      * - estado
      * - total
      */
+
+    try {
+      const respuesta = await fetch("/api/gestion/comanda/crear", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(comandaData),
+      });
+
+      const dataRes = await respuesta.json();
+
+      if (dataRes.success) {
+        alert("Comanda exitosa");
+        setComandaId(dataRes["data"]["comanda_id"])
+      } else {
+        alert("Error: " + dataRes.message);
+      }
+    } catch (error) {
+      alert("Error de conexión con el servidor");
+    }
   };
 
   const handleSaveAndPrint = () => {
@@ -99,9 +134,13 @@ const OrderManagement = () => {
     switch (status) {
       case 'EnProceso':
         return <FontAwesomeIcon icon={faClock} className="om-status-icon om-blue" />;
-      case 'Finalizado':
-        return <FontAwesomeIcon icon={faCheck} className="om-status-icon om-green" />;
-      case 'Cancelado':
+      case 'Realizada':
+        return <FontAwesomeIcon icon={faClipboardList} className="om-status-icon om-blue" />;
+      case 'Confirmada':
+        return <FontAwesomeIcon icon={faCheckCircle} className="om-status-icon om-green" />;
+      case 'Finalizada':
+        return <FontAwesomeIcon icon={faCheckDouble} className="om-status-icon om-green" />;
+      case 'Cancelada':
         return <FontAwesomeIcon icon={faTimes} className="om-status-icon om-red" />;
       default:
         return <FontAwesomeIcon icon={faClock} className="om-status-icon om-blue" />;
@@ -118,7 +157,7 @@ const OrderManagement = () => {
 
       <div className="om-content">
         <div className="om-header-actions">
-          <button className="om-back-button">
+          <button className="om-back-button" onClick={() => navigate("/gestion/comanda-historial")}>
             <FontAwesomeIcon icon={faArrowLeft} /> {/*se necesita pagina de historial de comanda*/}
             Volver a Historial de Comandas
           </button>
@@ -134,7 +173,9 @@ const OrderManagement = () => {
             <div className="om-mesa-section">
               <h3>Número de Mesa</h3>
               <input
-                type="text"
+                type="number"
+                min="1"
+                max="20"
                 placeholder="Ingresar Número de Mesa"
                 value={n_mesa}
                 onChange={handleN_mesaChange}
@@ -146,7 +187,9 @@ const OrderManagement = () => {
             <div className="om-cdp-section">
               <h3>Cantidad de Personas</h3>
               <input
-                type="text"
+                type="number"
+                min="1"
+                max="20"
                 placeholder="Ingresar Número de Personas"
                 value={numPersonas}
                 onChange={handleNumPersonasChange}
@@ -219,9 +262,10 @@ const OrderManagement = () => {
                   onChange={(e) => setEstado(e.target.value)}
                   className="om-status-select"
                 >
-                  <option value="EnProceso">En Proceso</option>
-                  <option value="Finalizado">Finalizado</option>
-                  <option value="Cancelado">Cancelado</option>
+                  <option value="Realizada">Realizada</option>
+                  <option value="Confirmada">Confirmada</option>
+                  <option value="Cancelada">Cancelada</option>
+                  <option value="Finalizada">Finalizado</option>
                 </select>
               </div>
             </div>

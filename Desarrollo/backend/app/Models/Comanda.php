@@ -10,18 +10,20 @@ class Comanda extends ModeloBase {
 
     protected static string $pk_bd = "comanda_id";
     protected static string $tabla_bd = "comanda";
-    protected static array $columnas_bd = ["comanda_id", "n_mesa", "numPersonas", "estado", "nota", "fecha"];
+    protected static array $columnas_bd = ["comanda_id", "usuario_id", "n_mesa", "n_personas", "estado", "nota", "fecha_hora", "activa"];
 
     // Atributos de la clase
     private ?int $comanda_id = null;
+    private int $usuario_id;
     private int $nMesa;
     private int $numPersonas;
     private EstadoComanda $estado;
     private string $nota;
     private DateTime $fecha;
 
-    public function __construct(int $nMesa, int $numPersonas, EstadoComanda $estado, string $nota, string|DateTime $fecha) {
+    public function __construct(int $usuario_id, int $nMesa, int $numPersonas, EstadoComanda $estado, string $nota, string|DateTime $fecha) {
         $this->comanda_id  = null;
+        $this->usuario_id = $usuario_id;
         $this->nMesa       = $nMesa;
         $this->numPersonas = $numPersonas;
         $this->estado      = $estado;
@@ -31,9 +33,9 @@ class Comanda extends ModeloBase {
 
     public function registrarComanda(): bool {
         return $this->crearRegistro([
-            "comanda_id"   => $this->comanda_id,
+            "usuario_id"   => $this->usuario_id,
             "n_mesa"       => $this->nMesa,
-            "numPersonas"  => $this->numPersonas,
+            "n_personas"  => $this->numPersonas,
             "estado"       => $this->estado->value,
             "nota"         => $this->nota,
             "fecha"        => $this->fecha->format("Y-m-d H:i:s")
@@ -43,8 +45,9 @@ class Comanda extends ModeloBase {
     public function modificarComanda(): bool {
         return $this->actualizar([
             "comanda_id"   => $this->comanda_id,
+            "usuario_id"   => $this->usuario_id,
             "n_mesa"       => $this->nMesa,
-            "numPersonas"  => $this->numPersonas,
+            "n_personas"  => $this->numPersonas,
             "estado"       => $this->estado->value,
             "nota"         => $this->nota,
             "fecha"        => $this->fecha->format("Y-m-d H:i:s")
