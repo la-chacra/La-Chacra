@@ -76,11 +76,11 @@ export default function ComandaPage() {
         {/* FILTROS + BOTONES */}
         <div className="bg-gray-100 border border-gray-300 rounded-lg shadow-sm p-4 flex flex-wrap justify-between items-center gap-4">
           {/* Filtros */}
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-3 min-w-0 md:flex-nowrap flex-wrap">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="border border-gray-300 rounded-md px-3 text-sm h-10 w-full md:w-40 focus:outline-none focus:ring-2 focus:ring-emerald-500"
             >
               <option value="">Todos los estados</option>
               <option value="Pendiente">Pendiente</option>
@@ -91,7 +91,7 @@ export default function ComandaPage() {
               type="date"
               value={dateFilter}
               onChange={(e) => setDateFilter(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="border border-gray-300 rounded-md px-3 text-sm h-10 focus:outline-none focus:ring-2 focus:ring-emerald-500 relative top-[7px]"
             />
 
             <input
@@ -99,7 +99,7 @@ export default function ComandaPage() {
               placeholder="Precio mínimo"
               value={minPrice}
               onChange={(e) => setMinPrice(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-2 w-36 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="border border-gray-300 rounded-md px-3 text-sm h-10 focus:outline-none focus:ring-2 focus:ring-emerald-500 relative top-[7px]"
             />
 
             <input
@@ -107,12 +107,23 @@ export default function ComandaPage() {
               placeholder="Precio máximo"
               value={maxPrice}
               onChange={(e) => setMaxPrice(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-2 w-36 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="bborder border-gray-300 rounded-md px-3 text-sm h-10 focus:outline-none focus:ring-2 focus:ring-emerald-500 relative top-[7px]"
             />
           </div>
 
           {/* Botones */}
-          <div className="flex gap-3 flex-wrap">
+          <div className="flex gap-3 flex-wrap justify-center md:justify-end w-full md:w-auto">
+            <button
+            onClick={() => {
+              setStatusFilter("");
+              setDateFilter("");
+              setMinPrice("");
+              setMaxPrice("");
+            }}
+            className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md flex items-center gap-2 shadow"
+          >
+            Limpiar filtros
+          </button>
             <button
               onClick={() => navigate("/gestion/comanda")}
               className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md flex items-center gap-2 shadow"

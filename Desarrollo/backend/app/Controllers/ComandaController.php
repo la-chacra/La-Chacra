@@ -106,4 +106,8 @@ class ComandaController {
             : ["success" => false, "message" => "Error al actualizar comanda"];
     }
 
+    public function imprimir($router) {
+        
+    }
+
 }
