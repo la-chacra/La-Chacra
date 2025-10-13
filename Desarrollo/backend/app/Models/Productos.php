@@ -4,15 +4,6 @@ namespace App\Models;
 
 use App\Models\ModeloBase;
 
-// Se necesita espeficiar antes los valores del enum, para poder asignarlos en la clase
-enum CategoriaProducto : string {
-    case Parrilla = "Parrilla";
-    case Refrescos = "Refrescos";
-    case Vinos = "Vinos";
-    case Pastas = "Pastas";
-    case Chivitos = "Chivitos";
-    // @todo Definir más
-}
 
 class Producto extends ModeloBase {
 

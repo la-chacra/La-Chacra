@@ -8,6 +8,8 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 
 use Router\Router;
 use Config\Database;
+use App\Models\Enums\Categoria;
+
 use App\Models\ModeloBase;
 use App\Services\AuthMiddleware;
 use App\Controllers\ReservaController;
@@ -16,6 +18,8 @@ use App\Controllers\RegistroController;
 use App\Controllers\AuthController;
 use App\Controllers\ComandaController;
 use App\Controllers\RecuperarController;
+
+echo Categoria::Accesorios->value;
 
 $db = new Database();
 ModeloBase::setDB($db);
