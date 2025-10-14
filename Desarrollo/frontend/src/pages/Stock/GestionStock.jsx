@@ -10,7 +10,7 @@ export default function GestionStock() {
     { nombre: "Vino", color: "bg-rose-500" },
     { nombre: "Aderezo", color: "bg-yellow-500" },
     { nombre: "Fruta", color: "bg-pink-500" },
-    { nombre: "Verdura", color: "bg-green-500" },
+    { nombre: "Verdura", color: "bg-green-600" },
   ];
 
   const [products, setProducts] = useState(
