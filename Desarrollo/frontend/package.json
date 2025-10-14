@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build:css": "postcss src/index.css -o src/output.css",
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview"
   },

@@ -1721,6 +1721,10 @@ input {
   background-color: #ffffffe3;
 }
 
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
 /* COMANDA RESPONSIVE */
 @media (max-width: 768px) {
   .om-main-content {
