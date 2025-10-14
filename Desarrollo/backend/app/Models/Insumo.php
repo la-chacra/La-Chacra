@@ -125,22 +125,7 @@ class Insumo extends ModeloBase {
         return !empty($resultado);
     }
 
-    // public function actualizarDisponibilidad() {
-    // $consulta = "UPDATE productos 
-    //           SET disponible = :disponible 
-    //           WHERE id_producto = :id_producto";
-
-    // $parametros = [
-    //     ':disponible' => $this->disponible,  // puede ser 1 = disponible, 0 = no disponible
-    //     ':id_producto' => $this->id_producto
-    // ];
-
-    // return $this->actualizar(
-    //     [
-    //         static::$pk_bd => $this->insumo_id,
-    //         "disponibilidad" => $this->disponiblidad
-    //     ]
-    // );
+    
     
     // Getters y Setters
     
