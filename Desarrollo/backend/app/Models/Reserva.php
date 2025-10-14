@@ -38,9 +38,10 @@ class Reserva extends ModeloBase {
     }
 
     /**
+     * Fabrica de objetos.
      * Buscar una reserva por ID y devolver un objeto Reserva
      */
-    public static function buscarPorId(int $reserva_id): ?Reserva {
+    public static function factory(int $reserva_id): ?Reserva {
         $data = self::encontrarPorID($reserva_id);
         if (empty($data)) {
             return null;

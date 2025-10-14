@@ -65,11 +65,6 @@ class Comanda extends ModeloBase {
         return $this->eliminar($this->comanda_id);
     }
 
-    // Se necesirta ticketera 
-    public static function imprimirComanda(){
-        
-    }
-
     // ------------------------------------------------------------------
     //  Getters y Setters 
     // ------------------------------------------------------------------

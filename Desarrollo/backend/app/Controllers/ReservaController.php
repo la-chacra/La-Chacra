@@ -85,7 +85,7 @@ class ReservaController {
         $datos = json_decode(file_get_contents("php://input"), true);
         $reserva_id = $datos["reserva_id"] ?? null;
 
-        $reserva = Reserva::buscarPorId($reserva_id);
+        $reserva = Reserva::factory($reserva_id);
         if (!$reserva) {
             return ["success" => false, "message" => "Reserva no encontrada."];
         }
@@ -127,7 +127,7 @@ class ReservaController {
             return ["success" => false, "message" => "Faltan datos obligatorios para actualizar la reserva."];
         }
 
-        $reserva = Reserva::buscarPorId($reserva_id);
+        $reserva = Reserva::factory($reserva_id);
         if (!$reserva) {
             return ["success" => false, "message" => "Reserva no encontrada."];
         }
@@ -145,11 +145,6 @@ class ReservaController {
     /**
      * Obtiene todos los registros de reservas y los formatea para su presentación.
      *
-     * @param mixed $router Instancia del router (no se utiliza en el método).
-     * @return array Retorna un arreglo asociativo con las siguientes claves:
-     *               - 'success': bool, indica si la operación fue exitosa.
-     *               - 'message': string, mensaje descriptivo del resultado.
-     *               - 'result': array|string, lista de reservas formateadas o cadena vacía si falla.
      *
      * Cada reserva en 'result' contiene:
      *   - 'id': int, identificador de la reserva.
@@ -160,12 +155,18 @@ class ReservaController {
      *   - 'estado': string, estado actual de la reserva.
      *
      * Si no se encuentran reservas, retorna un mensaje de error.
+     * 
+     * @param mixed $router Instancia del router (no se utiliza en el método).
+     * @return array Retorna un arreglo asociativo con las siguientes claves:
+     *               - 'success': bool, indica si la operación fue exitosa.
+     *               - 'message': string, mensaje descriptivo del resultado.
+     *               - 'result': array|string, lista de reservas formateadas o cadena vacía si falla.
      */
     public function obtenerRegistros($router) {
         $reservas = Reserva::traerTodos();
 
         if(empty($reserva)) {
-            return ["success" => false, "message" => "No se pudo concretar la operación", "result" => ""];
+            return ["success" => false, "message" => "No se pudo concretar la operación", "data" => []];
         }
 
         $datos = [];
@@ -186,8 +187,9 @@ class ReservaController {
             array_push(
                 $datos, 
                 [
-                    "id"           => $reserva["reserva_id"],
+                    "reserva_id"   => $reserva["reserva_id"],
                     "nombre"       => $usuario["nombre"],
+                    "apellido"     => $usuario["nombre"],
                     "correo"       => $usuario["correo"],
                     "cantPersonas" => $reserva["cantidad_personas"],
                     "fechaHora"    => $fechaReserva,
@@ -196,7 +198,7 @@ class ReservaController {
             );
         }
 
-        return ["success" => true, "message" => "Reservas obtenidas con éxito", "result" => $datos];
+        return ["success" => true, "message" => "Reservas obtenidas con éxito", "data" => $datos];
     }
 }
 
