@@ -147,7 +147,7 @@ const HistoryTable = () => {
       case "Eliminación de producto":
         return (
           <div>
-            0 <span className="hs-negative">({cambio.eliminacion.cantidadAnterior}-)</span>
+            0 <span className="hs-negative">(-{cambio.eliminacion.cantidadAnterior})</span>
           </div>
         );
       default:

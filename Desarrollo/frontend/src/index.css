@@ -2004,8 +2004,8 @@ input {
   }
 
   .hs-history-table {
-    font-size: 12px;
-    min-width: 600px;
+    font-size: 14px;
+    min-width: 1000px;
   }
 
   .hs-history-table th,
@@ -2015,11 +2015,11 @@ input {
 
   .hs-fecha-column {
     width: 100px;
-    font-size: 11px;
+    font-size: 14px;
   }
 
   .hs-agregacion-details {
-    font-size: 11px;
+    font-size: 14px;
   }
 
   .hs-table-container {
@@ -2050,7 +2050,7 @@ input {
   }
 
   .hs-agregacion-details {
-    font-size: 11px;
+    font-size: 14px;
   }
 
   .hs-table-container {
