@@ -118,8 +118,8 @@ class Insumo extends ModeloBase {
      * 
      * @return bool Retorna `true` si el registro fue eliminado exitosamente, `false` en caso contrario.
      */
-    public function eliminarInsumo (int $insumo_id) : bool {
-        return $this->eliminar($insumo_id);
+    public function eliminarInsumo () : bool {
+        return $this->eliminar($this->insumo_id);
     }
 
     /**
