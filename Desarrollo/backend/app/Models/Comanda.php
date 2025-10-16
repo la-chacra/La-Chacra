@@ -67,8 +67,12 @@ class Comanda extends ModeloBase {
 
     // Se necesirta ticketera 
     public static function imprimirComanda(){
+
+        
         
     }
+
+
 
     // ------------------------------------------------------------------
     //  Getters y Setters 
