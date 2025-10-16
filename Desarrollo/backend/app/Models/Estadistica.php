@@ -3,30 +3,11 @@
 namespace App\Models;
 
 use App\Models\ModeloBase;
+use App\Models\Enums\Periodo;
+use App\Models\Enums\TemporadasAltas;
 
 
-/**
- * Enum Periodo
- *
- * Representa los diferentes periodos de tiempo utilizados en las estadísticas.
- * Cada valor del enum corresponde a un periodo específico, identificado por una cadena.
- *
- * 
- *
- * @package App\Models
- */
-enum Periodo: string {
-    case Verano = 'Verano';
-    case Otono = 'Otono';
-    case Primavera = 'Primavera';
-}
 
-enum TemporadasAltas: string {
-    case VacacionesVerano = 'VacacionesVerano';
-    case VacacionesInvierno = 'VacacionesInvierno';
-    case Turismo = 'Turismo';
-    case FiestasFinAno = 'FiestasFinAno';
-}
 
 class Estadistica extends ModeloBase {
 
@@ -95,8 +76,8 @@ class Estadistica extends ModeloBase {
      *
      * @return array Lista de los clientes destacados según el criterio definido.
      */
-    public static function obtenerTopClientes(): array {
-        $consulta = "SELECT * FROM cliente ORDER BY puntos DESC LIMIT 5";
+    public static function obtenerTopPlatos(): array {
+        $consulta = "SELECT * FROM productos_menu ORDER BY nombre DESC LIMIT 5";
         return static::$conexion_bd->realizarConsulta($consulta);
     }
 
