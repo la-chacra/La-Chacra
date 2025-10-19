@@ -9,6 +9,7 @@ import ReservaHist from './pages/Reserva/ReservaAdmin/HistorialAdmin';
 import Comanda from './pages/Comanda/Comanda';
 import Test from './pages/Admin/Test';
 import ComandaHist from './pages/Comanda/ComandaHist';
+import StockHist from './pages/Stock/HistorialStock.jsx';
 
 // (cuando agreguen más páginas, las importas acá)
 
@@ -53,7 +54,7 @@ function App() {
         <Route path="/gestion/reserva" element={<ReservaHist/>}/>
         <Route path="/gestion/comanda" element={<Comanda/>}/>
         <Route path="/gestion/comanda-historial" element={<ComandaHist/>}/>
-        
+        <Route path="/gestion/stock-historial" element={<StockHist/>}/>
         {/* Testing */}
         <Route path="/test" element={<Test/>}/>
         {/* Ejemplo de otras rutas futuras */}
