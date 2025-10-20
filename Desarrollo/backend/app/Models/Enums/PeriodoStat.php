@@ -26,4 +26,5 @@ enum Periodo: string {
     case Verano = 'Verano';
     case Otono = 'Otono';
     case Primavera = 'Primavera';
+    case Invierno = "Invierno"; //Agregar tmb en la bd
 }
