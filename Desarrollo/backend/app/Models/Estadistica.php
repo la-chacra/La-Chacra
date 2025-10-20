@@ -95,8 +95,8 @@ class Estadistica extends ModeloBase {
      *
      * @return array Lista de los clientes destacados según el criterio definido.
      */
-    public static function obtenerTopClientes(): array {
-        $consulta = "SELECT * FROM cliente ORDER BY puntos DESC LIMIT 5";
+    public static function obtenerTopPlatos(): array {
+        $consulta = "SELECT * FROM producto_menu ORDER BY nombre DESC LIMIT 5";
         return static::$conexion_bd->realizarConsulta($consulta);
     }
 
