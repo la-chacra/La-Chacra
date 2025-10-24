@@ -12,7 +12,7 @@ class Insumo extends ModeloBase {
     // -- Atributos de la Base de Datos
     protected static string $pk_bd = "insumo_id";
     protected static string $tabla_bd = "inventario";
-    protected static array $columnas_bd = ["usuario_id", "nombre", "categoria", "cantidad", "cantidad_minima", "unidad", "precio_unitario"];
+    protected static array $columnas_bd = ["insumo_id", "nombre", "categoria", "cantidad", "cantidad_minima", "unidad", "precio_unitario", "activo"];
 
     // -- Atributos de un Insumo del Inventario
     private ?int $insumo_id;
@@ -35,9 +35,43 @@ class Insumo extends ModeloBase {
     }
 
     /**
-     * Realizar el registro de un insumo en la base de datos
+     * Crea una instancia del modelo Insumo basada en el ID de insumo proporcionado.
+     *
+     * Este método de fábrica estático recupera los datos del Insumo usando el ID dado,
+     * y retorna un nuevo objeto Insumo con los datos correspondientes.
+     * Si no se encuentra información para el ID especificado, retorna null.
+     *
+     * @param int $insumo_id El identificador único del Insumo a recuperar.
+     * @return Insumo|null La instancia de Insumo si se encuentra, o null si no.
+     */
+    public static function factory(int $insumo_id): ?Insumo {
+        $datos = self::encontrarPorID($insumo_id);
+        
+        if (empty($data)) {
+            return null;
+        }
+
+        $insumo = new Insumo(
+            $datos["nombre"] ?? null,
+            $datos["categoria"] ?? null,
+            $datos["cantidad"] ?? null,
+            $datos["cantidad_minima"] ?? null,
+            $datos["unidad"] ?? null,
+            $datos["precio_unitario"] ?? null
+        );
+
+        $insumo->insumo_id = $datos["insumo_id"];
+        return $insumo;
+    }
+
+    /**
+     * Registra un nuevo insumo en la base de datos utilizando los atributos actuales del objeto.
      * 
-     * @return bool True o False según se pudo realizar la operación o no.
+     * Crea un registro con los datos del insumo (nombre, categoría, cantidad, cantidad mínima, unidad y precio unitario).
+     * Asigna automáticamente el ID generado al atributo local `insumo_id` del objeto.
+     *
+     * @see ModeloBase::crearRegistro()
+     * @return bool Retorna `true` si el registro fue creado exitosamente, `false` en caso contrario.
      */
     public function registrarInsumo () : bool{
         $resultado = $this->crearRegistro(
@@ -61,9 +95,11 @@ class Insumo extends ModeloBase {
     /**
      * Actualizar datos de un Insumo en una base de datos.
      * 
-     * @return bool True o False según se pudo realizar la operación o no.
+     * Actualiza un registro con los datos del insumo (nombre, categoría, cantidad, cantidad mínima, unidad y precio unitario).
+     * 
+     * @return bool Retorna `true` si el registro fue actualziado exitosamente, `false` en caso contrario.
      */
-    public function actualizarDatos () : bool {
+    public function actualizarInsumo () : bool {
         return $this->actualizar(
             [
                 "insumo_id"       => $this->insumo_id,
@@ -80,37 +116,40 @@ class Insumo extends ModeloBase {
     /**
      * Elimina el registro de un Insumo dada su ID.
      * 
-     * @return bool True o False según se pudo realizar la operación o no.
+     * @return bool Retorna `true` si el registro fue eliminado exitosamente, `false` en caso contrario.
      */
-    public function eliminarInsumo () {
+    public function eliminarInsumo () : bool {
         return $this->eliminar($this->insumo_id);
-    }
-
-    /**
-     * Actualizar la cantidad de un Insumo en la Base de Datos.
-     * 
-     * @return bool True o False según se pudo realizar la operación o no.
-     */
-    public function actualizarCantidad() : bool {
-        return $this->actualizar(
-            [
-                "insumo_id" => $this->insumo_id,
-                "cantidad"  => $this->cantidad
-            ]
-        );
     }
 
     /**
      * Actualizar el estado de actividad de un Insumo en la Base de Datos.
      * 
-     * @param bool $activo True o False si se lo quiere activar o desactivar.
-     * @return bool True o False según se pudo realizar la operación o no.
+     * @param bool $activo `true` o `false` según si se lo quiere activar o desactivar.
+     * @return bool Retorna `true` si el registro fue actualizado exitosamente, `false` en caso contrario.
      */
-    public function actualizarActividad (bool $activo) : bool {
-        return $this->actualizar(
+    public static function actualizarActividad (int $insumo_id, bool $activo) : bool {
+        return self::actualizar(
             [
-                "insumo_id" => $this->insumo_id,
+                "insumo_id" => $insumo_id,
                 "activo"  => $activo
+            ]
+        );
+    }
+
+    /**
+     * Actualizar la cantidad de un Insumo en la Base de Datos.
+     * 
+     * @param bool $activo `true` o `false` según si se lo quiere activar o desactivar.
+     * @return bool Retorna `true` si el registro fue actualizado exitosamente, `false` en caso contrario.
+     */
+    public static function actualizarCantidad (int $insumo_id, int $cantidad) : bool {
+        // Se optó porque sea estático para que no sea necesario crear un objeto entero solamente
+        // para actualizar la cantidad.
+        return self::actualizar(
+            [
+                "insumo_id" => $insumo_id,
+                "cantidad"  => $cantidad
             ]
         );
     }
@@ -118,7 +157,7 @@ class Insumo extends ModeloBase {
     /**
      * Verficar si existe un Insumo en la base de datos
      * 
-     * @return true|false Si el usuario existe o no
+     * @return bool Retorna `true` si el insumo ya es existente, `false` en caso contrario.
      */
     public function esExistente(): bool{
         $resultado = $this->encontrarPorID($this->insumo_id);
@@ -126,14 +165,6 @@ class Insumo extends ModeloBase {
     }
 
     // public function actualizarDisponibilidad() {
-    // $consulta = "UPDATE productos 
-    //           SET disponible = :disponible 
-    //           WHERE id_producto = :id_producto";
-
-    // $parametros = [
-    //     ':disponible' => $this->disponible,  // puede ser 1 = disponible, 0 = no disponible
-    //     ':id_producto' => $this->id_producto
-    // ];
 
     // return $this->actualizar(
     //     [

@@ -8,6 +8,7 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 
 use Router\Router;
 use Config\Database;
+
 use App\Models\ModeloBase;
 use App\Services\AuthMiddleware;
 use App\Controllers\ReservaController;
@@ -16,6 +17,9 @@ use App\Controllers\RegistroController;
 use App\Controllers\AuthController;
 use App\Controllers\ComandaController;
 use App\Controllers\RecuperarController;
+use App\Controllers\StockController;
+
+
 
 $db = new Database();
 ModeloBase::setDB($db);
@@ -45,7 +49,11 @@ $router->post("/api/gestion/comanda/actualizar", [ComandaController::class, "act
 
 //API Recuperar Contraseña
 $router->post("/api/recuperar/enviarCodigo", [RecuperarController::class, "enviarCodigo"]);
-$router->post("/api/recuperar/cambiarPassword", [RecuperarController::class, "cambiarPassword"]);   
+$router->post("/api/recuperar/cambiarPassword", [RecuperarController::class, "cambiarPassword"]);  
+
+// API Insumo
+$router->post("/api/insumo/eliminar", [StockController::class, "eliminar"]);
+$router->post("/api/insumo/actualizar", [StockController::class, "actualizar"]);
 
 
 $allowedOrigin = "http://localhost:5173";
