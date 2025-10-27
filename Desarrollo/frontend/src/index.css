@@ -2512,3 +2512,291 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   accent-color: #007bff;
   margin-right: 8px;
 }
+
+/*ESTADISTICAS*/
+:root{
+  --bg: #1D1D1B;
+  --card: #ffffff;
+  --muted: #9aa0a6;
+}
+
+.ge-page{
+  background: var(--bg);
+  min-height:100vh;
+  color:#111;
+  padding-bottom:40px;
+}
+
+.ge-container{
+  max-width:1100px;
+  margin:24px auto;
+  padding:16px;
+}
+
+.ge-top-tabs{
+  display:flex;
+  gap:12px;
+  margin-bottom:18px;
+  font-size: 15px;
+}
+
+.ge-tab{
+  background: #0D0F10;
+  border: none;
+  color: #e5e7eb;
+  padding:8px 12px;
+  border-radius:999px;
+  cursor:pointer;
+}
+
+.ge-tab--active{
+  background:#ffffff;
+  color:#111;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.2) inset;
+  font-weight: 550;
+}
+
+.ge-tiles{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  margin-bottom:18px;
+}
+
+.ge-tile{
+  background:var(--card);
+  border-radius:10px;
+  padding:18px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+}
+
+.ge-tile__title{
+  color:#333;
+  font-weight:700;
+  margin-bottom:8px;
+}
+.ge-tile__value{
+  font-size:22px;
+  color: #34aecc;
+  font-weight:800;
+}
+.ge-tile__meta{
+  background:#f3f4f6;
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:8px;
+  margin-top:10px;
+}
+
+.ge-main-grid{
+  display:grid;
+  grid-template-columns: 1fr 360px;
+  gap:18px;
+}
+
+.ge-card{
+  background:var(--card);
+  border-radius:10px;
+  padding:18px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+}
+
+.ge-card__header{
+  font-weight:700;
+  margin-bottom:14px;
+  color:#2d2d2d;
+}
+
+/* lista de trending */
+.ge-trending-list{
+  list-style:none;
+  padding:0;
+  margin:0;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.ge-trending-item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:8px 6px;
+}
+
+.ge-trending-rank{
+  color:#6b7280;
+  width:30px;
+}
+.ge-trending-thumb{
+  width:50px;
+  height:50px;
+  object-fit:cover;
+  border-radius:100%;
+}
+
+.ge-trending-info{
+  flex:1;
+}
+.ge-trending-name{
+  font-weight:700;
+  color:#111;
+}
+.ge-trending-price{
+  color:#34aecc;
+  font-weight:700;
+}
+.ge-trending-cat{
+  color:#6b7280;
+  font-weight:400;
+  margin-left:8px;
+}
+
+.ge-trending-stats{
+  text-align:right;
+  width:90px;
+}
+.ge-trending-sales{
+  font-weight:600;
+  font-size:25px;
+}
+.ge-trending-percent{
+  color:#6b7280;
+  font-size:12px;
+}
+
+/* estaciones */
+.ge-season-list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.ge-season{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px;
+  border-radius:8px;
+}
+
+.ge-season__icon{
+  width:46px;
+  height:46px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:8px;
+  background:rgba(255,255,255,0.6);
+}
+
+.ge-season__title{
+  font-weight:700;
+}
+.ge-season__revenue{
+  background:rgba(255,255,255,0.8);
+  display:inline-block;
+  padding:6px 8px;
+  border-radius:8px;
+  margin-top:6px;
+}
+
+.ge-season--green{ background: #dff7e9; }
+.ge-season--purple{ background: #f0e7ff; }
+.ge-season--yellow{ background: #f8efcf; }
+.ge-season--blue{ background: #e6f3ff; }
+
+/* responsive */
+@media (max-width: 900px){
+  .ge-main-grid{ grid-template-columns:1fr; }
+  .ge-tiles{ grid-template-columns:1fr; }
+  .ge-top-tabs{
+    flex-wrap:wrap;
+    gap:8px;
+  }
+}
+
+.ge-top-clientes {
+  margin-top: 25px;
+  padding: 18px;
+}
+
+.ge-client-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.ge-client-table thead {
+  background: #f4f6f9;
+  text-align: left;
+  font-weight: 600;
+}
+
+.ge-client-table th,
+.ge-client-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.ge-client-table tr:hover {
+  background: #fafafa;
+  transition: 0.2s;
+}
+
+.ge-tendencias {
+  padding: 24px;
+}
+
+.ge-tendencias-subtitle {
+  color: #555;
+  font-size: 15px;
+  margin-bottom: 1px;
+}
+
+.ge-tendencias-grid {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.ge-tendencia-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  padding: 16px 24px;
+  flex: 1 1 30%;
+  min-width: 280px;
+}
+
+.ge-tendencia-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #34aecc;
+  font-weight: 600;
+  font-size: 17.6px;
+}
+
+.ge-tendencia-title {
+  font-size: 14.4px;
+  color: #666;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.ge-product-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6.4px;
+}
+
+.ge-tag {
+  background: #34aecc18;
+  color: #34aecc;
+  font-size: 12.8px;
+  padding: 4.8px 9.6px;
+  border-radius: 8px;
+  font-weight: 500;
+}
