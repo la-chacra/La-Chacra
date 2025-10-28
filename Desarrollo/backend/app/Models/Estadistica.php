@@ -31,6 +31,7 @@ class Estadistica extends ModeloBase {
     private Periodo $periodo;
     private string $productosMasVendidos;
     private TemporadasAltas $temporadasAltas;
+    
 
     public function __construct(array $datos = []) {
         $this->id_estadistica       = $datos["id_estadistica"] ?? null;
@@ -77,35 +78,70 @@ class Estadistica extends ModeloBase {
      * @return array Lista de los clientes destacados según el criterio definido.
      */
     public static function obtenerTopPlatos(): array {
-        $consulta =  "
-            SELECT 
-                pm.nombre AS plato,
-                SUM(dc.cantidad) AS total_vendidos
-            FROM detalle_comanda dc
-            JOIN productos_menu pm ON pm.producto_id = dc.producto_id
-            JOIN comanda c ON c.comanda_id = dc.comanda_id
-            WHERE c.estado = 'Finalizada'
-            GROUP BY pm.producto_id
-            ORDER BY total_vendidos DESC
-            LIMIT 5
+    $consulta =  "
+        SELECT 
+            pm.nombre AS plato,
+            SUM(dc.cantidad) AS total_vendidos
+        FROM detalle_comanda dc
+        JOIN productos_menu pm ON pm.producto_id = dc.producto_id
+        JOIN comanda c ON c.comanda_id = dc.comanda_id
+        WHERE c.estado = 'Finalizada'
+        GROUP BY pm.producto_id
+        ORDER BY total_vendidos DESC
+        LIMIT 5
+    ";
+    return static::$conexion_bd->realizarConsulta($consulta);
+}
+
+    public static function obtenerPedidosTotales(): array {
+        $consulta = "
+            SELECT COUNT(*) AS total_pedidos
+            FROM comanda
+            WHERE estado = 'Finalizada'
         ";
         return static::$conexion_bd->realizarConsulta($consulta);
     }
 
-    public static function obtenerPedidosTotales() : array {
-        $consulta =  "";
-    return static::$conexion_bd->realizarConsulta($consulta);
-
-
-    } 
-    
-    
-    public static function obtenerGananciasTotales() : array {
-        $consulta =  "";
-    return static::$conexion_bd->realizarConsulta($consulta);
-
-
+    public static function obtenerReservasTotales(): array {
+        $consulta = "
+            SELECT COUNT(*) AS total_visitas
+            FROM reserva
+            WHERE estado IN ('Confirmada', 'Finalizada')
+        ";
+        return static::$conexion_bd->realizarConsulta($consulta);
     }
+
+    public static function obtenerGananciasTotales(): array {
+        $consulta = "
+            SELECT 
+                SUM(pm.precio * dc.cantidad) AS total_ganancias
+            FROM detalle_comanda dc
+            JOIN productos_menu pm ON pm.producto_id = dc.producto_id
+            JOIN comanda c ON c.comanda_id = dc.comanda_id
+            WHERE c.estado = 'Finalizada'
+        ";
+        return static::$conexion_bd->realizarConsulta($consulta);
+    }
+
+    public static function obtenerVentasPorTemporada(): array {
+    $consulta = "
+        SELECT 
+            CASE 
+                WHEN MONTH(c.fecha_hora) IN (12, 1, 2) THEN 'Verano'
+                WHEN MONTH(c.fecha_hora) IN (3, 4, 5) THEN 'Otoño'
+                WHEN MONTH(c.fecha_hora) IN (6, 7, 8) THEN 'Invierno'
+                WHEN MONTH(c.fecha_hora) IN (9, 10, 11) THEN 'Primavera'
+            END AS temporada,
+            SUM(pm.precio * dc.cantidad) AS total_vendido
+        FROM detalle_comanda dc
+        JOIN productos_menu pm ON pm.producto_id = dc.producto_id
+        JOIN comanda c ON c.comanda_id = dc.comanda_id
+        WHERE c.estado = 'Finalizada'
+        GROUP BY temporada
+        ORDER BY FIELD(temporada, 'Verano', 'Otoño', 'Invierno', 'Primavera');
+    ";
+    return static::$conexion_bd->realizarConsulta($consulta);
+}
 
 
       // ------------------------------------------------------------------
