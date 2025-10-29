@@ -3,31 +3,25 @@ import { FaFilter, FaPlus, FaDownload, FaTrash, FaEdit } from "react-icons/fa";
 import AdminHeader from "../../components/HeaderAdmin";
 
 export default function GestionStock() {
-  const STOCK_BAJO = 5; // 🔹 Umbral stock bajo
-
   const tipos = [
-    { nombre: "Carne", color: "bg-red-500", variantes: ["Picaña", "Vacio", "Costilla", "Lomo"] },
-    { nombre: "Bebida", color: "bg-sky-500", variantes: ["Coca-Cola", "Sprite", "Agua", "Fanta"] },
-    { nombre: "Producto de higiene", color: "bg-purple-500", variantes: ["Jabón", "Shampoo", "Alcohol en gel"] },
-    { nombre: "Vino", color: "bg-rose-500", variantes: ["Malbec", "Cabernet", "Syrah", "Merlot"] },
-    { nombre: "Aderezo", color: "bg-yellow-500", variantes: ["Mayonesa", "Ketchup", "Mostaza", "Salsa golf"] },
-    { nombre: "Fruta", color: "bg-pink-500", variantes: ["Manzana", "Banana", "Pera", "Naranja"] },
-    { nombre: "Verdura", color: "bg-green-600", variantes: ["Lechuga", "Tomate", "Cebolla", "Zanahoria"] },
+    { nombre: "Carne", color: "bg-red-500" },
+    { nombre: "Bebida", color: "bg-sky-500" },
+    { nombre: "Producto de higiene", color: "bg-purple-500" },
+    { nombre: "Vino", color: "bg-rose-500" },
+    { nombre: "Aderezo", color: "bg-yellow-500" },
+    { nombre: "Fruta", color: "bg-pink-500" },
+    { nombre: "Verdura", color: "bg-green-600" },
   ];
 
   const [products, setProducts] = useState(
     Array.from({ length: 10 }).map((_, i) => {
       const tipo = tipos[Math.floor(Math.random() * tipos.length)];
-      const variantesSeleccionadas = tipo.variantes.sort(() => 0.5 - Math.random()).slice(0, 3);
       return {
         id: i + 1,
         nombre: `Producto ${i + 1}`,
         tipo: tipo.nombre,
         color: tipo.color,
-        variantes: variantesSeleccionadas.map((v) => ({
-          nombre: v,
-          cantidad: Math.floor(Math.random() * 20),
-        })),
+        cantidad: Math.floor(Math.random() * 50) + 1,
         precioUnidad: (Math.random() * 100 + 20).toFixed(2),
       };
     })
@@ -40,8 +34,11 @@ export default function GestionStock() {
   const [modal, setModal] = useState({ open: false, type: "", product: null });
 
   const toggleSelect = (id) => {
-    setSelected((prev) => (prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]));
+    setSelected((prev) =>
+      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
+    );
   };
+
   const toggleSelectAll = () => {
     if (selectAll) {
       setSelected([]);
@@ -53,15 +50,15 @@ export default function GestionStock() {
   };
 
   const filteredProducts = products.filter(
-    (p) => p.nombre.toLowerCase().includes(search.toLowerCase()) && (filter ? p.tipo === filter : true)
+    (p) =>
+      p.nombre.toLowerCase().includes(search.toLowerCase()) &&
+      (filter ? p.tipo === filter : true)
   );
 
   const totalPrecio = selected
     .map((id) => {
       const prod = products.find((p) => p.id === id);
-      if (!prod) return 0;
-      const totalCantidad = prod.variantes.reduce((acc, v) => acc + v.cantidad, 0);
-      return prod.precioUnidad * totalCantidad;
+      return prod ? prod.precioUnidad * prod.cantidad : 0;
     })
     .reduce((a, b) => a + b, 0)
     .toFixed(2);
@@ -74,66 +71,36 @@ export default function GestionStock() {
         nombre: "",
         tipo: "",
         color: "",
-        variantes: [{ nombre: "", cantidad: 0 }],
+        cantidad: 0,
         precioUnidad: "",
       },
     });
+
   const handleExport = () => alert("⬇️ Exportando inventario...");
   const handleFilter = () => alert("⚙️ Filtro avanzado en construcción...");
-  const handleDelete = (product) => setModal({ open: true, type: "delete", product });
-  const handleEdit = (product) => setModal({ open: true, type: "edit", product: { ...product } });
+  const handleDelete = (product) =>
+    setModal({ open: true, type: "delete", product });
+  const handleEdit = (product) =>
+    setModal({ open: true, type: "edit", product: { ...product } });
 
   const confirmAction = () => {
     if (modal.type === "delete") {
       setProducts((prev) => prev.filter((p) => p.id !== modal.product.id));
     } else if (modal.type === "edit") {
-      setProducts((prev) => prev.map((p) => (p.id === modal.product.id ? modal.product : p)));
+      setProducts((prev) =>
+        prev.map((p) => (p.id === modal.product.id ? modal.product : p))
+      );
     } else if (modal.type === "add") {
       const newProduct = {
         ...modal.product,
         id: products.length + 1,
-        color: tipos.find((t) => t.nombre === modal.product.tipo)?.color || "bg-gray-500",
+        color:
+          tipos.find((t) => t.nombre === modal.product.tipo)?.color ||
+          "bg-gray-500",
       };
       setProducts((prev) => [...prev, newProduct]);
     }
     setModal({ open: false, type: "", product: null });
-  };
-
-  const addVariant = () => {
-    setModal((prev) => ({
-      ...prev,
-      product: {
-        ...prev.product,
-        variantes: [...prev.product.variantes, { nombre: "", cantidad: 0 }],
-      },
-    }));
-  };
-
-  const removeVariant = (index) => {
-    setModal((prev) => ({
-      ...prev,
-      product: {
-        ...prev.product,
-        variantes: prev.product.variantes.filter((_, i) => i !== index),
-      },
-    }));
-  };
-
-  // 🔹 Función para alertar stock bajo o agotado
-  const checkStock = (product) => {
-    const bajas = product.variantes.filter((v) => v.cantidad <= STOCK_BAJO && v.cantidad > 0);
-    const agotadas = product.variantes.filter((v) => v.cantidad === 0);
-
-    if (agotadas.length > 0) {
-      alert(`❌ El producto "${product.nombre}" tiene variantes agotadas: ${agotadas.map(v => v.nombre).join(", ")}`);
-    } else if (bajas.length > 0) {
-      alert(`⚠️ El producto "${product.nombre}" tiene variantes bajas: ${bajas.map(v => v.nombre).join(", ")}`);
-    }
-  };
-
-  const handleAddToComanda = (product) => {
-    checkStock(product);
-    // Aquí agregarías el producto al pedido/comanda
   };
 
   return (
@@ -143,6 +110,7 @@ export default function GestionStock() {
       </div>
 
       <div className="p-6 flex flex-col flex-1">
+        {/* 🔍 Barra de control */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
           <div className="flex flex-wrap md:flex-nowrap items-center gap-3 w-full md:w-auto">
             <input
@@ -172,6 +140,7 @@ export default function GestionStock() {
             </select>
           </div>
 
+          {/* Botones de acción */}
           <div className="flex gap-3 w-full md:w-auto justify-end">
             <button
               onClick={handleAdd}
@@ -188,6 +157,7 @@ export default function GestionStock() {
           </div>
         </div>
 
+        {/* 📋 Tabla */}
         <div className="overflow-x-auto bg-neutral-800 rounded-lg shadow border border-neutral-700">
           <table className="w-full text-sm text-left text-gray-200 border-collapse">
             <thead className="bg-neutral-700 text-gray-100 uppercase">
@@ -202,106 +172,82 @@ export default function GestionStock() {
                 </th>
                 <th className="px-4 py-3">Producto</th>
                 <th className="px-4 py-3">Tipo</th>
-                <th className="px-4 py-3">Variantes y Cantidad</th>
+                <th className="px-4 py-3 text-center">Cantidad</th>
                 <th className="px-4 py-3 text-center">Precio Unidad</th>
                 <th className="px-4 py-3 text-center">Precio Total</th>
                 <th className="px-4 py-3 text-center">Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {filteredProducts.map((p) => {
-                const totalCantidad = p.variantes.reduce((a, v) => a + v.cantidad, 0);
-                const totalPrecio = (p.precioUnidad * totalCantidad).toFixed(2);
+              {filteredProducts.map((p) => (
+                <tr
+                  key={p.id}
+                  className={`border-b border-neutral-700 hover:bg-neutral-700/50 transition ${
+                    selected.includes(p.id) ? "bg-emerald-900/40" : ""
+                  }`}
+                >
+                  <td className="px-4 py-3 text-center">
+                    <input
+                      type="checkbox"
+                      checked={selected.includes(p.id)}
+                      onChange={() => toggleSelect(p.id)}
+                      className="accent-emerald-500"
+                    />
+                  </td>
+                  <td className="px-4 py-3">{p.nombre}</td>
+                  <td className="px-4 py-3">
+                    <span
+                      className={`${p.color} text-white text-xs font-semibold px-3 py-1 rounded-full`}
+                    >
+                      {p.tipo}
+                    </span>
+                  </td>
 
-                return (
-                  <tr
-                    key={p.id}
-                    className={`border-b border-neutral-700 hover:bg-neutral-700/50 transition ${
-                      selected.includes(p.id) ? "bg-emerald-900/40" : ""
-                    }`}
-                  >
-                    <td className="px-4 py-3 text-center">
-                      <input
-                        type="checkbox"
-                        checked={selected.includes(p.id)}
-                        onChange={() => toggleSelect(p.id)}
-                        className="accent-emerald-500"
-                      />
-                    </td>
-                    <td className="px-4 py-3">{p.nombre}</td>
-                    <td className="px-4 py-3">
-                      <span className={`${p.color} text-white text-xs font-semibold px-3 py-1 rounded-full`}>
-                        {p.tipo}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <ul className="list-disc list-inside space-y-1 text-gray-300">
-                        {p.variantes.map((v, i) => {
-                          const isBajo = v.cantidad <= STOCK_BAJO && v.cantidad > 0;
-                          const isAgotado = v.cantidad === 0;
-                          return (
-                            <li key={i} className="flex items-center gap-1">
-                              {v.nombre} —{" "}
-                              <span
-                                className={`font-semibold ${
-                                  isAgotado
-                                    ? "text-red-600"
-                                    : isBajo
-                                    ? "text-yellow-400"
-                                    : "text-emerald-400"
-                                }`}
-                              >
-                                {v.cantidad}
-                              </span>{" "}
-                              {p.tipo === "Carne" || p.tipo === "Fruta" || p.tipo === "Verdura" ? "kg" : "u"}
-                              {isBajo && <span className="text-yellow-400 ml-1">⚠️</span>}
-                              {isAgotado && <span className="text-red-600 ml-1">❌</span>}
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </td>
-                    <td className="px-4 py-3 text-center">${p.precioUnidad}</td>
-                    <td className="px-4 py-3 text-center">${totalPrecio}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex justify-center items-center gap-4">
-                        <button onClick={() => handleDelete(p)} className="hover:scale-110 transition">
-                          <FaTrash className="text-red-500 hover:text-red-600" />
-                        </button>
-                        <button onClick={() => handleEdit(p)} className="hover:scale-110 transition">
-                          <FaEdit className="text-gray-300 hover:text-white" />
-                        </button>
-                        <button
-                          onClick={() => handleAddToComanda(p)}
-                          className={`px-2 py-1 rounded-md text-white text-sm ${
-                            p.variantes.some(v => v.cantidad === 0)
-                              ? "bg-red-600"
-                              : p.variantes.some(v => v.cantidad <= STOCK_BAJO)
-                              ? "bg-yellow-500"
-                              : "bg-emerald-600"
-                          }`}
-                        >
-                          Añadir
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
+                  {/* 🔹 Aquí agregamos la unidad según el tipo */}
+                  <td className="px-4 py-3 text-center">
+                    {p.cantidad}{" "}
+                    {["Carne", "Fruta", "Verdura"].includes(p.tipo) ? "kg" : "u"}
+                  </td>
+
+                  <td className="px-4 py-3 text-center">${p.precioUnidad}</td>
+                  <td className="px-4 py-3 text-center">
+                    ${(p.precioUnidad * p.cantidad).toFixed(2)}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex justify-center items-center gap-4">
+                      <button
+                        onClick={() => handleDelete(p)}
+                        className="hover:scale-110 transition"
+                      >
+                        <FaTrash className="text-red-500 hover:text-red-600" />
+                      </button>
+                      <button
+                        onClick={() => handleEdit(p)}
+                        className="hover:scale-110 transition"
+                      >
+                        <FaEdit className="text-gray-300 hover:text-white" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
 
+        {/* 🧮 Total (solo si hay seleccionados) */}
         {selected.length > 0 && (
           <div className="bg-emerald-700 text-white mt-4 p-4 rounded-md flex justify-between items-center">
             <p className="font-semibold">
-              Total de {selected.length} producto{selected.length > 1 && "s"}
+              Total de {selected.length} producto
+              {selected.length > 1 && "s"}
             </p>
             <p className="text-sm">${totalPrecio}</p>
           </div>
         )}
       </div>
 
+      {/* 🧾 Modal */}
       {modal.open && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-50">
           <div className="bg-neutral-800 p-6 rounded-lg shadow-lg w-[450px] text-gray-200 border border-neutral-700">
@@ -316,99 +262,89 @@ export default function GestionStock() {
             {modal.type === "delete" ? (
               <p className="text-center mb-6">
                 ¿Seguro que deseas eliminar{" "}
-                <span className="font-semibold text-red-400">{modal.product.nombre}</span>?
+                <span className="font-semibold text-red-400">
+                  {modal.product.nombre}
+                </span>
+                ?
               </p>
             ) : (
-              <>
-                <div className="space-y-3">
-                  <input
-                    type="text"
-                    placeholder="Nombre del producto"
-                    value={modal.product.nombre}
-                    onChange={(e) =>
-                      setModal((prev) => ({ ...prev, product: { ...prev.product, nombre: e.target.value } }))
-                    }
-                    className="w-full bg-neutral-700 text-white px-3 py-2 rounded-md"
-                  />
+              <div className="space-y-3">
+                <input
+                  type="text"
+                  placeholder="Nombre del producto"
+                  value={modal.product.nombre}
+                  onChange={(e) =>
+                    setModal((prev) => ({
+                      ...prev,
+                      product: { ...prev.product, nombre: e.target.value },
+                    }))
+                  }
+                  className="w-full bg-neutral-700 text-white px-3 py-2 rounded-md"
+                />
 
-                  <select
-                    value={modal.product.tipo}
-                    onChange={(e) =>
-                      setModal((prev) => ({
-                        ...prev,
-                        product: {
-                          ...prev.product,
-                          tipo: e.target.value,
-                          color: tipos.find((t) => t.nombre === e.target.value)?.color || "bg-gray-500",
-                        },
-                      }))
-                    }
-                    className="w-full bg-neutral-700 text-white px-3 py-2 rounded-md"
-                  >
-                    <option value="">Selecciona tipo</option>
-                    {tipos.map((t) => (
-                      <option key={t.nombre} value={t.nombre}>
-                        {t.nombre}
-                      </option>
-                    ))}
-                  </select>
+                <select
+                  value={modal.product.tipo}
+                  onChange={(e) =>
+                    setModal((prev) => ({
+                      ...prev,
+                      product: {
+                        ...prev.product,
+                        tipo: e.target.value,
+                        color:
+                          tipos.find((t) => t.nombre === e.target.value)
+                            ?.color || "bg-gray-500",
+                      },
+                    }))
+                  }
+                  className="w-full bg-neutral-700 text-white px-3 py-2 rounded-md"
+                >
+                  <option value="">Selecciona tipo</option>
+                  {tipos.map((t) => (
+                    <option key={t.nombre} value={t.nombre}>
+                      {t.nombre}
+                    </option>
+                  ))}
+                </select>
 
-                  <input
-                    type="number"
-                    placeholder="Precio por unidad"
-                    value={modal.product.precioUnidad}
-                    onChange={(e) =>
-                      setModal((prev) => ({ ...prev, product: { ...prev.product, precioUnidad: e.target.value } }))
-                    }
-                    className="w-full bg-neutral-700 text-white px-3 py-2 rounded-md"
-                  />
+                <input
+                  type="number"
+                  placeholder="Cantidad"
+                  value={modal.product.cantidad}
+                  onChange={(e) =>
+                    setModal((prev) => ({
+                      ...prev,
+                      product: {
+                        ...prev.product,
+                        cantidad: Number(e.target.value),
+                      },
+                    }))
+                  }
+                  className="w-full bg-neutral-700 text-white px-3 py-2 rounded-md"
+                />
 
-                  <div className="space-y-2">
-                    <label className="block text-sm font-semibold">Variantes:</label>
-                    {modal.product.variantes.map((v, i) => (
-                      <div key={i} className="flex gap-2">
-                        <input
-                          type="text"
-                          placeholder="Nombre"
-                          value={v.nombre}
-                          onChange={(e) =>
-                            setModal((prev) => {
-                              const newVariantes = [...prev.product.variantes];
-                              newVariantes[i].nombre = e.target.value;
-                              return { ...prev, product: { ...prev.product, variantes: newVariantes } };
-                            })
-                          }
-                          className="flex-1 bg-neutral-700 text-white px-2 py-1 rounded-md"
-                        />
-                        <input
-                          type="number"
-                          placeholder="Cant."
-                          value={v.cantidad}
-                          onChange={(e) =>
-                            setModal((prev) => {
-                              const newVariantes = [...prev.product.variantes];
-                              newVariantes[i].cantidad = Number(e.target.value);
-                              return { ...prev, product: { ...prev.product, variantes: newVariantes } };
-                            })
-                          }
-                          className="w-20 bg-neutral-700 text-white px-2 py-1 rounded-md"
-                        />
-                        <button onClick={() => removeVariant(i)} className="text-red-400 hover:text-red-500 text-lg">
-                          ✕
-                        </button>
-                      </div>
-                    ))}
-                    <button onClick={addVariant} className="text-emerald-400 hover:text-emerald-500 text-sm font-semibold">
-                      + Añadir variante
-                    </button>
-                  </div>
-                </div>
-              </>
+                <input
+                  type="number"
+                  placeholder="Precio por unidad"
+                  value={modal.product.precioUnidad}
+                  onChange={(e) =>
+                    setModal((prev) => ({
+                      ...prev,
+                      product: {
+                        ...prev.product,
+                        precioUnidad: e.target.value,
+                      },
+                    }))
+                  }
+                  className="w-full bg-neutral-700 text-white px-3 py-2 rounded-md"
+                />
+              </div>
             )}
 
             <div className="flex justify-center gap-3 mt-6">
               <button
-                onClick={() => setModal({ open: false, type: "", product: null })}
+                onClick={() =>
+                  setModal({ open: false, type: "", product: null })
+                }
                 className="bg-gray-500 px-4 py-2 rounded-md hover:bg-gray-400 text-white"
               >
                 Cancelar
@@ -416,7 +352,9 @@ export default function GestionStock() {
               <button
                 onClick={confirmAction}
                 className={`px-4 py-2 rounded-md text-white ${
-                  modal.type === "delete" ? "bg-red-600 hover:bg-red-500" : "bg-emerald-600 hover:bg-emerald-500"
+                  modal.type === "delete"
+                    ? "bg-red-600 hover:bg-red-500"
+                    : "bg-emerald-600 hover:bg-emerald-500"
                 }`}
               >
                 {modal.type === "delete" ? "Eliminar" : "Guardar"}
