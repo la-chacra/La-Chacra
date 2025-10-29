@@ -10,7 +10,9 @@ import Comanda from './pages/Comanda/Comanda';
 import Test from './pages/Admin/Test';
 import ComandaHist from './pages/Comanda/ComandaHist';
 import StockHist from './pages/Stock/HistorialStock.jsx';
-
+import PlatosTabla from './pages/Platos/TablaPlatos.jsx';
+import Platos from './pages/Platos/Platos.jsx';
+import Estadisticas from './pages/Estadisticas/EstadisticasMain.jsx';
 // (cuando agreguen más páginas, las importas acá)
 
 function App() {
@@ -55,6 +57,10 @@ function App() {
         <Route path="/gestion/comanda" element={<Comanda/>}/>
         <Route path="/gestion/comanda-historial" element={<ComandaHist/>}/>
         <Route path="/gestion/stock-historial" element={<StockHist/>}/>
+        <Route path="/gestion/platos-tabla" element={<PlatosTabla/>}/>
+        <Route path="/gestion/plato" element={<Platos/>}/>
+        <Route path="/gestion/plato/:id" element={<Platos/>}/>
+        <Route path="/gestion/estadisticas" element={<Estadisticas/>}/>
         {/* Testing */}
         <Route path="/test" element={<Test/>}/>
         {/* Ejemplo de otras rutas futuras */}
