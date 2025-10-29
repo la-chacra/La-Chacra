@@ -18,6 +18,7 @@ use App\Controllers\AuthController;
 use App\Controllers\ComandaController;
 use App\Controllers\RecuperarController;
 use App\Controllers\StockController;
+use App\Controllers\EstadisticaController;
 
 
 
@@ -54,6 +55,12 @@ $router->post("/api/recuperar/cambiarPassword", [RecuperarController::class, "ca
 // API Insumo
 $router->post("/api/insumo/eliminar", [StockController::class, "eliminar"]);
 $router->post("/api/insumo/actualizar", [StockController::class, "actualizar"]);
+
+//API EstadisticaController
+$router->post("/api/estadistica/topPlatos", [EstadisticaController::class, "obtenerTopPlatos"]);
+$router->post("/api/estadistica/pedidosTotales", [EstadisticaController::class, "obtenerPedidosTotales"]);
+$router->post("/api/estadistica/reservasTotales", [EstadisticaController::class, "obtenerReservasTotales"]);
+$router->post("/api/estadistica/gananciasTotales", [EstadisticaController::class, "obtenerGananciasTotales"]);
 
 
 $allowedOrigin = "http://localhost:5173";
