@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPen } from "@fortawesome/free-solid-svg-icons";
 
 const DateSelector = ({ selectedDate, onDateChange }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date())
@@ -28,8 +26,6 @@ const DateSelector = ({ selectedDate, onDateChange }) => {
     
     const days = []
     const today = new Date()
-    const maxDate = new Date()
-    maxDate.setDate(maxDate.getDate() + 21) // 3 semanas en el futuro
     
     for (let i = 0; i < 42; i++) {
       const date = new Date(startDate)
@@ -37,18 +33,15 @@ const DateSelector = ({ selectedDate, onDateChange }) => {
       
       const isCurrentMonth = date.getMonth() === month
       const isToday = date.toDateString() === today.toDateString()
-      const isPast = date < today && !isToday
-      const isFuture = date > maxDate
-      const isSelectable = isCurrentMonth && !isPast && !isFuture
+      const isPastOrToday = date <= today
+      const isSelectable = isCurrentMonth && isPastOrToday
       
       days.push({
-        date: date,
+        date,
         day: date.getDate(),
         isCurrentMonth,
         isToday,
-        isPast,
-        isFuture,
-        isSelectable
+        isSelectable,
       })
     }
     
@@ -70,58 +63,45 @@ const DateSelector = ({ selectedDate, onDateChange }) => {
   }
 
   const formatSelectedDate = () => {
-    if (!selectedDate) return 'Selecciona la fecha'
-    
-    const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
-    const dayName = days[selectedDate.getDay()]
-    const month = months[selectedDate.getMonth()].substring(0, 3)
+    if (!selectedDate) return `${months[currentMonth.getMonth()]} ${currentMonth.getFullYear()}`
     const day = selectedDate.getDate()
-    
-    return `${dayName}, ${month} ${day}`
+    const month = months[selectedDate.getMonth()]
+    const year = selectedDate.getFullYear()
+    return `${day} ${month} ${year}`
   }
 
-    return (
-    <div className="date-selector">
-        <div className="date-header">
-        <span className="date-label">Selecciona la fecha</span>
-        <button className="edit-button">
-            <FontAwesomeIcon icon={faPen} />
-        </button>
-      </div>
-      
-      <div className="selected-date">
-        {formatSelectedDate()}
-      </div>
-      
-      <div className="calendar">
-        <div className="calendar-header">
-          <span className="month-year">
-            {months[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+  return (
+    <div className="ndp-date-selector">
+
+      <div className="ndp-calendar">
+        <div className="ndp-calendar-header">
+          <span className="ndp-month-year">
+            {formatSelectedDate()}
           </span>
-          <div className="nav-buttons">
-            <button onClick={handlePrevMonth} className="nav-btn">‹</button>
-            <button onClick={handleNextMonth} className="nav-btn">›</button>
+          <div className="ndp-nav-buttons">
+            <button onClick={handlePrevMonth} className="ndp-nav-btn">‹</button>
+            <button onClick={handleNextMonth} className="ndp-nav-btn">›</button>
           </div>
         </div>
         
-        <div className="weekdays">
+        <div className="ndp-weekdays">
           {weekDays.map((day, index) => (
-            <div key={index} className="weekday">{day}</div>
+            <div key={index} className="ndp-weekday">{day}</div>
           ))}
         </div>
         
-        <div className="calendar-grid">
+        <div className="ndp-calendar-grid">
           {calendarDays.map((dayObj, index) => (
             <button
               key={index}
-              className={`calendar-day ${
-                !dayObj.isCurrentMonth ? 'other-month' : ''
+              className={`ndp-calendar-day ${
+                !dayObj.isCurrentMonth ? 'ndp-other-month' : ''
               } ${
-                dayObj.isToday ? 'today' : ''
+                dayObj.isToday ? 'ndp-today' : ''
               } ${
-                !dayObj.isSelectable ? 'disabled' : ''
+                !dayObj.isSelectable ? 'ndp-disabled' : ''
               } ${
-                selectedDate && dayObj.date.toDateString() === selectedDate.toDateString() ? 'selected' : ''
+                selectedDate && dayObj.date.toDateString() === selectedDate.toDateString() ? 'ndp-selected' : ''
               }`}
               onClick={() => handleDateClick(dayObj)}
               disabled={!dayObj.isSelectable}
