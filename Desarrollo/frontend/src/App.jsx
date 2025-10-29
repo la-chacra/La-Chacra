@@ -13,6 +13,7 @@ import StockHist from './pages/Stock/HistorialStock.jsx';
 import PlatosTabla from './pages/Platos/TablaPlatos.jsx';
 import Platos from './pages/Platos/Platos.jsx';
 import Estadisticas from './pages/Estadisticas/EstadisticasMain.jsx';
+import GestionStock from './pages/Stock/GestionStock';
 // (cuando agreguen más páginas, las importas acá)
 
 function App() {
@@ -56,6 +57,7 @@ function App() {
         <Route path="/gestion/reserva" element={<ReservaHist/>}/>
         <Route path="/gestion/comanda" element={<Comanda/>}/>
         <Route path="/gestion/comanda-historial" element={<ComandaHist/>}/>
+        <Route path="/gestion/Stock" element={<GestionStock/>}/>
         <Route path="/gestion/stock-historial" element={<StockHist/>}/>
         <Route path="/gestion/platos-tabla" element={<PlatosTabla/>}/>
         <Route path="/gestion/plato" element={<Platos/>}/>
