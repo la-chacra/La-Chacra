@@ -2604,6 +2604,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .ge-card__header{
   font-weight:700;
   margin-bottom:14px;
+  font-size:18px;
   color:#2d2d2d;
 }
 
@@ -2799,4 +2800,45 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding: 4.8px 9.6px;
   border-radius: 8px;
   font-weight: 500;
+}
+
+.ge-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  justify-content: flex-end;
+}
+
+.ge-filter-select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background-color: #fff;
+}
+
+.ge-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.ge-pagination button {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: none;
+  background-color: #e0e0e0;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.ge-pagination button:hover:not(:disabled) {
+  background-color: #d0d0d0;
+}
+
+.ge-pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
