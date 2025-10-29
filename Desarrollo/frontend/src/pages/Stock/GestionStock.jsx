@@ -23,6 +23,11 @@ export default function GestionStock() {
         color: tipo.color,
         cantidad: Math.floor(Math.random() * 50) + 1,
         precioUnidad: (Math.random() * 100 + 20).toFixed(2),
+        unidad: ["Carne", "Fruta", "Verdura"].includes(tipo.nombre)
+          ? "kg"
+          : ["Bebida", "Vino"].includes(tipo.nombre)
+          ? "L"
+          : "u",
       };
     })
   );
@@ -73,6 +78,7 @@ export default function GestionStock() {
         color: "",
         cantidad: 0,
         precioUnidad: "",
+        unidad: "u",
       },
     });
 
@@ -173,6 +179,7 @@ export default function GestionStock() {
                 <th className="px-4 py-3">Producto</th>
                 <th className="px-4 py-3">Tipo</th>
                 <th className="px-4 py-3 text-center">Cantidad</th>
+                <th className="px-4 py-3 text-center">Unidad</th>
                 <th className="px-4 py-3 text-center">Precio Unidad</th>
                 <th className="px-4 py-3 text-center">Precio Total</th>
                 <th className="px-4 py-3 text-center">Acciones</th>
@@ -202,13 +209,8 @@ export default function GestionStock() {
                       {p.tipo}
                     </span>
                   </td>
-
-                  {/* 🔹 Aquí agregamos la unidad según el tipo */}
-                  <td className="px-4 py-3 text-center">
-                    {p.cantidad}{" "}
-                    {["Carne", "Fruta", "Verdura"].includes(p.tipo) ? "kg" : "u"}
-                  </td>
-
+                  <td className="px-4 py-3 text-center">{p.cantidad}</td>
+                  <td className="px-4 py-3 text-center">{p.unidad}</td>
                   <td className="px-4 py-3 text-center">${p.precioUnidad}</td>
                   <td className="px-4 py-3 text-center">
                     ${(p.precioUnidad * p.cantidad).toFixed(2)}
@@ -235,7 +237,7 @@ export default function GestionStock() {
           </table>
         </div>
 
-        {/* 🧮 Total (solo si hay seleccionados) */}
+        {/* 🧮 Total */}
         {selected.length > 0 && (
           <div className="bg-emerald-700 text-white mt-4 p-4 rounded-md flex justify-between items-center">
             <p className="font-semibold">
@@ -304,6 +306,22 @@ export default function GestionStock() {
                       {t.nombre}
                     </option>
                   ))}
+                </select>
+
+                {/* 🔹 Unidad */}
+                <select
+                  value={modal.product.unidad}
+                  onChange={(e) =>
+                    setModal((prev) => ({
+                      ...prev,
+                      product: { ...prev.product, unidad: e.target.value },
+                    }))
+                  }
+                  className="w-full bg-neutral-700 text-white px-3 py-2 rounded-md"
+                >
+                  <option value="u">Unidad (u)</option>
+                  <option value="kg">Kilogramos (kg)</option>
+                  <option value="L">Litros (L)</option>
                 </select>
 
                 <input
