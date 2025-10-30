@@ -221,7 +221,7 @@ const OrderManagement = () => {
                   </div>
                 ))}
               </div>
-
+              <hr className="om-divider" />  {/* <-- Add this line */}
               <div className="om-selected-items">
                 {selectedProductos.map((producto, index) => (
                   <div key={index} className="om-selected-item">
