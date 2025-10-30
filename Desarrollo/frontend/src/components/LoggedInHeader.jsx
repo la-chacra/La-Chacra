@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faTimes, faUserCircle, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import logo from "../assets/logo.png";
+import profilePic from "../assets/default-avatar.png"; // Add your profile image here
 
-const Header = () => {
+const LoggedInHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   return (
     <>
@@ -27,25 +29,35 @@ const Header = () => {
         </nav>
 
         <div className="right-controls">
-          <div className="auth-controls">
-            <Link to="/login" className="btn login">
-              INICIAR SESIÓN
-            </Link>
-            <Link to="/login" className="btn register">
-              REGISTRARSE
-            </Link>
-          </div>
-
           <div className="lang-wrapper">
             <select className="lang-select">
               <option value="es">ES 🇺🇾</option>
               <option value="en">EN 🇺🇸</option>
-              <option value="en">PT-BR 🇧🇷</option>
+              <option value="pt">PT-BR 🇧🇷</option>
             </select>
+          </div>
+
+          <div
+            className="li-profile-wrapper"
+            onClick={() => setProfileOpen(!profileOpen)}
+          >
+            <img
+              src={profilePic}
+              alt="Perfil"
+              className="li-profile-pic"
+            />
+            <div className={`li-dropdown font-montserrat ${profileOpen ? "open" : ""}`}>
+              <Link to="/perfil" className="li-dropdown-item">
+                <FontAwesomeIcon icon={faUserCircle} /> Mi Perfil
+              </Link>
+              <Link to="/logout" className="li-dropdown-item logout">
+                <FontAwesomeIcon icon={faSignOutAlt} /> Cerrar Sesión
+              </Link>
+            </div>
           </div>
         </div>
 
-        {/* menu desplegable */}
+        {/* menu despegable */}
         <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
           <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} />
         </div>
@@ -55,8 +67,6 @@ const Header = () => {
             <div className="mobile-nav-links">
               <Link to="/carta" onClick={() => setMenuOpen(false)}>Carta</Link>
               <span>•</span>
-              <Link to="/sobre-nosotros" onClick={() => setMenuOpen(false)}>Sobre Nosotros</Link>
-              <span>•</span>
               <Link to="/reserva" onClick={() => setMenuOpen(false)}>Reserva</Link>
               <span>•</span>
               <Link to="/eventos" onClick={() => setMenuOpen(false)}>Eventos</Link>
@@ -64,19 +74,18 @@ const Header = () => {
 
             <hr className="mobile-divider" />
 
-            <div className="mobile-auth">
-            <Link to="/login" className="btn login">
-              INICIAR SESIÓN
-            </Link>
-            <Link to="/login" className="btn register">
-              REGISTRARSE
-            </Link>
+            {/* perfil responsive */}
+            <div className="li-mobile-profile">
+              <img src={profilePic} alt="Perfil" className="li-mobile-profile-pic" />
+              <div className="li-mobile-profile-links">
+                <Link to="/perfil">Mi Perfil</Link>
+                <Link to="/logout" className="logout">Cerrar Sesión</Link>
+              </div>
             </div>
           </nav>
         </div>
       </header>
 
-      {/* Decorative wave absolutely positioned */}
       <div className="wave">
         <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
           <path d="M 0 15 C 32 34 156 -21 479 21 C 770 61 801 -19 1207 9.25 C 1465 43 1440 0 1620 15 L 1620 0 L 0 0 Z"></path>
@@ -86,4 +95,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default LoggedInHeader;

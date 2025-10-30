@@ -41,13 +41,13 @@ const AdminHeader = () => {
         <NavLink to="/admin/empleados" className="admin-nav-link">
           <FontAwesomeIcon icon={faUsers} className="admin-nav-icon" /> Empleados
         </NavLink>
-        <NavLink to="/admin/estadisticas" className="admin-nav-link">
+        <NavLink to="/gestion/estadisticas" className="admin-nav-link">
           <FontAwesomeIcon icon={faChartBar} className="admin-nav-icon" /> Estadísticas
         </NavLink>
-        <NavLink to="/admin/platos" className="admin-nav-link">
+        <NavLink to="/gestion/platos-tabla" className="admin-nav-link">
           <FontAwesomeIcon icon={faUtensils} className="admin-nav-icon" /> Platos
         </NavLink>
-        <NavLink to="/admin/stockcambios" className="admin-nav-link">
+        <NavLink to="/gestion/stock-historial" className="admin-nav-link">
           <FontAwesomeIcon icon={faArrowsRotate} className="admin-nav-icon" /> StockCambios
         </NavLink>
       </nav>
@@ -69,22 +69,22 @@ const AdminHeader = () => {
           <NavLink to="/admin/stock" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
             <FontAwesomeIcon icon={faBoxesStacked} className="admin-nav-icon" /> Stock
           </NavLink>
-          <NavLink to="/admin/reservas" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
+          <NavLink to="/gestion/reserva" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
             <FontAwesomeIcon icon={faCalendarCheck} className="admin-nav-icon" /> Reservas
           </NavLink>
-          <NavLink to="/admin/comanda" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
+          <NavLink to="/gestion/comanda" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
             <FontAwesomeIcon icon={faConciergeBell} className="admin-nav-icon" /> Comanda
           </NavLink>
           <NavLink to="/admin/empleados" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
             <FontAwesomeIcon icon={faUsers} className="admin-nav-icon" /> Empleados
           </NavLink>
-          <NavLink to="/admin/estadisticas" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
+          <NavLink to="/gestion/estadisticas" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
             <FontAwesomeIcon icon={faChartBar} className="admin-nav-icon" /> Estadísticas
           </NavLink>
-          <NavLink to="/admin/platos" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
+          <NavLink to="/gestion/platos-tabla" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
             <FontAwesomeIcon icon={faUtensils} className="admin-nav-icon" /> Platos
           </NavLink>
-          <NavLink to="/admin/stockcambios" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
+          <NavLink to="/gestion/stock-historial" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
             <FontAwesomeIcon icon={faArrowsRotate} className="admin-nav-icon" /> StockCambios
           </NavLink>
         </nav>

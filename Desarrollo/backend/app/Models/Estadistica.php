@@ -3,30 +3,11 @@
 namespace App\Models;
 
 use App\Models\ModeloBase;
+use App\Models\Enums\Periodo;
+use App\Models\Enums\TemporadasAltas;
 
 
-/**
- * Enum Periodo
- *
- * Representa los diferentes periodos de tiempo utilizados en las estadísticas.
- * Cada valor del enum corresponde a un periodo específico, identificado por una cadena.
- *
- * 
- *
- * @package App\Models
- */
-enum Periodo: string {
-    case Verano = 'Verano';
-    case Otono = 'Otono';
-    case Primavera = 'Primavera';
-}
 
-enum TemporadasAltas: string {
-    case VacacionesVerano = 'VacacionesVerano';
-    case VacacionesInvierno = 'VacacionesInvierno';
-    case Turismo = 'Turismo';
-    case FiestasFinAno = 'FiestasFinAno';
-}
 
 class Estadistica extends ModeloBase {
 
@@ -50,6 +31,7 @@ class Estadistica extends ModeloBase {
     private Periodo $periodo;
     private string $productosMasVendidos;
     private TemporadasAltas $temporadasAltas;
+    
 
     public function __construct(array $datos = []) {
         $this->id_estadistica       = $datos["id_estadistica"] ?? null;
@@ -95,10 +77,31 @@ class Estadistica extends ModeloBase {
      *
      * @return array Lista de los clientes destacados según el criterio definido.
      */
-    public static function obtenerTopPlatos(): array {
-        $consulta = "SELECT * FROM producto_menu ORDER BY nombre DESC LIMIT 5";
+    public static function obtenerTopClientes(): array {
+        $consulta = "SELECT * FROM cliente ORDER BY puntos DESC LIMIT 5";
         return static::$conexion_bd->realizarConsulta($consulta);
     }
+
+    public static function obtenerVentasPorTemporada(): array {
+    $consulta = "
+        SELECT 
+            CASE 
+                WHEN MONTH(c.fecha_hora) IN (12, 1, 2) THEN 'Verano'
+                WHEN MONTH(c.fecha_hora) IN (3, 4, 5) THEN 'Otoño'
+                WHEN MONTH(c.fecha_hora) IN (6, 7, 8) THEN 'Invierno'
+                WHEN MONTH(c.fecha_hora) IN (9, 10, 11) THEN 'Primavera'
+            END AS temporada,
+            SUM(pm.precio * dc.cantidad) AS total_vendido
+        FROM detalle_comanda dc
+        JOIN productos_menu pm ON pm.producto_id = dc.producto_id
+        JOIN comanda c ON c.comanda_id = dc.comanda_id
+        WHERE c.estado = 'Finalizada'
+        GROUP BY temporada
+        ORDER BY FIELD(temporada, 'Verano', 'Otoño', 'Invierno', 'Primavera');
+    ";
+    return static::$conexion_bd->realizarConsulta($consulta);
+}
+
 
       // ------------------------------------------------------------------
     //  Getters y Setters 
