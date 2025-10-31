@@ -51,7 +51,7 @@ class AuthMiddleware {
             "/api/gestion/comanda/crear",
             "/api/gestion/comanda/actualizar",
             "/api/gestion/comanda/listar",
-            "/api/estadisticas"
+            "/api/estadistica/obtenerDashboard"
         ]
     ];
 

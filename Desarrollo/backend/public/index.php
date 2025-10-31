@@ -61,6 +61,7 @@ $router->post("/api/estadistica/topPlatos", [EstadisticaController::class, "obte
 $router->post("/api/estadistica/pedidosTotales", [EstadisticaController::class, "obtenerPedidosTotales"]);
 $router->post("/api/estadistica/reservasTotales", [EstadisticaController::class, "obtenerReservasTotales"]);
 $router->post("/api/estadistica/gananciasTotales", [EstadisticaController::class, "obtenerGananciasTotales"]);
+$router->get("/api/estadistica/obtenerDashboard", [EstadisticaController::class, "obtenerDashboard"]);
 
 
 $allowedOrigin = "http://localhost:5173";
