@@ -81,6 +81,21 @@ class Estadistica extends ModeloBase {
         $consulta = "SELECT * FROM cliente ORDER BY puntos DESC LIMIT 5";
         return static::$conexion_bd->realizarConsulta($consulta);
     }
+      public static function obtenerTopPlatos(): array {
+    $consulta =  "
+        SELECT 
+            pm.nombre AS plato,
+            SUM(dc.cantidad) AS total_vendidos
+        FROM detalle_comanda dc
+        JOIN productos_menu pm ON pm.producto_id = dc.producto_id
+        JOIN comanda c ON c.comanda_id = dc.comanda_id
+        WHERE c.estado = 'Finalizada'
+        GROUP BY pm.producto_id
+        ORDER BY total_vendidos DESC
+        LIMIT 5
+    ";
+    return static::$conexion_bd->realizarConsulta($consulta);
+}
 
     public static function obtenerVentasPorTemporada(): array {
     $consulta = "
@@ -101,6 +116,37 @@ class Estadistica extends ModeloBase {
     ";
     return static::$conexion_bd->realizarConsulta($consulta);
 }
+    public static function obtenerPedidosTotales(): array {
+        $consulta = "
+            SELECT COUNT(*) AS total_pedidos
+            FROM comanda
+            WHERE estado = 'Finalizada'
+        ";
+        return static::$conexion_bd->realizarConsulta($consulta);
+    }
+
+    public static function obtenerReservasTotales(): array {
+        $consulta = "
+            SELECT COUNT(*) AS total_visitas
+            FROM reserva
+            WHERE estado IN ('Confirmada', 'Finalizada')
+        ";
+        return static::$conexion_bd->realizarConsulta($consulta);
+    }
+
+    public static function obtenerGananciasTotales(): array {
+        $consulta = "
+            SELECT 
+                SUM(pm.precio * dc.cantidad) AS total_ganancias
+            FROM detalle_comanda dc
+            JOIN productos_menu pm ON pm.producto_id = dc.producto_id
+            JOIN comanda c ON c.comanda_id = dc.comanda_id
+            WHERE c.estado = 'Finalizada'
+        ";
+        return static::$conexion_bd->realizarConsulta($consulta);
+    }
+
+    
 
 
       // ------------------------------------------------------------------
@@ -207,6 +253,7 @@ class Estadistica extends ModeloBase {
 
         return $this;
     }
+    
 }
    
 

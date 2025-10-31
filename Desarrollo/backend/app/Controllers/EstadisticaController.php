@@ -112,11 +112,11 @@ class EstadisticaController {
 
 public function obtenerDashboard($router) {
     try {
-        $topPlatos = ControllerService::handlerErrorConexion(fn() => Estadisticas::obtenerTopPlatos());
-        $pedidos = ControllerService::handlerErrorConexion(fn() => Estadisticas::obtenerPedidosTotales());
-        $visitas = ControllerService::handlerErrorConexion(fn() => Estadisticas::obtenerVisitasTotales());
-        $ganancias = ControllerService::handlerErrorConexion(fn() => Estadisticas::obtenerGananciasTotales());
-        $temporadas = ControllerService::handlerErrorConexion(fn() => Estadisticas::obtenerVentasPorTemporada());
+        $topPlatos = ControllerService::handlerErrorConexion(fn() => Estadistica::obtenerTopPlatos());
+        $pedidos = ControllerService::handlerErrorConexion(fn() => Estadistica::obtenerPedidosTotales());
+        $visitas = ControllerService::handlerErrorConexion(fn() => Estadistica::obtenerReservasTotales());
+        $ganancias = ControllerService::handlerErrorConexion(fn() => Estadistica::obtenerGananciasTotales());
+        $temporadas = ControllerService::handlerErrorConexion(fn() => Estadistica::obtenerVentasPorTemporada());
     } catch (Exception $e) {
         http_response_code(500);
         return ["success" => false, "message" => "Error interno del servidor"];
