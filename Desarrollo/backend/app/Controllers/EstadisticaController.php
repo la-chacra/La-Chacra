@@ -58,7 +58,7 @@ class EstadisticaController {
     /**
      * Obtiene el total de visitas (reservas confirmadas o finalizadas).
      */
-    public function obtenerVisitasTotales($router) {
+    public function obtenerReservasTotales($router) {
         try {
             $visitas = ControllerService::handlerErrorConexion(fn() => Estadistica::obtenerReservasTotales());
         } catch (Exception $e) {
@@ -109,4 +109,30 @@ class EstadisticaController {
         "data" => $ventas
     ];
 }
+
+public function obtenerDashboard($router) {
+    try {
+        $topPlatos = ControllerService::handlerErrorConexion(fn() => Estadisticas::obtenerTopPlatos());
+        $pedidos = ControllerService::handlerErrorConexion(fn() => Estadisticas::obtenerPedidosTotales());
+        $visitas = ControllerService::handlerErrorConexion(fn() => Estadisticas::obtenerVisitasTotales());
+        $ganancias = ControllerService::handlerErrorConexion(fn() => Estadisticas::obtenerGananciasTotales());
+        $temporadas = ControllerService::handlerErrorConexion(fn() => Estadisticas::obtenerVentasPorTemporada());
+    } catch (Exception $e) {
+        http_response_code(500);
+        return ["success" => false, "message" => "Error interno del servidor"];
+    }
+
+    return [
+        "success" => true,
+        "message" => "Datos del dashboard obtenidos correctamente",
+        "data" => [
+            "productosMasVendidos" => $topPlatos,
+            "pedidosTotales" => $pedidos[0]["total_pedidos"] ?? 0,
+            "visitasTotales" => $visitas[0]["total_visitas"] ?? 0,
+            "gananciasTotales" => $ganancias[0]["total_ganancias"] ?? 0,
+            "temporadasAltas" => $temporadas
+        ]
+    ];
+}
+
 }

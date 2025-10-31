@@ -40,59 +40,69 @@ export default function GeAdminDashboard() {
   const [selectedAnio, setSelectedAnio] = useState(new Date().getFullYear());
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const mockTemporadasAltas = [
-          {
-            key: "Turismo",
-            label: "Temporada de Turismo",
-            ingresos: 0,
-            icon: faSuitcaseRolling,
-            colorClass: "ge-season--green",
-          },
-          {
-            key: "FiestasFinAno",
-            label: "Fiestas de Fin de Año",
-            ingresos: 0,
-            icon: faGift,
-            colorClass: "ge-season--purple",
-          },
-          {
-            key: "VacacionesVerano",
-            label: "Vacaciones de Verano",
-            ingresos: 0,
-            icon: faSun,
-            colorClass: "ge-season--yellow",
-          },
-          {
-            key: "VacacionesInvierno",
-            label: "Vacaciones de Invierno",
-            ingresos: 0,
-            icon: faSnowflake,
-            colorClass: "ge-season--blue",
-          },
-        ];
+  const fetchData = async () => {
+    try {
+      const res = await fetch("/backend/estadisticas/dashboard");
+      const result = await res.json();
 
-        setTemporadasAltas(mockTemporadasAltas);
+      if (result.success) {
+        const data = result.data;
 
-        // const res = await fetch("/api/estadisticas/dashboard");
-        // const data = await res.json();
-        // setProductosMasVendidos(data.productosMasVendidos);
-        // setReservas(data.reservas);
-        // setVentas(data.ventas);
-        // setTemporadasAltas(data.temporadasAltas);
-        // setTendencias(data.tendencias);
-        // setDiferentesProductos(data.diferentesProductos);
-        // setTotalClientes(data.totalClientes);
-        // setPeriodoActual(data.periodoActual);
-        // setPorcentajeCrecimiento(data.porcentajeCrecimiento);
-      } catch (error) {
-        console.error("Error al obtener datos del backend:", error);
+        setProductosMasVendidos(data.productosMasVendidos);
+        setTemporadasAltas(
+          data.temporadasAltas.map((t) => ({
+            key: t.temporada,
+            label: `Temporada ${t.temporada}`,
+            ingresos: Number(t.total_vendido),
+            icon:
+              t.temporada === "Verano"
+                ? faSun
+                : t.temporada === "Invierno"
+                ? faSnowflake
+                : t.temporada === "Primavera"
+                ? faGift
+                : faSuitcaseRolling,
+            colorClass:
+              t.temporada === "Verano"
+                ? "ge-season--yellow"
+                : t.temporada === "Invierno"
+                ? "ge-season--blue"
+                : t.temporada === "Primavera"
+                ? "ge-season--purple"
+                : "ge-season--green",
+          }))
+        );
+
+        setVentas([
+          {
+            titulo: "Pedidos Totales",
+            valor: data.pedidosTotales,
+          },
+          {
+            titulo: "Visitas Totales",
+            valor: data.visitasTotales,
+          },
+          {
+            titulo: "Ganancias Totales",
+            valor: data.gananciasTotales,
+          },
+        ]);
+
+        // si más adelante agregamos reservas o clientes
+        setReservas([]);
+        setDiferentesProductos(data.productosMasVendidos.length || 0);
+        setTotalClientes(data.visitasTotales);
+        setPeriodoActual("Primavera");
+      } else {
+        console.warn("No se pudieron obtener los datos del dashboard.");
       }
-    };
+    } catch (error) {
+      console.error("Error al obtener datos del backend:", error);
+    }
+  };
 
-    fetchData();
-  }, []);
+  fetchData();
+}, []);
 
   const ventasTotales = useMemo(
     () => temporadasAltas.reduce((total, t) => total + t.ingresos, 0),

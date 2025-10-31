@@ -7,7 +7,6 @@ export default function ResumenGeneralTab({
   productosMasVendidos,
   temporadasAltasOrdenadas,
   ventasTotales,
-  porcentajeCrecimiento,
   fmt,
 }) {
   return (
@@ -16,7 +15,6 @@ export default function ResumenGeneralTab({
         <div className="ge-tile ge-tile--sales">
           <div className="ge-tile__title">Ventas Totales</div>
           <div className="ge-tile__value">${fmt(ventasTotales)}</div>
-          <div className="ge-tile__meta">+{porcentajeCrecimiento}%</div>
         </div>
 
         <div className="ge-tile ge-tile--products">
