@@ -42,7 +42,7 @@ export default function GeAdminDashboard() {
   useEffect(() => {
   const fetchData = async () => {
     try {
-      const res = await fetch("/api/gestion/estadisticas/obtenerDashboard");
+      const res = await fetch("/api/estadistica/obtenerDashboard");
       const result = await res.json();
 
       if (result.success) {

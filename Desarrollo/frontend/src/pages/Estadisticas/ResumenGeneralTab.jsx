@@ -43,17 +43,17 @@ export default function ResumenGeneralTab({
                     alt={p.nombre}
                   />
                   <div className="ge-trending-info">
-                    <div className="ge-trending-name">{p.nombre}</div>
+                    <div className="ge-trending-name">{p.plato}</div>
                     <div className="ge-trending-price">
-                      ${p.precio}{" "}
+                      ${p.precio_unitario * p.total_vendidos}{"   Total "}
                       <span className="ge-trending-cat">{p.categoria}</span>
                     </div>
                   </div>
                   <div className="ge-trending-stats">
                     <div className="ge-trending-sales">
-                      {p.ventasPorProducto}
+                      {p.total_vendidos}
                     </div>
-                    <div className="ge-trending-percent">Ventas</div>
+                    <div className="ge-trending-percent">Vendidos</div>
                   </div>
                 </li>
               ))}

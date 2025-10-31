@@ -83,16 +83,18 @@ class Estadistica extends ModeloBase {
     }
       public static function obtenerTopPlatos(): array {
     $consulta =  "
-        SELECT 
-            pm.nombre AS plato,
-            SUM(dc.cantidad) AS total_vendidos
-        FROM detalle_comanda dc
-        JOIN productos_menu pm ON pm.producto_id = dc.producto_id
-        JOIN comanda c ON c.comanda_id = dc.comanda_id
-        WHERE c.estado = 'Finalizada'
-        GROUP BY pm.producto_id
-        ORDER BY total_vendidos DESC
-        LIMIT 5
+            SELECT 
+        pm.nombre AS plato,
+        pm.precio AS precio_unitario,
+        SUM(dc.cantidad) AS total_vendidos
+    FROM detalle_comanda dc
+    JOIN productos_menu pm ON pm.producto_id = dc.producto_id
+    JOIN comanda c ON c.comanda_id = dc.comanda_id
+    WHERE c.estado = 'Finalizada'
+    GROUP BY pm.producto_id, pm.nombre, pm.precio
+    ORDER BY total_vendidos DESC
+    LIMIT 5;
+
     ";
     return static::$conexion_bd->realizarConsulta($consulta);
 }
