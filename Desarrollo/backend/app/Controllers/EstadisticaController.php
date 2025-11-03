@@ -135,4 +135,87 @@ public function obtenerDashboard($router) {
     ];
 }
 
+    public function obtenerTendenciasEstacionales($router) {
+        try {
+            $tendencias = ControllerService::handlerErrorConexion(fn() => Estadistica::obtenerTendenciasEstacionales());
+        } catch (Exception $e) {
+            http_response_code(500);
+            return ["success" => false, "message" => "Error interno del servidor"];
+        }
+
+        if (empty($tendencias)) {
+            return ["success" => false, "message" => "No se encontraron datos de tendencias estacionales", "data" => []];
+        }
+
+        // Ac se convierten los numeros de los meses a nombres
+        $meses = [
+            1 => "Enero", 2 => "Febrero", 3 => "Marzo", 4 => "Abril",
+            5 => "Mayo", 6 => "Junio", 7 => "Julio", 8 => "Agosto",
+            9 => "Septiembre", 10 => "Octubre", 11 => "Noviembre", 12 => "Diciembre"
+        ];
+
+        foreach ($tendencias as &$fila) {
+            $fila["nombre_mes"] = $meses[(int)$fila["mes"]] ?? "Desconocido";
+        }
+
+        return [
+            "success" => true,
+            "message" => "Tendencias estacionales obtenidas correctamente",
+            "data" => $tendencias
+        ];
+    }
+
+     
+    public function obtenerRankingProductos($router) {
+        try {
+            $productos = ControllerService::handlerErrorConexion(fn() => Estadistica::obtenerRankingProductos());
+        } catch (Exception $e) {
+            http_response_code(500);
+            return ["success" => false, "message" => "Error interno del servidor"];
+        }
+
+        if (empty($productos)) {
+            return ["success" => false, "message" => "No se encontraron productos en el ranking", "data" => []];
+        }
+
+        return ["success" => true, "message" => "Ranking de productos obtenido correctamente", "data" => $productos];
+    }
+
+    public function obtenerRankingReservas($router) {
+        try {
+            $reservas = ControllerService::handlerErrorConexion(fn() => Estadistica::obtenerRankingReservas());
+        } catch (Exception $e) {
+            http_response_code(500);
+            return ["success" => false, "message" => "Error interno del servidor"];
+        }
+
+        if (empty($reservas)) {
+            return ["success" => false, "message" => "No se encontraron reservas en el ranking", "data" => []];
+        }
+
+        return ["success" => true, "message" => "Ranking de reservas obtenido correctamente", "data" => $reservas];
+    }
+
+    
+    public function obtenerRankingVentas($router) {
+        try {
+            $ventas = ControllerService::handlerErrorConexion(fn() => Estadistica::obtenerRankingVentas());
+        } catch (Exception $e) {
+            http_response_code(500);
+            return ["success" => false, "message" => "Error interno del servidor"];
+        }
+
+        if (empty($ventas)) {
+            return ["success" => false, "message" => "No se encontraron ventas en el ranking", "data" => []];
+        }
+
+        // conv a array
+        foreach ($ventas as &$fila) {
+            if (isset($fila["productos"])) {
+                $fila["productos"] = array_map("trim", explode(",", $fila["productos"]));
+            }
+        }
+
+        return ["success" => true, "message" => "Ranking de ventas obtenido correctamente", "data" => $ventas];
+    }
 }

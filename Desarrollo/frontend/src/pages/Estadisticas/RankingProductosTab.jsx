@@ -42,6 +42,9 @@ export default function RankingProductosTab({
   const startIdx = (currentPage - 1) * itemsPerPage;
   const currentItems = productosOrdenados.slice(startIdx, startIdx + itemsPerPage);
 
+  
+
+
   return (
     <div className="ge-card ge-ranking-productos">
       <div className="ge-card__header">Ranking de Productos</div>

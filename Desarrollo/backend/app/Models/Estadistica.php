@@ -148,6 +148,87 @@ class Estadistica extends ModeloBase {
         return static::$conexion_bd->realizarConsulta($consulta);
     }
 
+    public static function obtenerTendenciasEstacionales(): array {
+        $consulta = "
+        SELECT 
+        CASE 
+            WHEN MONTH(c.fecha_hora) IN (9,10,11) THEN 'Primavera'
+            WHEN MONTH(c.fecha_hora) IN (12,1,2) THEN 'Verano'
+            WHEN MONTH(c.fecha_hora) IN (3,4,5) THEN 'Otoño'
+            ELSE 'Invierno'
+        END AS periodo,
+        SUM(dc.cantidad * pm.precio) AS ventas,
+        GROUP_CONCAT(DISTINCT pm.nombre SEPARATOR ', ') AS productos
+    FROM detalle_comanda dc
+    JOIN productos_menu pm ON pm.producto_id = dc.producto_id
+    JOIN comanda c ON c.comanda_id = dc.comanda_id
+    WHERE c.estado = 'Finalizada'
+    GROUP BY periodo
+    ORDER BY FIELD(periodo, 'Primavera', 'Verano', 'Otoño', 'Invierno');
+
+        ";
+
+        return static::$conexion_bd->realizarConsulta($consulta);
+    }
+
+    public static function obtenerRankingProductos(): array {
+        $consulta = "
+            SELECT 
+                pm.producto_id AS id,
+                pm.nombre AS producto,
+                pm.categoria,
+                pm.precio,
+                SUM(dc.cantidad) AS ventas
+            FROM productos_menu pm
+            JOIN detalle_comanda dc ON pm.producto_id = dc.producto_id
+            JOIN comanda c ON c.comanda_id = dc.comanda_id
+            WHERE c.estado = 'Finalizada'
+            GROUP BY pm.producto_id, pm.nombre, pm.categoria, pm.precio
+            ORDER BY ventas DESC
+            LIMIT 10;
+        ";
+        return static::$conexion_bd->realizarConsulta($consulta);
+    }
+
+
+    public static function obtenerRankingReservas(): array {
+    $consulta = "
+        SELECT 
+            r.reserva_id AS id,
+            CONCAT(u.nombre, ' ', u.apellido) AS cliente,
+            r.cant_personas AS cantidad,
+            DATE_FORMAT(r.fecha_hora, '%d/%m/%Y %H:%i') AS fecha
+        FROM reserva r
+        JOIN usuario u ON r.usuario_id = u.usuario_id
+        WHERE r.estado IN ('Confirmada', 'Finalizada')
+        ORDER BY r.fecha_hora DESC
+        LIMIT 10;
+    ";
+    return static::$conexion_bd->realizarConsulta($consulta);
+}
+
+
+
+    public static function obtenerRankingVentas(): array {
+        $consulta = "
+            SELECT 
+                c.comanda_id AS id,
+                GROUP_CONCAT(DISTINCT pm.nombre SEPARATOR ', ') AS productos,
+                SUM(dc.cantidad) AS cantidad_vendida,
+                SUM(dc.cantidad * pm.precio) AS total
+            FROM comanda c
+            JOIN detalle_comanda dc ON c.comanda_id = dc.comanda_id
+            JOIN productos_menu pm ON dc.producto_id = pm.producto_id
+            WHERE c.estado = 'Finalizada'
+            GROUP BY c.comanda_id
+            ORDER BY total DESC
+            LIMIT 10;
+        ";
+        return static::$conexion_bd->realizarConsulta($consulta);
+    }
+
+
+
     
 
 
