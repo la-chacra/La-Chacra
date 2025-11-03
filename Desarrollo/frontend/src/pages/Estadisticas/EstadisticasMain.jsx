@@ -187,7 +187,7 @@ useEffect(() => {
         {/* RANKING RESERVAS */}
         {activeTab === "Ranking Reservas" && (
           <RankingReservasTab
-            reservas={reservas}
+            reservas={rankingReservas}
             selectedMes={selectedMes}
             setSelectedMes={setSelectedMes}
             selectedAnio={selectedAnio}
@@ -198,7 +198,7 @@ useEffect(() => {
         {/* RANKING VENTAS */}
         {activeTab === "Ranking Ventas" && (
           <RankingVentasTab
-            ventas={ventas}
+            ventas={rankingVentas}
             selectedMes={selectedMes}
             setSelectedMes={setSelectedMes}
             selectedAnio={selectedAnio}
