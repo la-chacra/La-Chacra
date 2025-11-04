@@ -28,6 +28,7 @@ export default function GeAdminDashboard() {
   const [diferentesProductos, setDiferentesProductos] = useState(0);
   const [totalClientes, setTotalClientes] = useState(0);
   const [productosMasVendidos, setProductosMasVendidos] = useState([]);
+  const [rankingProductos, setRankingProductos] = useState([]);
   const [rankingReservas, setRankingReservas] = useState([]);
   const [rankingVentas, setRankingVentas] = useState([]);
   const [temporadasAltas, setTemporadasAltas] = useState([]);
@@ -87,13 +88,13 @@ export default function GeAdminDashboard() {
           setTendencias(dataTendencias.data);
         }
 
-        // Ranking de productos
+        // Ranking de productos (no sobreescribimos productosMasVendidos del dashboard)
         const resProductos = await fetch(
           "/api/estadistica/obtenerRankingProductos"
         );
         const dataProductos = await resProductos.json();
         if (dataProductos.success) {
-          setProductosMasVendidos(dataProductos.data);
+          setRankingProductos(dataProductos.data);
         }
 
         // Ranking de reservas
@@ -176,7 +177,7 @@ export default function GeAdminDashboard() {
         {/* RANKING PRODUCTOS */}
         {activeTab === "Ranking Productos" && (
           <RankingProductosTab
-            productosMasVendidos={productosMasVendidos}
+            productosMasVendidos={rankingProductos}
             selectedMes={selectedMes}
             setSelectedMes={setSelectedMes}
             selectedAnio={selectedAnio}
