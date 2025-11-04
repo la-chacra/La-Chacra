@@ -51,7 +51,15 @@ class AuthMiddleware {
             "/api/gestion/comanda/crear",
             "/api/gestion/comanda/actualizar",
             "/api/gestion/comanda/listar",
-            "/api/estadisticas"
+            "/api/estadistica/obtenerDashboard",
+            "/api/estadistica/topPlatos",
+            "/api/estadistica/pedidosTotales",
+            "/api/estadistica/reservasTotales",
+            "/api/estadistica/gananciasTotales",
+            "/api/estadistica/obtenerTendenciasEstacionales",
+            "/api/estadistica/obtenerRankingProductos",
+            "/api/estadistica/obtenerRankingReservas",
+            "/api/estadistica/obtenerRankingVentas"
         ]
     ];
 

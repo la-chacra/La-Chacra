@@ -28,8 +28,9 @@ export default function GeAdminDashboard() {
   const [diferentesProductos, setDiferentesProductos] = useState(0);
   const [totalClientes, setTotalClientes] = useState(0);
   const [productosMasVendidos, setProductosMasVendidos] = useState([]);
-  const [reservas, setReservas] = useState([]);
-  const [ventas, setVentas] = useState([]);
+  const [rankingProductos, setRankingProductos] = useState([]);
+  const [rankingReservas, setRankingReservas] = useState([]);
+  const [rankingVentas, setRankingVentas] = useState([]);
   const [temporadasAltas, setTemporadasAltas] = useState([]);
   const [periodoActual, setPeriodoActual] = useState("Primavera");
   const [porcentajeCrecimiento, setPorcentajeCrecimiento] = useState(0);
@@ -40,69 +41,84 @@ export default function GeAdminDashboard() {
   const [selectedAnio, setSelectedAnio] = useState(new Date().getFullYear());
 
   useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const res = await fetch("/backend/estadisticas/dashboard");
-      const result = await res.json();
+    const fetchData = async () => {
+      try {
+        // Dashboard general
+        const resDashboard = await fetch("/api/estadistica/obtenerDashboard");
+        const dataDashboard = await resDashboard.json();
 
-      if (result.success) {
-        const data = result.data;
+        if (dataDashboard.success) {
+          const data = dataDashboard.data;
 
-        setProductosMasVendidos(data.productosMasVendidos);
-        setTemporadasAltas(
-          data.temporadasAltas.map((t) => ({
-            key: t.temporada,
-            label: `Temporada ${t.temporada}`,
-            ingresos: Number(t.total_vendido),
-            icon:
-              t.temporada === "Verano"
-                ? faSun
-                : t.temporada === "Invierno"
-                ? faSnowflake
-                : t.temporada === "Primavera"
-                ? faGift
-                : faSuitcaseRolling,
-            colorClass:
-              t.temporada === "Verano"
-                ? "ge-season--yellow"
-                : t.temporada === "Invierno"
-                ? "ge-season--blue"
-                : t.temporada === "Primavera"
-                ? "ge-season--purple"
-                : "ge-season--green",
-          }))
+          setProductosMasVendidos(data.productosMasVendidos || []);
+          setTemporadasAltas(
+            (data.temporadasAltas || []).map((t) => ({
+              key: t.temporada,
+              label: `Temporada ${t.temporada}`,
+              ingresos: Number(t.total_vendido),
+              icon:
+                t.temporada === "Verano"
+                  ? faSun
+                  : t.temporada === "Invierno"
+                    ? faSnowflake
+                    : t.temporada === "Primavera"
+                      ? faGift
+                      : faSuitcaseRolling,
+              colorClass:
+                t.temporada === "Verano"
+                  ? "ge-season--yellow"
+                  : t.temporada === "Invierno"
+                    ? "ge-season--blue"
+                    : t.temporada === "Primavera"
+                      ? "ge-season--purple"
+                      : "ge-season--green",
+            }))
+          );
+
+          setDiferentesProductos(data.productosMasVendidos?.length || 0);
+          setTotalClientes(data.visitasTotales || 0);
+        }
+
+        // Tendencias estacionales
+        const resTendencias = await fetch(
+          "/api/estadistica/obtenerTendenciasEstacionales"
         );
+        const dataTendencias = await resTendencias.json();
+        if (dataTendencias.success) {
+          setTendencias(dataTendencias.data);
+        }
 
-        setVentas([
-          {
-            titulo: "Pedidos Totales",
-            valor: data.pedidosTotales,
-          },
-          {
-            titulo: "Visitas Totales",
-            valor: data.visitasTotales,
-          },
-          {
-            titulo: "Ganancias Totales",
-            valor: data.gananciasTotales,
-          },
-        ]);
+        // Ranking de productos (no sobreescribimos productosMasVendidos del dashboard)
+        const resProductos = await fetch(
+          "/api/estadistica/obtenerRankingProductos"
+        );
+        const dataProductos = await resProductos.json();
+        if (dataProductos.success) {
+          setRankingProductos(dataProductos.data);
+        }
 
-        // si más adelante agregamos reservas o clientes
-        setReservas([]);
-        setDiferentesProductos(data.productosMasVendidos.length || 0);
-        setTotalClientes(data.visitasTotales);
-        setPeriodoActual("Primavera");
-      } else {
-        console.warn("No se pudieron obtener los datos del dashboard.");
+        // Ranking de reservas
+        const resReservas = await fetch(
+          "/api/estadistica/obtenerRankingReservas"
+        );
+        const dataReservas = await resReservas.json();
+        if (dataReservas.success) {
+          setRankingReservas(dataReservas.data);
+        }
+
+        // Ranking de ventas
+        const resVentas = await fetch("/api/estadistica/obtenerRankingVentas");
+        const dataVentas = await resVentas.json();
+        if (dataVentas.success) {
+          setRankingVentas(dataVentas.data);
+        }
+      } catch (error) {
+        console.error("Error al obtener datos del backend:", error);
       }
-    } catch (error) {
-      console.error("Error al obtener datos del backend:", error);
-    }
-  };
+    };
 
-  fetchData();
-}, []);
+    fetchData();
+  }, []);
 
   const ventasTotales = useMemo(
     () => temporadasAltas.reduce((total, t) => total + t.ingresos, 0),
@@ -122,8 +138,8 @@ export default function GeAdminDashboard() {
     diferentesProductos,
     totalClientes,
     productosMasVendidos,
-    reservas,
-    ventas,
+    rankingReservas,
+    rankingVentas,
     temporadasAltasOrdenadas,
     ventasTotales,
     porcentajeCrecimiento,
@@ -161,7 +177,7 @@ export default function GeAdminDashboard() {
         {/* RANKING PRODUCTOS */}
         {activeTab === "Ranking Productos" && (
           <RankingProductosTab
-            productosMasVendidos={productosMasVendidos}
+            productosMasVendidos={rankingProductos}
             selectedMes={selectedMes}
             setSelectedMes={setSelectedMes}
             selectedAnio={selectedAnio}
@@ -172,7 +188,7 @@ export default function GeAdminDashboard() {
         {/* RANKING RESERVAS */}
         {activeTab === "Ranking Reservas" && (
           <RankingReservasTab
-            reservas={reservas}
+            reservas={rankingReservas}
             selectedMes={selectedMes}
             setSelectedMes={setSelectedMes}
             selectedAnio={selectedAnio}
@@ -183,7 +199,7 @@ export default function GeAdminDashboard() {
         {/* RANKING VENTAS */}
         {activeTab === "Ranking Ventas" && (
           <RankingVentasTab
-            ventas={ventas}
+            ventas={rankingVentas}
             selectedMes={selectedMes}
             setSelectedMes={setSelectedMes}
             selectedAnio={selectedAnio}
