@@ -28,8 +28,8 @@ export default function GeAdminDashboard() {
   const [diferentesProductos, setDiferentesProductos] = useState(0);
   const [totalClientes, setTotalClientes] = useState(0);
   const [productosMasVendidos, setProductosMasVendidos] = useState([]);
-  const [rankingReservas, setReservas] = useState([]);
-  const [rankingVentas, setVentas] = useState([]);
+  const [rankingReservas, setRankingReservas] = useState([]);
+  const [rankingVentas, setRankingVentas] = useState([]);
   const [temporadasAltas, setTemporadasAltas] = useState([]);
   const [periodoActual, setPeriodoActual] = useState("Primavera");
   const [porcentajeCrecimiento, setPorcentajeCrecimiento] = useState(0);

@@ -93,12 +93,12 @@ export default function RankingProductosTab({
         </thead>
         <tbody>
           {currentItems.map((p, idx) => (
-            <tr key={p.producto_id}>
+            <tr key={p.id}>
               <td>{startIdx + idx + 1}</td>
-              <td>{p.nombre}</td>
+              <td>{p.producto}</td>
               <td>{p.categoria}</td>
               <td>${p.precio}</td>
-              <td>{p.ventasPorProducto}</td>
+              <td>{p.ventas}</td>
             </tr>
           ))}
         </tbody>

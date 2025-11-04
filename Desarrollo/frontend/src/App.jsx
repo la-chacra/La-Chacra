@@ -58,7 +58,7 @@ function App() {
         <Route path="/gestion/comanda" element={<Comanda/>}/>
         <Route path="/gestion/comanda-historial" element={<ComandaHist/>}/>
         <Route path="/gestion/Stock" element={<GestionStock/>}/>
-        <Route path="/gestion/stock-historial" element={<StockHist/>}/>
+        <Route path="/gestion/historialStock" element={<StockHist/>}/>
         <Route path="/gestion/platos-tabla" element={<PlatosTabla/>}/>
         <Route path="/gestion/plato" element={<Platos/>}/>
         <Route path="/gestion/plato/:id" element={<Platos/>}/>

@@ -46,11 +46,13 @@ class AuthMiddleware {
             "/api/comanda/listar"
         ],
         "A" => [ // A = admin
-            "/api/gestion/reserva",
+            "/api/gestion/reservas",
+            "/api/gestion/reservas/eliminarReserva",
             // Comanda
             "/api/gestion/comanda/crear",
             "/api/gestion/comanda/actualizar",
             "/api/gestion/comanda/listar",
+            // Estadisticas
             "/api/estadistica/obtenerDashboard",
             "/api/estadistica/topPlatos",
             "/api/estadistica/pedidosTotales",
@@ -59,7 +61,13 @@ class AuthMiddleware {
             "/api/estadistica/obtenerTendenciasEstacionales",
             "/api/estadistica/obtenerRankingProductos",
             "/api/estadistica/obtenerRankingReservas",
-            "/api/estadistica/obtenerRankingVentas"
+            "/api/estadistica/obtenerRankingVentas",
+            //Stock
+            "api/gestion/historialStock",
+            "api/gestion/stock",
+            
+            
+             
         ]
     ];
 
