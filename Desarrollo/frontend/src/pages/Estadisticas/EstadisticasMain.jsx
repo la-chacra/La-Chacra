@@ -28,6 +28,7 @@ export default function GeAdminDashboard() {
   const [diferentesProductos, setDiferentesProductos] = useState(0);
   const [totalClientes, setTotalClientes] = useState(0);
   const [productosMasVendidos, setProductosMasVendidos] = useState([]);
+  const [rankingProductos, setRankingProductos] = useState([]);
   const [rankingReservas, setRankingReservas] = useState([]);
   const [rankingVentas, setRankingVentas] = useState([]);
   const [temporadasAltas, setTemporadasAltas] = useState([]);
@@ -39,7 +40,7 @@ export default function GeAdminDashboard() {
   const [selectedMes, setSelectedMes] = useState("Todos");
   const [selectedAnio, setSelectedAnio] = useState(new Date().getFullYear());
 
-useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       try {
         // Dashboard general
@@ -59,18 +60,18 @@ useEffect(() => {
                 t.temporada === "Verano"
                   ? faSun
                   : t.temporada === "Invierno"
-                  ? faSnowflake
-                  : t.temporada === "Primavera"
-                  ? faGift
-                  : faSuitcaseRolling,
+                    ? faSnowflake
+                    : t.temporada === "Primavera"
+                      ? faGift
+                      : faSuitcaseRolling,
               colorClass:
                 t.temporada === "Verano"
                   ? "ge-season--yellow"
                   : t.temporada === "Invierno"
-                  ? "ge-season--blue"
-                  : t.temporada === "Primavera"
-                  ? "ge-season--purple"
-                  : "ge-season--green",
+                    ? "ge-season--blue"
+                    : t.temporada === "Primavera"
+                      ? "ge-season--purple"
+                      : "ge-season--green",
             }))
           );
 
@@ -87,13 +88,13 @@ useEffect(() => {
           setTendencias(dataTendencias.data);
         }
 
-        // Ranking de productos
+        // Ranking de productos (no sobreescribimos productosMasVendidos del dashboard)
         const resProductos = await fetch(
           "/api/estadistica/obtenerRankingProductos"
         );
         const dataProductos = await resProductos.json();
         if (dataProductos.success) {
-          setProductosMasVendidos(dataProductos.data);
+          setRankingProductos(dataProductos.data);
         }
 
         // Ranking de reservas
@@ -176,7 +177,7 @@ useEffect(() => {
         {/* RANKING PRODUCTOS */}
         {activeTab === "Ranking Productos" && (
           <RankingProductosTab
-            productosMasVendidos={productosMasVendidos}
+            productosMasVendidos={rankingProductos}
             selectedMes={selectedMes}
             setSelectedMes={setSelectedMes}
             selectedAnio={selectedAnio}

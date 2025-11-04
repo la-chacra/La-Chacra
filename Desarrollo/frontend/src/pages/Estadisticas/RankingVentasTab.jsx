@@ -78,15 +78,17 @@ export default function RankingVentasTab({
             <th>Producto</th>
             <th>Cantidad Vendida</th>
             <th>Total</th>
+            <th>Fecha</th>
           </tr>
         </thead>
         <tbody>
           {currentItems.map((v, idx) => (
             <tr key={v.id}>
               <td>{startIdx + idx + 1}</td>
-              <td>{v.producto}</td>
-              <td>{v.cantidadVendida}</td>
-              <td>${v.total}</td>
+              <td>{v.productos.join(", ")}</td>
+              <td>{v.cantidadVentas}</td>
+              <td>${v.totalGanancia}</td>
+              <td>{v.fecha}</td>
             </tr>
           ))}
         </tbody>

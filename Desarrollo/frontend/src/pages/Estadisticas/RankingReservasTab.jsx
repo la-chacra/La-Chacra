@@ -76,8 +76,8 @@ export default function RankingReservasTab({
           <tr>
             <th>#</th>
             <th>Cliente</th>
-            <th>Cantidad</th>
-            <th>Fecha</th>
+            <th>Total Reservas</th>
+            <th>Total Personas</th>
           </tr>
         </thead>
         <tbody>
@@ -86,7 +86,7 @@ export default function RankingReservasTab({
               <td>{startIdx + idx + 1}</td>
               <td>{r.cliente}</td>
               <td>{r.cantidad}</td>
-              <td>{new Date(r.fecha).toLocaleDateString()}</td>
+              <td>{r.totalPersonas}</td>
             </tr>
           ))}
         </tbody>
