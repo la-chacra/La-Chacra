@@ -35,12 +35,12 @@ export default function ResumenGeneralTab({
             <div className="ge-card__header">Productos Más Vendidos</div>
             <ul className="ge-trending-list">
               {productosMasVendidos.map((p, idx) => (
-                <li className="ge-trending-item" key={p.producto_id}>
+                <li className="ge-trending-item" key={p.producto_id || idx}>
                   <div className="ge-trending-rank">#{idx + 1}</div>
                   <img
                     className="ge-trending-thumb"
                     src={p.imagen_url}
-                    alt={p.nombre}
+                    alt={p.plato}
                   />
                   <div className="ge-trending-info">
                     <div className="ge-trending-name">{p.plato}</div>

@@ -10,57 +10,6 @@ use App\Models\Enums\TemporadasAltas;
 
 
 class Estadistica extends ModeloBase {
-
-    // Configuración de la tabla
-    protected static string $pk_bd = "id_estadistica";
-    protected static string $tabla_bd = "estadistica";
-    protected static array $columnas_bd = [
-        "id_estadistica", 
-        "ventasPorProducto", 
-        "periodo", 
-        "productosMasVendidos", 
-        "temporadasAltas"
-    ];
-
-    // Errores
-    protected static array $errores = [];
-
-    // Atributos de la clase
-    private ?int $id_estadistica = null;
-    private string $ventasPorProducto;
-    private Periodo $periodo;
-    private string $productosMasVendidos;
-    private TemporadasAltas $temporadasAltas;
-    
-
-    public function __construct(array $datos = []) {
-        $this->id_estadistica       = $datos["id_estadistica"] ?? null;
-        $this->ventasPorProducto    = $datos["ventasPorProducto"] ?? "";
-        $this->periodo              = isset($datos["periodo"]) 
-                                        ? Periodo::from($datos["periodo"]) 
-                                        : Periodo::Verano;
-        $this->productosMasVendidos = $datos["productosMasVendidos"] ?? "";
-        $this->temporadasAltas      = isset($datos["temporadasAltas"]) 
-                                        ? TemporadasAltas::from($datos["temporadasAltas"]) 
-                                        : TemporadasAltas::Turismo;
-    }
-
-   
-    /**
-     * Registra una nueva estadística en la base de datos.
-     *
-     * @return bool Retorna true si la estadística fue registrada exitosamente, false en caso contrario.
-     */
-    public function registrarEstadistica(): bool {
-        return $this->crearRegistro([
-            "id_estadistica"       => $this->id_estadistica,
-            "ventasPorProducto"    => $this->ventasPorProducto,
-            "periodo"              => $this->periodo->value, // guardamos como string
-            "productosMasVendidos" => $this->productosMasVendidos,
-            "temporadasAltas"      => $this->temporadasAltas->value // guardamos como string
-        ]);
-    }
-
     
     /**
      * Genera un reporte estadístico.
@@ -81,23 +30,26 @@ class Estadistica extends ModeloBase {
         $consulta = "SELECT * FROM cliente ORDER BY puntos DESC LIMIT 5";
         return static::$conexion_bd->realizarConsulta($consulta);
     }
-      public static function obtenerTopPlatos(): array {
-    $consulta =  "
-            SELECT 
-        pm.nombre AS plato,
-        pm.precio AS precio_unitario,
-        SUM(dc.cantidad) AS total_vendidos
-    FROM detalle_comanda dc
-    JOIN productos_menu pm ON pm.producto_id = dc.producto_id
-    JOIN comanda c ON c.comanda_id = dc.comanda_id
-    WHERE c.estado = 'Finalizada'
-    GROUP BY pm.producto_id, pm.nombre, pm.precio
-    ORDER BY total_vendidos DESC
-    LIMIT 5;
 
-    ";
-    return static::$conexion_bd->realizarConsulta($consulta);
-}
+    public static function obtenerTopPlatos(): array {
+        $consulta =  "
+            SELECT 
+                pm.producto_id,
+                pm.nombre AS plato,
+                pm.precio AS precio_unitario,
+                pm.categoria,
+                SUM(dc.cantidad) AS total_vendidos
+            FROM detalle_comanda dc
+            JOIN productos_menu pm ON pm.producto_id = dc.producto_id
+            JOIN comanda c ON c.comanda_id = dc.comanda_id
+            WHERE c.estado = 'Finalizada'
+            GROUP BY pm.producto_id, pm.nombre, pm.precio, pm.categoria
+            ORDER BY total_vendidos DESC
+            LIMIT 5;
+        ";
+        return static::$conexion_bd->realizarConsulta($consulta);
+    }
+
 
     public static function obtenerVentasPorTemporada(): array {
     $consulta = "
@@ -118,6 +70,7 @@ class Estadistica extends ModeloBase {
     ";
     return static::$conexion_bd->realizarConsulta($consulta);
 }
+
     public static function obtenerPedidosTotales(): array {
         $consulta = "
             SELECT COUNT(*) AS total_pedidos
@@ -151,21 +104,20 @@ class Estadistica extends ModeloBase {
     public static function obtenerTendenciasEstacionales(): array {
         $consulta = "
         SELECT 
-        CASE 
-            WHEN MONTH(c.fecha_hora) IN (9,10,11) THEN 'Primavera'
-            WHEN MONTH(c.fecha_hora) IN (12,1,2) THEN 'Verano'
-            WHEN MONTH(c.fecha_hora) IN (3,4,5) THEN 'Otoño'
-            ELSE 'Invierno'
-        END AS periodo,
-        SUM(dc.cantidad * pm.precio) AS ventas,
-        GROUP_CONCAT(DISTINCT pm.nombre SEPARATOR ', ') AS productos
-    FROM detalle_comanda dc
-    JOIN productos_menu pm ON pm.producto_id = dc.producto_id
-    JOIN comanda c ON c.comanda_id = dc.comanda_id
-    WHERE c.estado = 'Finalizada'
-    GROUP BY periodo
-    ORDER BY FIELD(periodo, 'Primavera', 'Verano', 'Otoño', 'Invierno');
-
+            CASE 
+                WHEN MONTH(c.fecha_hora) IN (9,10,11) THEN 'Primavera'
+                WHEN MONTH(c.fecha_hora) IN (12,1,2) THEN 'Verano'
+                WHEN MONTH(c.fecha_hora) IN (3,4,5) THEN 'Otoño'
+                ELSE 'Invierno'
+            END AS periodo,
+            SUM(dc.cantidad * pm.precio) AS ventas,
+            GROUP_CONCAT(DISTINCT pm.nombre SEPARATOR ', ') AS productos
+        FROM detalle_comanda dc
+        JOIN productos_menu pm ON pm.producto_id = dc.producto_id
+        JOIN comanda c ON c.comanda_id = dc.comanda_id
+        WHERE c.estado = 'Finalizada'
+        GROUP BY periodo
+        ORDER BY FIELD(periodo, 'Primavera', 'Verano', 'Otoño', 'Invierno');
         ";
 
         return static::$conexion_bd->realizarConsulta($consulta);
@@ -185,29 +137,26 @@ class Estadistica extends ModeloBase {
             WHERE c.estado = 'Finalizada'
             GROUP BY pm.producto_id, pm.nombre, pm.categoria, pm.precio
             ORDER BY ventas DESC
-            LIMIT 10;
         ";
         return static::$conexion_bd->realizarConsulta($consulta);
     }
 
 
     public static function obtenerRankingReservas(): array {
-    $consulta = "
-        SELECT 
-            r.reserva_id AS id,
-            CONCAT(u.nombre, ' ', u.apellido) AS cliente,
-            r.cant_personas AS cantidad,
-            DATE_FORMAT(r.fecha_hora, '%d/%m/%Y %H:%i') AS fecha
-        FROM reserva r
-        JOIN usuario u ON r.usuario_id = u.usuario_id
-        WHERE r.estado IN ('Confirmada', 'Finalizada')
-        ORDER BY r.fecha_hora DESC
-        LIMIT 10;
-    ";
-    return static::$conexion_bd->realizarConsulta($consulta);
-}
-
-
+        $consulta = "
+            SELECT 
+                u.usuario_id AS usuario_id,
+                CONCAT(u.nombre, ' ', u.apellido) AS cliente,
+                COUNT(r.reserva_id) AS total_reservas,
+                SUM(r.cant_personas) AS total_personas
+            FROM reserva r
+            JOIN usuario u ON r.usuario_id = u.usuario_id
+            WHERE r.estado IN ('Confirmada', 'Finalizada')
+            GROUP BY u.usuario_id
+            ORDER BY total_reservas DESC;
+        ";
+        return static::$conexion_bd->realizarConsulta($consulta);
+    }
 
     public static function obtenerRankingVentas(): array {
         $consulta = "
@@ -215,128 +164,17 @@ class Estadistica extends ModeloBase {
                 c.comanda_id AS id,
                 GROUP_CONCAT(DISTINCT pm.nombre SEPARATOR ', ') AS productos,
                 SUM(dc.cantidad) AS cantidad_vendida,
-                SUM(dc.cantidad * pm.precio) AS total
+                SUM(dc.cantidad * pm.precio) AS total,
+                DATE_FORMAT(c.fecha_hora, '%Y-%m-%d %H:%i') AS fecha
             FROM comanda c
             JOIN detalle_comanda dc ON c.comanda_id = dc.comanda_id
             JOIN productos_menu pm ON dc.producto_id = pm.producto_id
             WHERE c.estado = 'Finalizada'
-            GROUP BY c.comanda_id
-            ORDER BY total DESC
-            LIMIT 10;
+            GROUP BY c.comanda_id, c.fecha_hora
+            ORDER BY total DESC;
         ";
         return static::$conexion_bd->realizarConsulta($consulta);
     }
-
-
-
-    
-
-
-      // ------------------------------------------------------------------
-    //  Getters y Setters 
-    // ------------------------------------------------------------------
-
-
-    /**
-     * Get the value of id_estadistica
-     */ 
-    public function getId_estadistica()
-    {
-        return $this->id_estadistica;
-    }
-
-    /**
-     * Set the value of id_estadistica
-     *
-     * @return  self
-     */ 
-    public function setId_estadistica($id_estadistica)
-    {
-        $this->id_estadistica = $id_estadistica;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of ventasPorProducto
-     */ 
-    public function getVentasPorProducto()
-    {
-        return $this->ventasPorProducto;
-    }
-
-    /**
-     * Set the value of ventasPorProducto
-     *
-     * @return  self
-     */ 
-    public function setVentasPorProducto($ventasPorProducto)
-    {
-        $this->ventasPorProducto = $ventasPorProducto;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of periodo
-     */ 
-    public function getPeriodo()
-    {
-        return $this->periodo;
-    }
-
-    /**
-     * Set the value of periodo
-     *
-     * @return  self
-     */ 
-    public function setPeriodo($periodo)
-    {
-        $this->periodo = $periodo;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of productosMasVendidos
-     */ 
-    public function getProductosMasVendidos()
-    {
-        return $this->productosMasVendidos;
-    }
-
-    /**
-     * Set the value of productosMasVendidos
-     *
-     * @return  self
-     */ 
-    public function setProductosMasVendidos($productosMasVendidos)
-    {
-        $this->productosMasVendidos = $productosMasVendidos;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of temporadasAltas
-     */ 
-    public function getTemporadasAltas()
-    {
-        return $this->temporadasAltas;
-    }
-
-    /**
-     * Set the value of temporadasAltas
-     *
-     * @return  self
-     */ 
-    public function setTemporadasAltas($temporadasAltas)
-    {
-        $this->temporadasAltas = $temporadasAltas;
-
-        return $this;
-    }
-    
 }
    
 

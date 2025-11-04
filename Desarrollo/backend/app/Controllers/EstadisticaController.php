@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Services\ControllerService;
 use App\Models\Estadistica;
+use DateTime;
 use Exception;
 
 /**
@@ -121,7 +122,6 @@ public function obtenerDashboard($router) {
         http_response_code(500);
         return ["success" => false, "message" => "Error interno del servidor"];
     }
-
     return [
         "success" => true,
         "message" => "Datos del dashboard obtenidos correctamente",
@@ -147,15 +147,13 @@ public function obtenerDashboard($router) {
             return ["success" => false, "message" => "No se encontraron datos de tendencias estacionales", "data" => []];
         }
 
-        // Ac se convierten los numeros de los meses a nombres
-        $meses = [
-            1 => "Enero", 2 => "Febrero", 3 => "Marzo", 4 => "Abril",
-            5 => "Mayo", 6 => "Junio", 7 => "Julio", 8 => "Agosto",
-            9 => "Septiembre", 10 => "Octubre", 11 => "Noviembre", 12 => "Diciembre"
-        ];
-
+        // Convertir el string de productos en array
         foreach ($tendencias as &$fila) {
-            $fila["nombre_mes"] = $meses[(int)$fila["mes"]] ?? "Desconocido";
+            if (!empty($fila["productos"])) {
+                $fila["productos"] = array_map("trim", explode(",", $fila["productos"]));
+            } else {
+                $fila["productos"] = [];
+            }
         }
 
         return [
@@ -178,6 +176,21 @@ public function obtenerDashboard($router) {
             return ["success" => false, "message" => "No se encontraron productos en el ranking", "data" => []];
         }
 
+        $datos = [];
+
+        foreach($productos as $producto) {
+            array_push(
+                $datos,
+                [
+                    "producto_id" => $producto["id"],
+                    "producto" => $producto["producto"],
+                    "categoria" => $producto["categoria"],
+                    "precio" => $producto["precio"],
+                    "ventas" => $producto["ventas"],
+                ]
+            );
+        }
+
         return ["success" => true, "message" => "Ranking de productos obtenido correctamente", "data" => $productos];
     }
 
@@ -186,14 +199,27 @@ public function obtenerDashboard($router) {
             $reservas = ControllerService::handlerErrorConexion(fn() => Estadistica::obtenerRankingReservas());
         } catch (Exception $e) {
             http_response_code(500);
-            return ["success" => false, "message" => "Error interno del servidor"];
+            return ["success" => false, "error" => $e->getMessage()];
         }
 
         if (empty($reservas)) {
-            return ["success" => false, "message" => "No se encontraron reservas en el ranking", "data" => []];
+            return ["success" => false, "message" => "No se encontraron reservas", "data" => []];
         }
 
-        return ["success" => true, "message" => "Ranking de reservas obtenido correctamente", "data" => $reservas];
+        $datos = [];
+
+        foreach($reservas as $reserva) {
+            array_push(
+                $datos,
+                [
+                    "cliente" => $reserva["cliente"],
+                    "cantidad" => $reserva["total_reservas"],
+                    "totalPersonas" => $reserva["total_personas"],
+                ]
+            );
+        }
+
+        return ["success" => true, "message" => "Ranking de reservas obtenido correctamente", "data" => $datos];
     }
 
     
@@ -216,6 +242,23 @@ public function obtenerDashboard($router) {
             }
         }
 
-        return ["success" => true, "message" => "Ranking de ventas obtenido correctamente", "data" => $ventas];
+        $datos = [];
+
+        foreach($ventas as $venta) {
+
+            $fechaVenta = new DateTime($venta["fecha"]);
+
+            array_push(
+                $datos,
+                [
+                    "productos" => $venta["productos"],
+                    "cantidadVentas" => $venta["cantidad_vendida"],
+                    "totalGanancia" => $venta["total"],
+                    "fecha" => $fechaVenta->format("d-m-Y")
+                ]
+            );
+        }
+
+        return ["success" => true, "message" => "Ranking de ventas obtenido correctamente", "data" => $datos];
     }
 }

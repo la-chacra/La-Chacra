@@ -28,8 +28,8 @@ export default function GeAdminDashboard() {
   const [diferentesProductos, setDiferentesProductos] = useState(0);
   const [totalClientes, setTotalClientes] = useState(0);
   const [productosMasVendidos, setProductosMasVendidos] = useState([]);
-  const [rankingReservas, setReservas] = useState([]);
-  const [rankingVentas, setVentas] = useState([]);
+  const [rankingReservas, setRankingReservas] = useState([]);
+  const [rankingVentas, setRankingVentas] = useState([]);
   const [temporadasAltas, setTemporadasAltas] = useState([]);
   const [periodoActual, setPeriodoActual] = useState("Primavera");
   const [porcentajeCrecimiento, setPorcentajeCrecimiento] = useState(0);
@@ -39,7 +39,7 @@ export default function GeAdminDashboard() {
   const [selectedMes, setSelectedMes] = useState("Todos");
   const [selectedAnio, setSelectedAnio] = useState(new Date().getFullYear());
 
-useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       try {
         // Dashboard general
@@ -59,18 +59,18 @@ useEffect(() => {
                 t.temporada === "Verano"
                   ? faSun
                   : t.temporada === "Invierno"
-                  ? faSnowflake
-                  : t.temporada === "Primavera"
-                  ? faGift
-                  : faSuitcaseRolling,
+                    ? faSnowflake
+                    : t.temporada === "Primavera"
+                      ? faGift
+                      : faSuitcaseRolling,
               colorClass:
                 t.temporada === "Verano"
                   ? "ge-season--yellow"
                   : t.temporada === "Invierno"
-                  ? "ge-season--blue"
-                  : t.temporada === "Primavera"
-                  ? "ge-season--purple"
-                  : "ge-season--green",
+                    ? "ge-season--blue"
+                    : t.temporada === "Primavera"
+                      ? "ge-season--purple"
+                      : "ge-season--green",
             }))
           );
 

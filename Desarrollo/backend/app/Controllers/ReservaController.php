@@ -177,7 +177,7 @@ class ReservaController {
             $fechaHoy = new DateTime();
             $fechaReserva = new DateTime($reserva["fecha_hora"]);
             
-            if($fechaHoy->format("Y-m-d") === $fechaReserva->format("Y-m-d")) {
+            if($fechaHoy->format("d-m-Y") === $fechaReserva->format("d-m-Y")) {
                 $fechaReserva = "hoy, " . $fechaReserva->format("H-i");
             } else {
                 $fechaReserva = $fechaReserva->format("m-d") . ", " . $fechaReserva->format("H-i");
