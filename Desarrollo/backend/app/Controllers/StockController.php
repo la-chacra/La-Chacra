@@ -324,4 +324,150 @@ class StockController {
         
         return ["success" => true, "message" => "Inventario obtenido con éxito", "data" => $datos];
     }
+
+   /**
+ * Devuelve el historial de cambios en el stock.
+ * Endpoint: GET /api/historial-stock
+ */
+public function obtenerHistorialStock($router)
+{
+    try {
+        $resultados = Insumo::obtenerHistorial();
+
+        if (empty($resultados)) {
+            return ["success" => false, "message" => "No se encontraron registros.", "data" => []];
+        }
+
+        $historial = [];
+
+        foreach ($resultados as $fila) {
+            $valorAntes = json_decode($fila["valor_antes"], true);
+            $valorDespues = json_decode($fila["valor_despues"], true);
+
+            // Determinar tipo de cambio comprensible para React
+            $tipoCambio = match ($fila["tipo_cambio"]) {
+                "AGREGAR" => "Agregación de producto",
+                "ELIMINAR" => "Eliminación de producto",
+                "MODIFICAR" => $this->detectarTipoModificacion($valorAntes, $valorDespues),
+                "AJUSTE_CANTIDAD" => "Cantidad",
+                default => "Desconocido"
+            };
+
+            $cambio = $this->formatearCambio($tipoCambio, $valorAntes, $valorDespues);
+
+            $historial[] = [
+                "insumo_id"   => (int) $fila["insumo_id"],
+                "fecha"       => date("d/m/Y H:i", strtotime($fila["fecha_cambio"])),
+                "nombre"      => $fila["nombre_insumo"] ?? "-",
+                "tipo_cambio" => $tipoCambio,
+                "cambio"      => $cambio,
+                "usuario"     => $fila["usuario"],
+                "motivo"      => $fila["motivo"] ?? ""
+            ];
+        }
+
+        return ["success" => true, "data" => $historial];
+    } catch (\Exception $e) {
+        http_response_code(500);
+        return ["success" => false, "message" => "Error interno: " . $e->getMessage()];
+    }
+}
+
+/**
+ * Detecta el tipo de modificación según los valores JSON antes y después.
+ */
+private function detectarTipoModificacion($antes, $despues)
+{
+    if (isset($antes["cantidad"]) && isset($despues["cantidad"])) return "Cantidad";
+    if (isset($antes["precio_unitario"]) && isset($despues["precio_unitario"])) return "Precio";
+    if (isset($antes["nombre"]) && isset($despues["nombre"])) return "Nombre";
+    if (isset($antes["categoria"]) && isset($despues["categoria"])) return "Categoria";
+    return "Modificación";
+}
+
+/**
+ * Devuelve el formato compatible con React (HistoryTable.jsx)
+ */
+private function formatearCambio($tipo, $antes, $despues)
+{
+    switch ($tipo) {
+        case "Cantidad":
+            $nuevo = $despues["cantidad"] ?? 0;
+            $anterior = $antes["cantidad"] ?? 0;
+            return ["cantidad" => [
+                "nuevo" => $nuevo,
+                "anterior" => $anterior,
+                "diferencia" => ($nuevo - $anterior) >= 0 ? "+" . ($nuevo - $anterior) : (string)($nuevo - $anterior)
+            ]];
+
+        case "Precio":
+            $nuevo = $despues["precio_unitario"] ?? 0;
+            $anterior = $antes["precio_unitario"] ?? 0;
+            return ["precio" => [
+                "nuevo" => $nuevo,
+                "anterior" => $anterior,
+                "diferencia" => ($nuevo - $anterior) >= 0 ? "+" . ($nuevo - $anterior) : (string)($nuevo - $anterior)
+            ]];
+
+        case "Nombre":
+            return ["nombre" => [
+                "anterior" => $antes["nombre"] ?? "-",
+                "nuevo" => $despues["nombre"] ?? "-"
+            ]];
+
+        case "Categoria":
+            return ["categoria" => [
+                "anterior" => $antes["categoria"] ?? "-",
+                "nueva" => $despues["categoria"] ?? "-"
+            ]];
+
+        case "Agregación de producto":
+            return ["agregacion" => [
+                "cantidad" => $despues["cantidad"] ?? 0,
+                "precio" => $despues["precio_unitario"] ?? 0
+            ]];
+
+        case "Eliminación de producto":
+            return ["eliminacion" => [
+                "cantidadAnterior" => $antes["cantidad"] ?? 0
+            ]];
+
+        default:
+            return [];
+    }
+}
+
+
+public function obtenerStock($router)
+{
+    try {
+        $insumos = ControllerService::handlerErrorConexion(fn() => Insumo::traerTodos());
+
+        if (empty($insumos)) {
+            return ["success" => false, "message" => "No hay productos en el inventario.", "data" => []];
+        }
+
+        $resultado = [];
+
+        foreach ($insumos as $i) {
+            $resultado[] = [
+                "insumo_id"      => (int) $i["insumo_id"],
+                "nombre"         => $i["nombre"],
+                "categoria"      => $i["categoria"],
+                "cantidad"       => (float) $i["cantidad"],
+                "unidad"         => $i["unidad"],
+                "precioUnitario" => (float) $i["precio_unitario"],
+                "cantidadMinima" => (float) $i["cantidad_minima"],
+                "activo"         => (bool) $i["activo"],
+            ];
+        }
+
+        return ["success" => true, "data" => $resultado];
+    } catch (\Exception $e) {
+        http_response_code(500);
+        return ["success" => false, "message" => "Error al obtener el stock: " . $e->getMessage()];
+    }
+}
+
+
 }

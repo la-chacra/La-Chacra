@@ -12,79 +12,15 @@ const HistoryTable = () => {
   const [historyData, setHistoryData] = useState([]);
   const [showDateFilter, setShowDateFilter] = useState(false);
 
-  useEffect(() => {
-    // se debe crear un endpoint tipo GET: /api/historial-stock
-    // debe devolver un array de objetos con esta estructura:
-    // {
-    //   insumo_id,
-    //   fecha,         // "dd/mm/yyyy hh:mm"
-    //   nombre,        // coincide con $nombre en PHP
-    //   tipo_cambio,   // "Cantidad" o "Precio" o "Nombre" o "Categoria" o "Agregación de producto" o "Eliminación de producto"
-    //   cambio: {
-    //     cantidad?: { nuevo, anterior, diferencia },
-    //     precio?: { nuevo, anterior, diferencia },
-    //     nombre?: { nuevo, anterior },
-    //     categoria?: { nueva, anterior },
-    //     agregacion?: { cantidad, precio },
-    //     eliminacion?: { cantidadAnterior }
-    //   },
-    //   usuario,       // nombre del usuario que hizo el cambio
-    //   motivo         // razón del cambio
-    // }
-    fetch("/api/historial-stock")
-      .then((res) => res.json())
-      .then((data) => setHistoryData(data))
-      .catch(() => {
-        // mock para pruebas
-        setHistoryData([
-          {
-            insumo_id: 1,
-            fecha: "20/09/2025 13:24",
-            nombre: "Asado Vacío",
-            tipo_cambio: "Cantidad",
-            cambio: { cantidad: { nuevo: 60, anterior: 40, diferencia: "+20" } },
-            usuario: "Roberto Juan",
-            motivo: "Compra proveedor",
-          },
-          {
-            insumo_id: 2,
-            fecha: "16/09/2025 14:35",
-            nombre: "Asado Vacío",
-            tipo_cambio: "Precio",
-            cambio: { precio: { nuevo: 280, anterior: 250, diferencia: "+30" } },
-            usuario: "Roberto Juan",
-            motivo: "Aumento de costos",
-          },
-          {
-            insumo_id: 3,
-            fecha: "16/09/2025 14:34",
-            nombre: "Asado Vacío",
-            tipo_cambio: "Nombre",
-            cambio: { nombre: { anterior: "Asado Tira", nuevo: "Asado Vacío" } },
-            usuario: "Roberto Juan",
-            motivo: "Reemplazamiento",
-          },
-          {
-            insumo_id: 4,
-            fecha: "16/09/2025 14:33",
-            nombre: "Asado Tira",
-            tipo_cambio: "Agregación de producto",
-            cambio: { agregacion: { cantidad: 40, precio: 250 } },
-            usuario: "Roberto Juan",
-            motivo: "",
-          },
-          {
-            insumo_id: 5,
-            fecha: "16/09/2025 14:32",
-            nombre: "Asado Tira",
-            tipo_cambio: "Eliminación de producto",
-            cambio: { eliminacion: { cantidadAnterior: 40 } },
-            usuario: "Roberto Juan",
-            motivo: "",
-          },
-        ]);
-      });
-  }, []);
+ useEffect(() => {
+  fetch("/api/gestion/historialStock")
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) setHistoryData(data.data);
+      else console.error("Error cargando historial:", data.message);
+    })
+    .catch((err) => console.error("Error:", err));
+}, []);
 
   const handleSelectAll = (checked) => {
     if (checked) setSelectedItems(new Set(historyData.map((item) => item.insumo_id)));

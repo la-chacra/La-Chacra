@@ -102,6 +102,24 @@ class Reserva extends ModeloBase {
         return $this->eliminar($this->reserva_id);
     }
 
+    public static function obtenerReservas(): array {
+        $consulta = "
+           SELECT 
+            CONCAT(u.nombre, ' ', u.apellido) AS nombre_completo,
+            u.correo AS correo_electronico,
+            r.cant_personas AS cantidad_personas,
+            r.fecha_hora AS fecha,
+            r.estado AS estado
+        FROM 
+            reserva r
+        INNER JOIN 
+            usuario u ON r.usuario_id = u.usuario_id
+        ORDER BY 
+            r.fecha_hora DESC;
+        ";
+        return static::$conexion_bd->realizarConsulta($consulta);
+    }
+
     // Getters y Setters
 
     // Getter y setter de reserva_id

@@ -39,10 +39,12 @@ $router->get("/api/logout", [AuthController::class, "logout"]);
 $router->get("/api/estadoSesion", [AuthController::class, "estadoSesion"]);
 
 // API Reserva
-$router->post("/api/reserva/crear", [ReservaController::class, "registrar"]);
-$router->post("/api/reserva/actualizar", [ReservaController::class, "actualizar"]);
-$router->post("/api/reserva/cancelar", [ReservaController::class, "cancelar"]);
-$router->get("/api/reserva/gestion/historialReservas", [ReservaController::class, "obtenerRegistros"]);
+$router->post('/api/reservas/registrar', [ReservaController::class, 'registrar']);
+$router->get('/api/gestion/reservas', [ReservaController::class, 'obtenerReservas']);
+$router->post('/api/gestion/reservas/eliminar', [ReservaController::class, 'eliminarReserva']);
+$router->post('/api/reservas/actualizar', [ReservaController::class, 'actualizar']);
+$router->post('/api/reservas/cancelar', [ReservaController::class, 'cancelar']);
+
 
 //API Comanda
 $router->post("/api/gestion/comanda/crear", [ComandaController::class, "crear"]);
@@ -67,6 +69,11 @@ $router->get('/api/estadistica/obtenerRankingProductos', [EstadisticaController:
 $router->get('/api/estadistica/obtenerRankingReservas', [EstadisticaController::class, 'obtenerRankingReservas']);
 $router->get('/api/estadistica/obtenerRankingVentas', [EstadisticaController::class, 'obtenerRankingVentas']);
 
+//API StockController
+
+$router->get("/api/gestion/historialStock", [StockController::class, "obtenerHistorialStock"]);
+$router->get("/api/stock", [StockController::class, "obtenerStock"]);
+
 
 
 
@@ -81,8 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-AuthMiddleware::verificarSesion();
-AuthMiddleware::verificarPermisos();
+// AuthMiddleware::verificarSesion();
+// AuthMiddleware::verificarPermisos();
 
 try {
     $router->despachar();

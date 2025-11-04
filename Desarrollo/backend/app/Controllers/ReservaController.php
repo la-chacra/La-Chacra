@@ -6,6 +6,8 @@ use DateTime;
 use App\Models\Reserva;
 use App\Models\Usuario;
 use App\Models\Enums\EstadoReserva;
+use App\Services\ControllerService;
+use Exception;
 
 /**
  * Controlador para gestionar las reservas.
@@ -141,6 +143,24 @@ class ReservaController {
             ? ["success" => true, "message" => "Reserva actualizada correctamente."]
             : ["success" => false, "message" => "No se pudo actualizar la reserva."];
     }
+   public function eliminarReserva($router): array {
+    $datos = json_decode(file_get_contents("php://input"), true);
+    $reserva_id = $datos["reserva_id"] ?? null;
+
+   
+
+    $reserva = Reserva::buscarPorId($reserva_id);
+
+    if (!$reserva) {
+        return ["success" => false, "message" => "Reserva no encontrada."];
+    }
+
+    $resultado = $reserva->eliminarReserva();
+
+    return $resultado
+        ? ["success" => true, "message" => "Reserva eliminada correctamente."]
+        : ["success" => false, "message" => "No se pudo eliminar la reserva."];
+}
 
     /**
      * Obtiene todos los registros de reservas y los formatea para su presentación.
@@ -198,6 +218,40 @@ class ReservaController {
 
         return ["success" => true, "message" => "Reservas obtenidas con éxito", "result" => $datos];
     }
+
+    public function obtenerReservas($router) {
+    try {
+        // Usa el servicio genérico para manejar errores de conexión
+        $reservas = ControllerService::handlerErrorConexion(
+            fn() => Reserva::obtenerReservas()
+        );
+    } catch (Exception $e) {
+        // Si ocurre un error inesperado en la ejecución
+        http_response_code(500);
+        return [
+            "success" => false,
+            "message" => "Error interno del servidor al obtener reservas.",
+            "result"  => []
+        ];
+    }
+
+    // Validar si hay resultados
+    if (empty($reservas)) {
+        return [
+            "success" => false,
+            "message" => "No se encontraron reservas registradas.",
+            "result"  => []
+        ];
+    }
+
+    // Retornar respuesta exitosa
+    return [
+        "success" => true,
+        "message" => "Reservas obtenidas correctamente.",
+        "result"  => $reservas
+    ];
+}
+   
 }
 
 
