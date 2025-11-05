@@ -1664,6 +1664,7 @@ input {
 .om-nombre-plato,
 .om-precio-input,
 .om-mesa-input {
+  margin: 0 0 15px 0;
   width: 100%;
   padding: 12px;
   border: 2px solid #525252;
@@ -3097,3 +3098,43 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     display: none; 
   }
 }
+
+/*TABLA EMPLEADOS*/
+.et-filters-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.et-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.et-filter-group label {
+  font-weight: 500;
+  color: #495057;
+}
+
+.et-role-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: white;
+}
+
+.et-role-badge.admin {
+  background-color: #54acff;
+}
+
+.et-role-badge.empleado {
+  background-color: #65a80c;
+}
+

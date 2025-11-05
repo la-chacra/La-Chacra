@@ -38,7 +38,7 @@ const AdminHeader = () => {
         <NavLink to="/gestion/comanda" className="admin-nav-link">
           <FontAwesomeIcon icon={faConciergeBell} className="admin-nav-icon" /> Comanda
         </NavLink>
-        <NavLink to="/admin/empleados" className="admin-nav-link">
+        <NavLink to="/gestion/empleados-tabla" className="admin-nav-link">
           <FontAwesomeIcon icon={faUsers} className="admin-nav-icon" /> Empleados
         </NavLink>
         <NavLink to="/gestion/estadisticas" className="admin-nav-link">
@@ -75,7 +75,7 @@ const AdminHeader = () => {
           <NavLink to="/gestion/comanda" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
             <FontAwesomeIcon icon={faConciergeBell} className="admin-nav-icon" /> Comanda
           </NavLink>
-          <NavLink to="/admin/empleados" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
+          <NavLink to="/gestion/empleados-tabla" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
             <FontAwesomeIcon icon={faUsers} className="admin-nav-icon" /> Empleados
           </NavLink>
           <NavLink to="/gestion/estadisticas" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
