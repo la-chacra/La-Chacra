@@ -15,6 +15,8 @@ import Platos from './pages/Platos/Platos.jsx';
 import Estadisticas from './pages/Estadisticas/EstadisticasMain.jsx';
 import GestionStock from './pages/Stock/GestionStock';
 import Eventos from './pages/Eventos/Eventos'; // Importa la página de eventos
+import EmpleadosTabla from './pages/Empleados/EmpleadosTabla.jsx';
+import Empleados from './pages/Empleados/Empleados.jsx';
 // (cuando agreguen más páginas, las importas acá)
 
 function App() {
@@ -59,12 +61,15 @@ function App() {
         <Route path="/gestion/comanda" element={<Comanda/>}/>
         <Route path="/gestion/comanda-historial" element={<ComandaHist/>}/>
         <Route path="/gestion/Stock" element={<GestionStock/>}/>
-        <Route path="/gestion/stock-historial" element={<StockHist/>}/>
+        <Route path="/gestion/historialStock" element={<StockHist/>}/>
         <Route path="/gestion/platos-tabla" element={<PlatosTabla/>}/>
         <Route path="/gestion/plato" element={<Platos/>}/>
         <Route path="/gestion/plato/:id" element={<Platos/>}/>
         <Route path="/gestion/estadisticas" element={<Estadisticas/>}/>
         <Route path="/eventos" element={<Eventos/>}/>
+        <Route path="/gestion/empleados-tabla" element={<EmpleadosTabla/>}/>
+        <Route path="/gestion/empleado" element={<Empleados/>}/>
+        <Route path="/gestion/empleado/:id" element={<Empleados/>}/>
         {/* Testing */}
         <Route path="/test" element={<Test/>}/>
         {/* Ejemplo de otras rutas futuras */}

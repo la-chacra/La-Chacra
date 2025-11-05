@@ -164,6 +164,25 @@ class Insumo extends ModeloBase {
         return !empty($resultado);
     }
 
+     public static function obtenerHistorial(): array {
+        $consulta = "
+          SELECT 
+                ra.log_id,
+                ra.insumo_id,
+                ra.fecha_cambio,
+                ra.tipo_cambio,
+                ra.valor_antes,
+                ra.valor_despues,
+                ra.detalle AS motivo,
+                u.nombre AS usuario,
+                i.nombre AS nombre_insumo
+            FROM registro_actividades ra
+            JOIN usuario u ON ra.usuario_id = u.usuario_id
+            LEFT JOIN inventario i ON ra.insumo_id = i.insumo_id
+            ORDER BY ra.fecha_cambio DESC
+        ";
+        return static::$conexion_bd->realizarConsulta($consulta);
+    }
     // public function actualizarDisponibilidad() {
 
     // return $this->actualizar(

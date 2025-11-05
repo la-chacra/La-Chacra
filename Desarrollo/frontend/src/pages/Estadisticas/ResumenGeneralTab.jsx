@@ -34,29 +34,35 @@ export default function ResumenGeneralTab({
           <div className="ge-card ge-trending">
             <div className="ge-card__header">Productos Más Vendidos</div>
             <ul className="ge-trending-list">
-              {productosMasVendidos.map((p, idx) => (
-                <li className="ge-trending-item" key={p.producto_id}>
-                  <div className="ge-trending-rank">#{idx + 1}</div>
-                  <img
-                    className="ge-trending-thumb"
-                    src={p.imagen_url}
-                    alt={p.nombre}
-                  />
-                  <div className="ge-trending-info">
-                    <div className="ge-trending-name">{p.nombre}</div>
-                    <div className="ge-trending-price">
-                      ${p.precio}{" "}
-                      <span className="ge-trending-cat">{p.categoria}</span>
-                    </div>
-                  </div>
-                  <div className="ge-trending-stats">
-                    <div className="ge-trending-sales">
-                      {p.ventasPorProducto}
-                    </div>
-                    <div className="ge-trending-percent">Ventas</div>
-                  </div>
-                </li>
-              ))}
+                {productosMasVendidos.map((p, idx) => {
+                  // claves/propiedades pueden variar según el endpoint (dashboard vs ranking)
+                  const key = p.producto_id ?? p.id ?? `${p.producto ?? p.plato}-${idx}`;
+                  const nombre = p.plato ?? p.producto ?? p.nombre ?? "-";
+                  const precioUnitario = Number(p.precio_unitario ?? p.precio ?? 0);
+                  const totalVendidos = Number(p.total_vendidos ?? p.ventas ?? 0);
+                  const imagen = p.imagen_url ?? p.imagen ?? "";
+
+                  return (
+                    <li className="ge-trending-item" key={key}>
+                      <div className="ge-trending-rank">#{idx + 1}</div>
+                      <img
+                        className="ge-trending-thumb"
+                        src={imagen}
+                      />
+                      <div className="ge-trending-info">
+                        <div className="ge-trending-name">{nombre}</div>
+                        <div className="ge-trending-price">
+                          ${precioUnitario * totalVendidos} <span> Total </span>
+                          <span className="ge-trending-cat">{p.categoria}</span>
+                        </div>
+                      </div>
+                      <div className="ge-trending-stats">
+                        <div className="ge-trending-sales">{totalVendidos}</div>
+                        <div className="ge-trending-percent">Vendidos</div>
+                      </div>
+                    </li>
+                  );
+                })}
             </ul>
           </div>
         </div>
