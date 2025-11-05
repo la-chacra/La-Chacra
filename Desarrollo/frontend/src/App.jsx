@@ -14,6 +14,7 @@ import PlatosTabla from './pages/Platos/TablaPlatos.jsx';
 import Platos from './pages/Platos/Platos.jsx';
 import Estadisticas from './pages/Estadisticas/EstadisticasMain.jsx';
 import GestionStock from './pages/Stock/GestionStock';
+import Eventos from './pages/Eventos/Eventos'; // Importa la página de eventos
 import EmpleadosTabla from './pages/Empleados/EmpleadosTabla.jsx';
 import Empleados from './pages/Empleados/Empleados.jsx';
 // (cuando agreguen más páginas, las importas acá)
@@ -65,6 +66,7 @@ function App() {
         <Route path="/gestion/plato" element={<Platos/>}/>
         <Route path="/gestion/plato/:id" element={<Platos/>}/>
         <Route path="/gestion/estadisticas" element={<Estadisticas/>}/>
+        <Route path="/eventos" element={<Eventos/>}/>
         <Route path="/gestion/empleados-tabla" element={<EmpleadosTabla/>}/>
         <Route path="/gestion/empleado" element={<Empleados/>}/>
         <Route path="/gestion/empleado/:id" element={<Empleados/>}/>
