@@ -55,18 +55,18 @@ function App() {
       <Routes>
         <Route path="/" element={<Inicio/>}/>
         <Route path="/carta" element={<Carta/>}/>
-        <Route path="/login" element={<Login/>}/>
         <Route path="/reserva" element={<Reserva/>}/>
+        <Route path="/eventos" element={<Eventos/>}/>
+        <Route path="/autenticacion" element={<Login/>}/>
         <Route path="/gestion/reserva" element={<ReservaHist/>}/>
         <Route path="/gestion/comanda" element={<Comanda/>}/>
         <Route path="/gestion/comanda-historial" element={<ComandaHist/>}/>
-        <Route path="/gestion/Stock" element={<GestionStock/>}/>
-        <Route path="/gestion/historialStock" element={<StockHist/>}/>
+        <Route path="/gestion/stock" element={<GestionStock/>}/>
+        <Route path="/gestion/stock-historial" element={<StockHist/>}/>
         <Route path="/gestion/platos-tabla" element={<PlatosTabla/>}/>
         <Route path="/gestion/plato" element={<Platos/>}/>
         <Route path="/gestion/plato/:id" element={<Platos/>}/>
         <Route path="/gestion/estadisticas" element={<Estadisticas/>}/>
-        <Route path="/eventos" element={<Eventos/>}/>
         <Route path="/gestion/empleados-tabla" element={<EmpleadosTabla/>}/>
         <Route path="/gestion/empleado" element={<Empleados/>}/>
         <Route path="/gestion/empleado/:id" element={<Empleados/>}/>

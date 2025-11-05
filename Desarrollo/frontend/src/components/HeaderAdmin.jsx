@@ -29,7 +29,7 @@ const AdminHeader = () => {
 
       {/* Desktop nav */}
       <nav className="admin-nav-links">
-        <NavLink to="/admin/stock" className="admin-nav-link">
+        <NavLink to="/gestion/stock" className="admin-nav-link">
           <FontAwesomeIcon icon={faBoxesStacked} className="admin-nav-icon" /> Stock
         </NavLink>
         <NavLink to="/gestion/reserva" className="admin-nav-link">
@@ -66,7 +66,7 @@ const AdminHeader = () => {
       {/* Mobile menu */}
       <div className={`admin-mobile-menu ${menuOpen ? "open" : ""}`}>
         <nav className="admin-mobile-nav">
-          <NavLink to="/admin/stock" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
+          <NavLink to="/gestion/stock" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
             <FontAwesomeIcon icon={faBoxesStacked} className="admin-nav-icon" /> Stock
           </NavLink>
           <NavLink to="/gestion/reserva" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
