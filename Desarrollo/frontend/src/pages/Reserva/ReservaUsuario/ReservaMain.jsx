@@ -135,15 +135,11 @@ const TableReservationMain = ({ selectedDate, selectedTime, selectedTable, onTab
         
         <div className="info-content">
           <p>
-            Cada reserva se debe hacer para una hora específica, sin 
-            hora límite más haya del cierre del local.
+            {t('reserva.info_p1')}
           </p>
           
           <p>
-            Usted tiene un margen de <strong>15 minutos de retardo</strong> para 
-            llegar al local, si usted no llegó al local habiendo pasado ese 
-            tiempo, la reserva se vuelve <strong>inválida y la mesa puede ser 
-            ocupada</strong>.
+            {t('reserva.info_p2')}
           </p>
         </div>
         
