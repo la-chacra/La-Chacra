@@ -131,7 +131,7 @@ abstract class ModeloBase {
      * @param array $datos Arreglo asociativo con los datos a actualizar. Debe incluir la clave primaria.
      * @return bool El resultado de la ejecución de la consulta o resultados de validaciones
      */
-    public function actualizar(array $datos) : bool { 
+    public static function actualizar(array $datos) : bool { 
 
         $columnas = array_intersect(array_keys($datos), static::$columnas_bd);
 

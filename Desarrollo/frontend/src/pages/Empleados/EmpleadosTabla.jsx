@@ -93,14 +93,29 @@ const EmployeesTable = () => {
     navigate(`/gestion/empleado/${id}`);
   };
 
-  const handleDelete = (id) => {
-    // crear endpoint tipo DELETE: /api/usuarios/:id
-    // este endpoint debe eliminar el usuario con ese ID de la base de datos.
-    if (window.confirm("¿Seguro que quieres eliminar este usuario?")) {
-      setEmployeeData(employeeData.filter((e) => e.usuario_id !== id));
-      setOpenActionMenu(null);
+  const handleDelete = async (id) => {
+    if (!window.confirm("¿Seguro que quieres eliminar este usuario?")) return;
+
+    try {
+      const res = await fetch(`/api/empleado/desactivar/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setEmployeeData(employeeData.filter((e) => e.usuario_id !== id));
+        setOpenActionMenu(null);
+        alert("Empleado desactivado correctamente");
+      } else {
+        alert("Error: " + data.message);
+      }
+    } catch (e) {
+      alert("Error de conexión con el servidor");
     }
   };
+
 
   const safeEmployeeData = Array.isArray(employeeData) ? employeeData : [];
 

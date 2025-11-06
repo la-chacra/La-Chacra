@@ -114,53 +114,72 @@ class EmpleadoController {
             return $resultado ? ["success" => true, "message" => "Usuario actualizado con éxito"] : ["success" => false, "message" => "No se pudo actualizar el usuario"];
         } catch (Exception $e) {
             http_response_code(500);
-            return ["success" => false, "message" => "Error interno del servidor", "data" => []];
+            return ["success" => false, "message" => "Error interno del servidor"];
         }
     }
 
     public function registrarEmpleado ($router): array {
-        $datos = json_decode(file_get_contents("php://input"), true);
+        try {
+            $datos = json_decode(file_get_contents("php://input"), true);
 
-        $nombre = $datos["nombre"] ?? "";
-        $apellido = $datos["apellido"] ?? "";
-        $correo = $datos["correo"] ?? "";
-        $tipo = $datos["tipo"] ?? "";
-        $contrasena = $datos["contrasena"] ?? "";
-        $fechaNacimiento = $datos["fechaNacimiento"];
+            $nombre = $datos["nombre"] ?? "";
+            $apellido = $datos["apellido"] ?? "";
+            $correo = $datos["correo"] ?? "";
+            $tipo = $datos["tipo"] ?? "";
+            $contrasena = $datos["contrasena"] ?? "";
+            $fechaNacimiento = $datos["fechaNacimiento"];
 
-        if (empty($nombre) || empty($apellido) || empty($correo) || empty($contrasena) || empty($tipo) || empty($fechaNacimiento)) {
-            http_response_code(400);
-            return ["success" => false, "message" => "Faltan datos obligatorios"];
+            if (empty($nombre) || empty($apellido) || empty($correo) || empty($contrasena) || empty($tipo) || empty($fechaNacimiento)) {
+                http_response_code(400);
+                return ["success" => false, "message" => "Faltan datos obligatorios"];
+            }
+            
+            if ($tipo === "A") {
+                $usuario = new Administrador (
+                    $nombre,
+                    $apellido,
+                    $correo,
+                    $contrasena,
+                    $fechaNacimiento,
+                );
+            } else if ($tipo === "E") {
+                $usuario = new Empleado (
+                    $nombre,
+                    $apellido,
+                    $correo,
+                    $contrasena,
+                    $fechaNacimiento,
+                );
+            } else {
+                return ["success" => false, "message" => "Rol inválido"];
+            }
+
+            // fix: da error
+            // if($usuario->esExistente()) {
+            //     return ["success" => false, "message" => "El usuario ya está registrado"];
+            // }
+
+            // Registrar en BD
+            $resultado = ControllerService::handlerErrorConexion(fn() => $usuario->registrarUsuario());
+            
+            return $resultado ? ["success" => true, "message" => "Usuario registrado correctamente"] : ["success" => false, "message" => "Error al registrar el usuario"];
+        } catch (Exception $e) {
+            http_response_code(500);
+            return ["success" => false, "message" => "Error interno del servidor"];
         }
-        
-        if ($tipo === "A") {
-            $usuario = new Administrador (
-                $nombre,
-                $apellido,
-                $correo,
-                $contrasena,
-                $fechaNacimiento,
-            );
-        } else if ($tipo === "E") {
-            $usuario = new Empleado (
-                $nombre,
-                $apellido,
-                $correo,
-                $contrasena,
-                $fechaNacimiento,
-            );
-        } else {
-            return ["success" => false, "message" => "Rol inválido"];
-        }
-
-        // fix: da error
-        // if($usuario->esExistente()) {
-        //     return ["success" => false, "message" => "El usuario ya está registrado"];
-        // }
-
-        // Registrar en BD
-        $resultado = $usuario->registrarUsuario();
-        
-        return $resultado ? ["success" => true, "message" => "Usuario registrado correctamente"] : ["success" => false, "message" => "Error al registrar el usuario"];
     }
+
+    public function desactivarEmpleado($router, $params) {
+        try {
+            $id = $params["id"];
+
+            $resultado = ControllerService::handlerErrorConexion(fn() => Usuario::actualizarActividad($id, false));
+            
+            return $resultado ? ["success" => true, "message" => "Usuario desactivado correctamente"] : ["success" => false, "message" => "Error al desactivar el usuario"];
+        } catch (Exception $e) {
+            http_response_code(500);
+            return ["success" => false, "message" => "Error interno del servidor"];
+        }
+    } 
+
 }

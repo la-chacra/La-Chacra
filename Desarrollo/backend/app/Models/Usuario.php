@@ -74,7 +74,7 @@ abstract class Usuario extends ModeloBase {
      * @return true|false Si se pudo realizar la operación o no
      */
     public function actualizarDatos () {
-        return $this->actualizar(
+        return self::actualizar(
             [
                 'usuario_id'       => $this->usuario_id,
                 'nombre'           => $this->nombre, 
@@ -97,16 +97,25 @@ abstract class Usuario extends ModeloBase {
     }
 
     /**
+     * Eliminar un usuario de la base de datos
+     * 
+     * @return true|false Si la eliminación fue éxitosa o no
+     */
+    public function eliminarCuentaPorID (int $id) {
+        return $this->eliminar($id);
+    }
+
+    /**
      * Actualizar el estado de actividad de un Insumo en la Base de Datos.
      * 
      * @param bool $activo True o False si se lo quiere activar o desactivar.
      * @return bool True o False según se pudo realizar la operación o no.
      */
-    public function actualizarActividad (bool $activo) : bool {
-        return $this->actualizar(
+    public static function actualizarActividad (int $id, bool $activo) : bool {
+        return self::actualizar(
             [
-                "usuario_id" => $this->usuario_id,
-                "activo"  => $activo
+                "usuario_id" => $id,
+                "activo"  => $activo ? 1 : 0  // asegurar que se guarde como 0 o 1 en la BD
             ]
         );
     }
