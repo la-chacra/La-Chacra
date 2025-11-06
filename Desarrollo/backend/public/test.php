@@ -19,7 +19,7 @@ ModeloBase::setDB($db);
 
 // --- Pruebas ---
 try {
-    $usuarios = EmpleadoController::obtenerEmpleados("test");
+    $usuarios = EmpleadoController::obtenerPorID("si", ["id" => 3]);
 
     echo "<pre>";
     var_dump($usuarios);

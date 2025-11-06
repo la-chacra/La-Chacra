@@ -17,29 +17,21 @@ const GestorEmpleado = () => {
   const [activo, setActivo] = useState(true);
 
   useEffect(() => {
-    // si se pasa un ID en la URL (modo edición)
-    // crear endpoint GET: /api/usuarios/:id
-    // debe devolver un objeto con la estructura:
-    // {
-    //   nombre: string,
-    //   apellido: string,
-    //   correo: string,
-    //   tipo: "A" | "E",              // A = Administrador, E = Empleado
-    //   fecha_nacimiento: "YYYY-MM-DD",
-    //   activo: 1 o 0
-    // }
-    //
-    // este endpoint permite precargar los datos del empleado que se va a editar
     if (id) {
-      fetch(`/api/usuarios/${id}`)
+      fetch(`/api/empleado/obtener/${id}`)
         .then((res) => res.json())
-        .then((data) => {
-          setNombre(data.nombre || "");
-          setApellido(data.apellido || "");
-          setCorreo(data.correo || "");
-          setRol(data.tipo === "A" ? "Administrador" : "Empleado");
-          setFechaNacimiento(data.fecha_nacimiento || "");
-          setActivo(Boolean(data.activo));
+        .then((response) => {
+          if (response.success) {
+            setNombre(response.data.nombre || "");
+            setApellido(response.data.apellido || "");
+            setCorreo(response.data.correo || "");
+            setRol(response.data.tipo === "A" ? "Administrador" : "Empleado");
+            setFechaNacimiento(response.data.fecha_nacimiento || "");
+            setActivo(Boolean(response.data.activo));
+          } else {
+            alert("Error," + response.message)
+          }
+
         })
         .catch(() => {
           console.error("Error al cargar los datos del empleado");
@@ -56,26 +48,26 @@ const GestorEmpleado = () => {
     // formato del objeto que se enviará al servidor
     // Este mismo formato debe ser recibido y procesado por el backend
     const usuarioData = {
-    nombre,
-    apellido,
-    correo,
-    tipo: rol === "Administrador" ? "A" : "E",
-    fecha_nacimiento: fechaNacimiento,
-    activo,
+      nombre,
+      apellido,
+      correo,
+      tipo: rol === "Administrador" ? "A" : "E",
+      fechaNacimiento: fechaNacimiento,
+      activo,
     };
 
     if (contrasena.trim() !== "") {
-    usuarioData.contrasena = contrasena;
+      usuarioData.contrasena = contrasena;
     }
 
     // si existe ID → editar (PUT)
     // si no existe → crear (POST)
     const method = id ? "PUT" : "POST";
-    const url = id ? `/api/usuarios/${id}` : "/api/usuarios";
+    const url = id ? `/api/empleado/modificar/${id}` : "/api/empleado/registrar";
 
     try {
       // implementar estos endpoints:
-      // - POST /api/usuarios → crea nuevo usuario
+      // - POST /api/empleado/registrar → crea nuevo usuario
       //     debe validar que el correo no exista y guardar la contraseña cifrada.
       //     retornar JSON: { success: true, message: "Usuario creado" }
       //
@@ -95,7 +87,7 @@ const GestorEmpleado = () => {
 
       if (data.success) {
         alert("Empleado guardado correctamente");
-        navigate("/gestion/empleados");
+        navigate("/gestion/empleados-tabla");
       } else {
         alert("Error: " + data.message);
       }
@@ -160,6 +152,7 @@ const GestorEmpleado = () => {
               />
             </div>
 
+            {!id && (
               <div className="om-cdp-section">
                 <h3>Contraseña</h3>
                 <input
@@ -170,6 +163,8 @@ const GestorEmpleado = () => {
                   className="om-precio-input"
                 />
               </div>
+            )}
+
 
             <div className="om-estado-section">
               <h3>Rol</h3>

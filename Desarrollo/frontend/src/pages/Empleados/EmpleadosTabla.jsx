@@ -41,7 +41,7 @@ const EmployeesTable = () => {
     //
     // este endpoint puede consultar la base de datos "usuarios" y devolver todos
     // el frontend se encarga de filtrar por nombre, correo, rol o fecha.
-    fetch("/api/empleados/obtener")
+    fetch("/api/empleado/obtener")
       .then((res) => res.json())
       .then((response) => {
         if (response.success) {
@@ -81,7 +81,7 @@ const EmployeesTable = () => {
     window.open(url, "_blank");
   };
 
-  const handleAddProduct = () => {
+  const handleAddEmployee = () => {
     navigate("/gestion/empleado");
   };
 
@@ -206,7 +206,7 @@ const EmployeesTable = () => {
             </div>
           </div>
 
-          <button className="hs-export-btn" onClick={handleAddProduct}>
+          <button className="hs-export-btn" onClick={handleAddEmployee}>
             <span>Añadir Usuario</span>
             <FontAwesomeIcon icon={faUserPlus} />
           </button>

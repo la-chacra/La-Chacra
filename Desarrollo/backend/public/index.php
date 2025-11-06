@@ -77,7 +77,10 @@ $router->get("/api/stock", [StockController::class, "obtenerStock"]);
 
 // API EmpleadoController
 
-$router->get("/api/empleados/obtener", [EmpleadoController::class, "obtenerEmpleados"]);
+$router->get("/api/empleado/obtener", [EmpleadoController::class, "obtenerEmpleados"]);
+$router->post("/api/empleado/registrar", [EmpleadoController::class, "registrarEmpleado"]);
+$router->get("/api/empleado/obtener/{id}", [EmpleadoController::class, "obtenerPorID"]);
+$router->put("/api/empleado/modificar/{id}", [EmpleadoController::class, "modificarEmpleado"]);
 
 
 $allowedOrigin = "http://localhost:5173";
