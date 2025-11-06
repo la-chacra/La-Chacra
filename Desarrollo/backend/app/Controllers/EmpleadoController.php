@@ -180,6 +180,55 @@ class EmpleadoController {
             http_response_code(500);
             return ["success" => false, "message" => "Error interno del servidor"];
         }
-    } 
+    }
+
+    public function exportarUsuarios($router) {
+        try {
+            $ids = $_GET["ids"] ?? null;
+
+            if ($ids) {
+                $idsArray = explode(",", $ids);
+
+                $usuarios = ControllerService::handlerErrorConexion(
+                    fn() => Usuario::obtenerUsuariosPorIDs($idsArray)
+                );
+            } else {
+                $usuarios = ControllerService::handlerErrorConexion(
+                    fn() => Usuario::obtenerUsuariosPorTipo(["A", "E"])
+                );
+            }
+
+            $nombreArchivo = "usuarios_" . date("Y-m-d_H-i-s") . ".csv";
+
+            header("Content-Type: text/csv; charset=utf-8");
+            header("Content-Disposition: attachment; filename=$nombreArchivo");
+
+            $salida = fopen("php://output", "w");
+
+            fputcsv($salida, ["ID", "Nombre completo", "Correo", "Rol", "Fecha de creación"], ',', '"', '\\');
+
+            foreach ($usuarios as $u) {
+                $nombreCompleto = $u["nombre"] . " " . $u["apellido"];
+                $fecha = new DateTime($u["fecha_registro"]);
+                $fechaFormateada = $fecha->format("d-m-Y H:i");
+
+                fputcsv($salida, [
+                    $u["usuario_id"],
+                    $nombreCompleto,
+                    $u["correo"],
+                    $u["tipo"] === "A" ? "Administrador" : "Empleado",
+                    $fechaFormateada
+                ], ',', '"', '\\');
+            }
+
+            fclose($salida);
+            exit; 
+
+        } catch (Exception $e) {
+            http_response_code(500);
+            return ["success" => false, "message" => "Error interno del servidor"];
+        }
+    }
+
 
 }

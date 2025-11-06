@@ -89,6 +89,13 @@ abstract class ModeloBase {
         return static::$conexion_bd->realizarConsulta($consulta, ["id" => $id]);
     }
 
+    public static function obtenerUsuariosPorIDs($ids) {
+        $placeholders = implode(",", array_fill(0, count($ids), "?"));
+        $consulta = "SELECT * FROM " . static::$tabla_bd . " WHERE usuario_id IN ($placeholders)";
+        return static::$conexion_bd->realizarConsulta($consulta, $ids);
+    }
+
+
     /**
      * Busca y retorna un registro de la base de datos por su correo.
      * 

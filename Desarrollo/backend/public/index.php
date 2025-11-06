@@ -78,6 +78,7 @@ $router->get("/api/stock", [StockController::class, "obtenerStock"]);
 // API EmpleadoController
 
 $router->get("/api/empleado/obtener", [EmpleadoController::class, "obtenerEmpleados"]);
+$router->get("/api/exportar-usuarios", [EmpleadoController::class, "exportarUsuarios"]);
 $router->post("/api/empleado/registrar", [EmpleadoController::class, "registrarEmpleado"]);
 $router->delete("/api/empleado/desactivar/{id}", [EmpleadoController::class, "desactivarEmpleado"]);
 $router->get("/api/empleado/obtener/{id}", [EmpleadoController::class, "obtenerPorID"]);
