@@ -104,10 +104,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// AuthMiddleware::verificarSesion();
-// AuthMiddleware::verificarPermisos();
 
 try {
+
+    AuthMiddleware::verificarSesion();
+    AuthMiddleware::verificarPermisos();
+
     $router->despachar();
 } catch (Throwable $e) {
     http_response_code(500);

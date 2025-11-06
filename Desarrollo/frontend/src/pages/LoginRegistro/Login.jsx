@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle, faFacebookF } from "@fortawesome/free-brands-svg-icons";
 import Header from "../../components/Header";
@@ -7,7 +8,9 @@ import logo2 from "../../assets/logo2.png";
 import fuego from "../../assets/fuego.gif";
 
 const Auth = () => {
-  const [esRegistrado, setesRegistrado] = useState(false);
+  const location = useLocation();
+  // Si venimos con location.state.openRegister=true, abrimos el panel de registro
+  const [esRegistrado, setesRegistrado] = useState(() => !!location.state?.openRegister);
   const [hoveredPanel, setHoveredPanel] = useState(null);
 
   // Estados para formulario de Registro

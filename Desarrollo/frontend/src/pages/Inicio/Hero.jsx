@@ -37,10 +37,10 @@ const Hero = () => {
 
         {/* LOGIN / REGISTER BUTTONS */}
         <div className="he-login-buttons fade-in">
-          <Link to="/login" className="he-btn he-login-btn">
+          <Link to="/autenticacion" state={{ openRegister: false }} className="btn login">
             {t('auth.login')}
           </Link>
-          <Link to="/login" className="he-btn he-register-btn">
+          <Link to="/autenticacion" state={{ openRegister: true }} className="btn registro">
             {t('auth.register')}
           </Link>
         </div>

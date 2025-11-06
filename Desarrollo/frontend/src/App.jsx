@@ -1,46 +1,35 @@
-import React from 'react';
-import { useEffect, useState } from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+// --- Contexto y protección de rutas ---
+import { useAuth } from "./hooks/useAuth";
+import { RutaProtegida } from "./components/RutaProtegida";
+
+// --- Páginas del sitio ---
 import Inicio from "./pages/Inicio/Inicio";
-import Carta from './pages/Carta/Carta';
-import Reserva from './pages/Reserva/ReservaUsuario/Reserva';
-import Login from './pages/LoginRegistro/Login';
-import ReservaHist from './pages/Reserva/ReservaAdmin/HistorialAdmin';
-import Comanda from './pages/Comanda/Comanda';
-import Test from './pages/Admin/Test';
-import ComandaHist from './pages/Comanda/ComandaHist';
-import StockHist from './pages/Stock/HistorialStock.jsx';
-import PlatosTabla from './pages/Platos/TablaPlatos.jsx';
-import Platos from './pages/Platos/Platos.jsx';
-import Estadisticas from './pages/Estadisticas/EstadisticasMain.jsx';
-import GestionStock from './pages/Stock/GestionStock';
-import Eventos from './pages/Eventos/Eventos'; // Importa la página de eventos
-import EmpleadosTabla from './pages/Empleados/EmpleadosTabla.jsx';
-import Empleados from './pages/Empleados/Empleados.jsx';
-// (cuando agreguen más páginas, las importas acá)
+import Carta from "./pages/Carta/Carta";
+import Reserva from "./pages/Reserva/ReservaUsuario/Reserva";
+import Login from "./pages/LoginRegistro/Login";
+import Eventos from "./pages/Eventos/Eventos";
+import AccesoDenegado from "./pages/Otros/AccesoDenegado";
+
+// --- Páginas de gestión ---
+import ReservaHist from "./pages/Reserva/ReservaAdmin/HistorialAdmin";
+import Comanda from "./pages/Comanda/Comanda";
+import ComandaHist from "./pages/Comanda/ComandaHist";
+import GestionStock from "./pages/Stock/GestionStock";
+import StockHist from "./pages/Stock/HistorialStock";
+import Platos from "./pages/Platos/Platos";
+import PlatosTabla from "./pages/Platos/TablaPlatos";
+import Estadisticas from "./pages/Estadisticas/EstadisticasMain";
+import Empleados from "./pages/Empleados/Empleados";
+import EmpleadosTabla from "./pages/Empleados/EmpleadosTabla";
+
+// --- Testing ---
+import Test from "./pages/Admin/Test";
 
 function App() {
-  const [usuario, setUsuario] = useState(null);
-  const [cargando, setCargando] = useState(true);
-
-  useEffect(() => {
-    // Consultar al backend si hay sesión
-    fetch("/api/estadoSesion", { credentials: "include" })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.authenticated) {
-          setUsuario(data.usuario);
-        } else {
-          setUsuario(null);
-        }
-      })
-      .catch((err) => {
-        console.error("Error verificando sesión:", err);
-      })
-      .finally(() => {
-        setCargando(false);
-      });
-  }, []);
+  const { cargando } = useAuth();
 
   if (cargando) {
     return (
@@ -49,36 +38,49 @@ function App() {
       </div>
     );
   }
-  
+
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Inicio/>}/>
-        <Route path="/carta" element={<Carta/>}/>
-        <Route path="/reserva" element={<Reserva/>}/>
-        <Route path="/eventos" element={<Eventos/>}/>
-        <Route path="/autenticacion" element={<Login/>}/>
-        <Route path="/gestion/reserva" element={<ReservaHist/>}/>
-        <Route path="/gestion/comanda" element={<Comanda/>}/>
-        <Route path="/gestion/comanda-historial" element={<ComandaHist/>}/>
-        <Route path="/gestion/stock" element={<GestionStock/>}/>
-        <Route path="/gestion/stock-historial" element={<StockHist/>}/>
-        <Route path="/gestion/platos-tabla" element={<PlatosTabla/>}/>
-        <Route path="/gestion/plato" element={<Platos/>}/>
-        <Route path="/gestion/plato/:id" element={<Platos/>}/>
-        <Route path="/gestion/estadisticas" element={<Estadisticas/>}/>
-        <Route path="/gestion/empleados-tabla" element={<EmpleadosTabla/>}/>
-        <Route path="/gestion/empleado" element={<Empleados/>}/>
-        <Route path="/gestion/empleado/:id" element={<Empleados/>}/>
-        {/* Testing */}
-        <Route path="/test" element={<Test/>}/>
-        {/* Ejemplo de otras rutas futuras */}
-        {/* <Route path="/carta" element={<Carta />} /> */}
-        {/* <Route path="/contacto" element={<Contacto />} /> */}
+        {/* Rutas públicas */}
+        <Route path="/" element={<Inicio />} />
+        <Route path="/carta" element={<Carta />} />
+        <Route path="/eventos" element={<Eventos />} />
+        <Route path="/autenticacion" element={<Login />} />
+
+        {/* Rutas protegidas para usuarios autenticados (cliente) */}
+        <Route element={<RutaProtegida rolRequerido="C" />}>
+          <Route path="/reserva" element={<Reserva />} />
+        </Route>
+
+        {/* Rutas protegidas para empleados */}
+        <Route element={<RutaProtegida rolRequerido="E" />}>
+          <Route path="/gestion/comanda" element={<Comanda />} />
+          <Route path="/gestion/comanda-historial" element={<ComandaHist />} />
+        </Route>
+
+        {/* Rutas protegidas para administradores */}
+        <Route element={<RutaProtegida rolRequerido="A" />}>
+          <Route path="/gestion/reserva" element={<ReservaHist />} />
+          <Route path="/gestion/stock" element={<GestionStock />} />
+          <Route path="/gestion/stock-historial" element={<StockHist />} />
+          <Route path="/gestion/platos-tabla" element={<PlatosTabla />} />
+          <Route path="/gestion/plato" element={<Platos />} />
+          <Route path="/gestion/plato/:id" element={<Platos />} />
+          <Route path="/gestion/estadisticas" element={<Estadisticas />} />
+          <Route path="/gestion/empleados-tabla" element={<EmpleadosTabla />} />
+          <Route path="/gestion/empleado" element={<Empleados />} />
+          <Route path="/gestion/empleado/:id" element={<Empleados />} />
+        </Route>
+
+        {/* Página de acceso denegado */}
+        <Route path="/acceso-denegado" element={<AccesoDenegado />} />
+
+        {/* Rutas de prueba */}
+        <Route path="/test" element={<Test />} />
       </Routes>
     </Router>
   );
 }
 
 export default App;
-
