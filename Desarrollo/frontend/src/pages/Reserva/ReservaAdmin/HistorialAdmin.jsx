@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AdminHeader from "../../../components/HeaderAdmin";
 import logo from "../../../assets/logo2.png";
 
@@ -7,54 +8,57 @@ export default function HistorialRes() {
   const [filter, setFilter] = useState("Todos");
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchReservas = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch("/api/gestion/reservas", {
-          method: "GET",
-          credentials: "include",
-        });
-
-        const data = await res.json();
-
-        if (data.success) {
-          setReservas(data.result || []);
-        } else {
-          console.warn("No se pudieron obtener las reservas:", data.message);
-        }
-      } catch (error) {
-        console.error("Error al obtener reservas:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchReservas();
-  }, []);
-
-  const eliminarReserva = async (reserva_id) => {
-    if (!window.confirm("¿Seguro que deseas eliminar esta reserva?")) return;
-
+ useEffect(() => {
+  const fetchReservas = async () => {
     try {
-      const res = await fetch("/api/gestion/reservas/eliminar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reserva_id }), 
+      setLoading(true);
+      const res = await fetch("/api/reservas/obtener", {
+        method: "GET",
         credentials: "include",
       });
 
       const data = await res.json();
-      alert(data.message);
 
       if (data.success) {
-        setReservas((prev) => prev.filter((r) => r.reserva_id !== reserva_id));
+        // En tu controlador devolvés "data", no "result"
+        setReservas(data.data || []);
+      } else {
+        console.warn("No se pudieron obtener las reservas:", data.message);
       }
     } catch (error) {
-      console.error("Error al eliminar reserva:", error);
+      console.error("Error al obtener reservas:", error);
+    } finally {
+      setLoading(false);
     }
   };
+  fetchReservas();
+}, []);
+
+
+const desactivarReserva = async (reserva_id) => {
+  if (!window.confirm("¿Seguro que deseas desactivar esta reserva?")) return;
+
+  try {
+    const res = await fetch(`/api/reservas/desactivar/${reserva_id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    const data = await res.json();
+    alert(data.message);
+
+    if (data.success) {
+      setReservas((prev) => prev.filter((r) => r.reserva_id !== reserva_id));
+    }
+  } catch (error) {
+    console.error("Error al desactivar reserva:", error);
+  }
+};
+
+
+  
 
   const estadoColor = {
     Pendiente: "text-blue-400",
@@ -142,7 +146,7 @@ export default function HistorialRes() {
               <tbody>
                 {filtered.map((r, i) => (
                   <tr
-                    key={r.reserva_id ?? `reserva-${i}`} 
+                    key={r.reserva_id ?? i}
                     className="hover:bg-[#1b1b1b] transition-colors border-b border-gray-800"
                   >
                     <td className="px-4 py-3 text-gray-400">{i + 1}</td>
@@ -155,9 +159,7 @@ export default function HistorialRes() {
                     <td className="px-4 py-3 text-center">
                       {r.cantidad_personas || "-"}
                     </td>
-                    <td className="px-4 py-3 text-gray-300">
-                      {r.fecha || "—"}
-                    </td>
+                    <td className="px-4 py-3 text-gray-300">{r.fecha || "—"}</td>
                     <td
                       className={`px-4 py-3 text-center font-semibold ${
                         estadoColor[r.estado] || "text-gray-400"
@@ -168,18 +170,13 @@ export default function HistorialRes() {
                     <td className="px-4 py-3 text-center">
                       <div className="flex justify-center gap-3">
                         <button
-                          onClick={() => eliminarReserva(r.reserva_id)}
+                          onClick={() => desactivarReserva(r.reserva_id)}
                           className="px-3 py-1 rounded-md bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 hover:text-red-300 transition"
                           title="Eliminar reserva"
                         >
                           Eliminar
                         </button>
-                        <button
-                          className="px-3 py-1 rounded-md bg-green-500/10 text-green-400 border border-green-500/30 hover:bg-green-500/20 hover:text-green-300 transition"
-                          title="Editar reserva"
-                        >
-                          Editar
-                        </button>
+                        
                       </div>
                     </td>
                   </tr>
