@@ -41,7 +41,7 @@ const Header = () => {
           <div className="lang-wrapper">
             <select
               className="lang-select"
-              value={i18n.language}
+              value={i18n.language.split('-')[0]} // Asegura que 'es-ES' se convierta en 'es'
               onChange={(e) => i18n.changeLanguage(e.target.value)}
             >
               <option value="es">{t('lang.es')}</option>
