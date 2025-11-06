@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const TimeSelector = ({ selectedDate, selectedTime, onTimeChange }) => {
+  const { t } = useTranslation()
   const [availableTimes, setAvailableTimes] = useState([])
 
   const restaurantHours = {
@@ -96,7 +98,7 @@ const TimeSelector = ({ selectedDate, selectedTime, onTimeChange }) => {
   return (
     <div className="time-selector">
       <div className="time-display">
-        <span className="time-label">Hora :</span>
+        <span className="time-label">{t('time.select_time')}</span>
         <div className="time-value">
           {getSelectedTimeDisplay()}
         </div>
@@ -119,12 +121,12 @@ const TimeSelector = ({ selectedDate, selectedTime, onTimeChange }) => {
               </div>
             ) : (
               <div className="no-times">
-                No hay horarios disponibles para esta fecha
+                {t('time.no_times')}
               </div>
             )
           ) : (
             <div className="closed-message">
-              El restaurante está cerrado este día
+              {t('time.restaurant_closed')}
             </div>
           )}
         </div>
@@ -132,7 +134,7 @@ const TimeSelector = ({ selectedDate, selectedTime, onTimeChange }) => {
       
       {!selectedDate && (
         <div className="select-date-first">
-          Selecciona una fecha primero
+          {t('time.select_date_first')}
         </div>
       )}
     </div>

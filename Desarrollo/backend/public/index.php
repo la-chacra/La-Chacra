@@ -41,10 +41,16 @@ $router->get("/api/estadoSesion", [AuthController::class, "estadoSesion"]);
 
 // API Reserva
 $router->post('/api/reservas/registrar', [ReservaController::class, 'registrar']);
-$router->get('/api/gestion/reservas', [ReservaController::class, 'obtenerReservas']);
-$router->post('/api/gestion/reservas/eliminar', [ReservaController::class, 'eliminarReserva']);
 $router->post('/api/reservas/actualizar', [ReservaController::class, 'actualizar']);
 $router->post('/api/reservas/cancelar', [ReservaController::class, 'cancelar']);
+
+$router->get("/api/reservas/obtener", [ReservaController::class, "obtenerReservas"]);
+$router->get("/api/reservas/obtener/{id}", [ReservaController::class, "obtenerPorID"]);
+$router->put("/api/reservas/modificar/{id}", [ReservaController::class, "modificarReserva"]);
+$router->delete('/api/reservas/desactivar/{id}', [ReservaController::class, 'desactivarReserva']);
+
+
+
 
 
 //API Comanda
@@ -83,6 +89,8 @@ $router->post("/api/empleado/registrar", [EmpleadoController::class, "registrarE
 $router->delete("/api/empleado/desactivar/{id}", [EmpleadoController::class, "desactivarEmpleado"]);
 $router->get("/api/empleado/obtener/{id}", [EmpleadoController::class, "obtenerPorID"]);
 $router->put("/api/empleado/modificar/{id}", [EmpleadoController::class, "modificarEmpleado"]);
+
+
 
 
 $allowedOrigin = "http://localhost:5173";

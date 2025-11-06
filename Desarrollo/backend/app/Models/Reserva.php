@@ -70,7 +70,6 @@ class Reserva extends ModeloBase {
             ]
         );
 
-        // Asignar el ID al objeto localmente
         $id = $this->encontrarUltimoRegistro();
         $this->reserva_id = $id[static::$pk_bd] ?? null;
 
@@ -102,9 +101,10 @@ class Reserva extends ModeloBase {
         return $this->eliminar($this->reserva_id);
     }
 
-    public static function obtenerReservas(): array {
-        $consulta = "
-           SELECT 
+   public static function obtenerReservas(): array {
+    $consulta = "
+        SELECT 
+            r.reserva_id,
             CONCAT(u.nombre, ' ', u.apellido) AS nombre_completo,
             u.correo AS correo_electronico,
             r.cant_personas AS cantidad_personas,
@@ -114,11 +114,24 @@ class Reserva extends ModeloBase {
             reserva r
         INNER JOIN 
             usuario u ON r.usuario_id = u.usuario_id
+        WHERE 
+            r.activa = 1
         ORDER BY 
             r.fecha_hora DESC;
-        ";
-        return static::$conexion_bd->realizarConsulta($consulta);
+    ";
+    return static::$conexion_bd->realizarConsulta($consulta);
+}
+
+
+    public static function actualizarActividad(int $reserva_id, bool $activa): bool {
+        $estado = $activa ? 1 : 0;
+
+        $query = "UPDATE reserva SET activa = $estado WHERE reserva_id = $reserva_id";
+
+    return static::$conexion_bd->realizarConsulta($query) !== false;
     }
+
+
 
     // Getters y Setters
 
