@@ -88,7 +88,7 @@ class Plato extends ModeloBase {
     }
 
 
-    // Getters / Setters
+
     public function getProductoId(): ?int { return $this->producto_id; }
     public function setProductoId(int $producto_id): void { $this->producto_id = $producto_id; }
 

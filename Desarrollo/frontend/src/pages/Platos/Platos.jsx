@@ -34,7 +34,7 @@ const GestorPlatos = () => {
   const [imagenPreview, setImagenPreview] = useState(null);
 
   useEffect(() => {
-  // Carga todos los platos desde el backend
+
   fetch("/api/gestion/plato")
     .then((res) => res.json())
     .then((data) => {
@@ -98,27 +98,23 @@ const handleDelete = async (id) => {
     }
   };
 
-  // guarda o actualiza el plato
   const handleGuardar = async () => {
-    // se utiliza formdata porque puede incluir imagen
     const formData = new FormData();
     formData.append("nombre", nombre);
     formData.append("precio", precio);
-    formData.append("ingredientes", JSON.stringify(ingredientes)); // backend debe aceptar JSON string para array
+    formData.append("ingredientes", JSON.stringify(ingredientes)); 
     formData.append("categoria", categoria);
     formData.append("disponibilidad", disponibilidad);
     formData.append("activo", activo);
     if (imagen) formData.append("imagen", imagen);
 
-    // determina URL y método según si es creación o edición
     const url = id
-      ? `/api/productos-menu/${id}` // PUT /api/productos-menu/:id para editar
-      : "/api/productos-menu"; // POST /api/productos-menu para crear
+      ? `/api/productos-menu/${id}`
+      : "/api/productos-menu"; 
 
     const method = id ? "PUT" : "POST";
 
     try {
-      // el backend debe aceptar formdata con todos los campos y devolver { success: true/false, message: "..." }
       const res = await fetch(url, {
         method,
         body: formData,
@@ -287,13 +283,13 @@ const handleDelete = async (id) => {
               <div className="om-action-buttons">
                 <button
                   className="om-save-button"
-                  onClick={handleGuardar} // POST/PUT según corresponda
+                  onClick={handleGuardar} 
                 >
                   Guardar Plato
                 </button>
                 <button
                   className="om-save-print-button"
-                  onClick={() => navigate("/gestion/platos-tabla")} // cancelar y volver a tabla
+                  onClick={() => navigate("/gestion/platos-tabla")} 
                 >
                   Cancelar
                 </button>

@@ -117,7 +117,6 @@ class PlatoController {
         }
     }
 
-    // Desactivar plato (no eliminar)
     public function desactivarPlato($router, $params): array {
         $id = (int)$params["id"];
         try {
