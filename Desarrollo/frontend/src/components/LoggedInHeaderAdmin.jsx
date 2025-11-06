@@ -6,6 +6,7 @@ import logo from "../assets/logo.png";
 import profilePic from "../assets/default-avatar.png"; // Add your profile image here
 import { logoutUsuario } from "../services/authService";
 import { useAuth } from "../hooks/useAuth";
+import { useTranslation } from 'react-i18next'
 
 const LoggedInHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -47,11 +48,7 @@ const LoggedInHeader = () => {
 
         <div className="right-controls">
           <div className="lang-wrapper">
-            <select className="lang-select">
-              <option value="es">ES 🇺🇾</option>
-              <option value="en">EN 🇺🇸</option>
-              <option value="pt">PT-BR 🇧🇷</option>
-            </select>
+            <LanguageSelector />
           </div>
 
           <div
@@ -117,3 +114,19 @@ const LoggedInHeader = () => {
 };
 
 export default LoggedInHeader;
+
+function LanguageSelector() {
+  const { i18n } = useTranslation();
+
+  return (
+    <select
+      className="lang-select"
+      value={i18n.language.split('-')[0]}
+      onChange={(e) => i18n.changeLanguage(e.target.value)}
+    >
+      <option value="es">ES 🇺🇾</option>
+      <option value="en">EN 🇺🇸</option>
+      <option value="pt">PT 🇧🇷</option>
+    </select>
+  );
+}

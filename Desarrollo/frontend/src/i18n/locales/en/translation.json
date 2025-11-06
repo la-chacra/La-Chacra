@@ -127,5 +127,9 @@
         "description": "Vanilla ice cream"
       }
     }
+  },
+  "perfil": {
+    "mi_perfil": "My Profile",
+    "cerrar_sesion": "Log out"
   }
 }

@@ -17,10 +17,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import logo from "../assets/logo.png";
 import profilePic from "../assets/default-avatar.png";
+import { useTranslation } from 'react-i18next'
 
 const AdminHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const { i18n } = useTranslation();
 
   return (
     <header className="admin-header">
@@ -64,6 +66,7 @@ const AdminHeader = () => {
       <div className="right-controls">
         {/* GESTIÓN Icon + Text */}
 
+
         {/* Profile Dropdown */}
         <div
           className="li-profile-wrapper"
@@ -89,7 +92,7 @@ const AdminHeader = () => {
         <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} />
       </div>
 
-      {/* Mobile Menu */}
+  {/* Mobile Menu */}
       <div className={`admin-mobile-menu ${menuOpen ? "open" : ""}`}>
         <nav className="admin-mobile-nav">
           <NavLink to="/gestion/stock" onClick={() => setMenuOpen(false)} className="admin-mobile-link">

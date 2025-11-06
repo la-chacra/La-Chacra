@@ -127,5 +127,9 @@
         "description": "Helado de vainilla"
       }
     }
+  },
+  "perfil": {
+    "mi_perfil": "Mi Perfil",
+    "cerrar_sesion": "Cerrar sesión"
   }
 }

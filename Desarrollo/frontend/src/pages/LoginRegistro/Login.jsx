@@ -29,7 +29,32 @@ const Auth = () => {
   const [loginContrasena, setLoginContrasena] = useState("");
 
   const navigate = useNavigate();
-  const { login, checkSesion } = useAuth();
+  const { usuario, login, checkSesion } = useAuth();
+
+    if (usuario) {
+    return (
+      <>
+        <Header />
+        <div className="fixed inset-0 flex flex-col items-center justify-center backdrop-blur-md bg-black/40 z-50">
+          <div className="bg-neutral-950 rounded-2xl shadow-xl p-10 text-center max-w-md">
+            <h2 className="text-2xl font-semibold mb-4 text-gray-300">
+              Ya estás logeado
+            </h2>
+            <p className="text-gray-300 mb-6">
+              No es necesario volver a iniciar sesión o registrarte.
+            </p>
+            <button
+              onClick={() => navigate("/")}
+              className="bg-green-700 hover:bg-green-800 text-white px-6 py-2 rounded-lg transition"
+            >
+              Volver al inicio
+            </button>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
 
   const handleLogin = async (e) => {
     e.preventDefault();
