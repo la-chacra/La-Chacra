@@ -70,7 +70,6 @@ class Reserva extends ModeloBase {
             ]
         );
 
-        // Asignar el ID al objeto localmente
         $id = $this->encontrarUltimoRegistro();
         $this->reserva_id = $id[static::$pk_bd] ?? null;
 
@@ -124,14 +123,13 @@ class Reserva extends ModeloBase {
 }
 
 
-public static function actualizarActividad(int $reserva_id, bool $activa): bool {
-    $estado = $activa ? 1 : 0;
+    public static function actualizarActividad(int $reserva_id, bool $activa): bool {
+        $estado = $activa ? 1 : 0;
 
-    $query = "UPDATE reserva SET activa = $estado WHERE reserva_id = $reserva_id";
+        $query = "UPDATE reserva SET activa = $estado WHERE reserva_id = $reserva_id";
 
-    // Usamos el método correcto según tu estructura
-return static::$conexion_bd->realizarConsulta($query) !== false;
-}
+    return static::$conexion_bd->realizarConsulta($query) !== false;
+    }
 
 
 

@@ -22,7 +22,6 @@ export default function HistorialRes() {
       const data = await res.json();
 
       if (data.success) {
-        // En tu controlador devolvés "data", no "result"
         setReservas(data.data || []);
       } else {
         console.warn("No se pudieron obtener las reservas:", data.message);

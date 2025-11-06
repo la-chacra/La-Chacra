@@ -66,61 +66,8 @@ class ReservaController {
         }
     }
 
-    public function modificarReserva($router, $params) {
-    $id = $params["id"];
-    $datos = json_decode(file_get_contents("php://input"), true);
+  
 
-    try {
-        $reservaExistente = Reserva::buscarPorId($id);
-        if (!$reservaExistente) {
-            http_response_code(404);
-            return ["success" => false, "message" => "Reserva no encontrada"];
-        }
-
-        $fechaHora = $datos["fechaHora"] ?? $reservaExistente->getFechaHora()->format("Y-m-d H:i:s");
-        $cantPersonas = $datos["cantPersonas"] ?? $reservaExistente->getCantPersonas();
-        $estado = $datos["estado"] ?? $reservaExistente->getEstado();
-
-        $reserva = new Reserva(
-            $reservaExistente->getUsuario(),
-            $fechaHora,
-            (int)$cantPersonas,
-            $estado
-        );
-        $reserva->setReservaId($id);
-
-        $resultado = ControllerService::handlerErrorConexion(fn() => $reserva->actualizarDatos());
-
-        return $resultado
-            ? ["success" => true, "message" => "Reserva actualizada con éxito"]
-            : ["success" => false, "message" => "No se pudo actualizar la reserva"];
-    } catch (Exception $e) {
-        http_response_code(500);
-        return ["success" => false, "message" => "Error interno del servidor"];
-    }
-}
-
-
-   public function eliminarReserva($router, $params) {
-    try {
-        $id = $params["id"];
-        $reserva = Reserva::buscarPorId($id);
-
-        if (!$reserva) {
-            http_response_code(404);
-            return ["success" => false, "message" => "Reserva no encontrada"];
-        }
-
-        $resultado = ControllerService::handlerErrorConexion(fn() => $reserva->eliminarReserva());
-
-        return $resultado
-            ? ["success" => true, "message" => "Reserva eliminada correctamente"]
-            : ["success" => false, "message" => "No se pudo eliminar la reserva"];
-    } catch (Exception $e) {
-        http_response_code(500);
-        return ["success" => false, "message" => "Error interno del servidor"];
-    }
-}
 
 public function desactivarReserva($router, $params) {
     try {
