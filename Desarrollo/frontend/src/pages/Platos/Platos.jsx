@@ -34,26 +34,43 @@ const GestorPlatos = () => {
   const [imagenPreview, setImagenPreview] = useState(null);
 
   useEffect(() => {
-    if (id) {
-      // si estamos editando un plato, necesitamos un endpoint GET /api/productos-menu/:id
-      // que devuelva un objeto con los campos:
-      // nombre, precio, ingredientes[], categoria, disponibilidad, activo, imagen_url
-      fetch(`/api/productos-menu/${id}`)
-        .then((res) => res.json())
-        .then((data) => {
-          setNombre(data.nombre);
-          setPrecio(data.precio);
-          setIngredientes(data.ingredientes || []);
-          setCategoria(data.categoria);
-          setDisponibilidad(data.disponibilidad);
-          setActivo(data.activo);
-          setImagenPreview(data.imagen_url || null);
-        })
-        .catch(() => {
-          // en caso de error, se podría mostrar un mensaje o redirigir
-        });
+  // Carga todos los platos desde el backend
+  fetch("/api/gestion/plato")
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success && Array.isArray(data.data)) {
+        setMenuData(data.data);
+      } else {
+        console.error("Error cargando platos:", data.message);
+      }
+    })
+    .catch((err) => {
+      console.error("Error de conexión con el backend:", err);
+    });
+}, []);
+const handleDelete = async (id) => {
+  if (!window.confirm("¿Seguro que quieres eliminar este plato?")) return;
+
+  try {
+    const res = await fetch(`/api/gestion/plato/eliminar/${id}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      alert("Plato desactivado correctamente");
+      setMenuData(menuData.filter((item) => item.producto_id !== id));
+    } else {
+      alert("Error al eliminar plato: " + data.message);
     }
-  }, [id]);
+  } catch (error) {
+    console.error("Error en la petición:", error);
+    alert("Error de conexión con el servidor");
+  }
+};
+
 
   // agrega un ingrediente al presionar Enter
   const handleAddIngrediente = (e) => {
