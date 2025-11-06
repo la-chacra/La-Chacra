@@ -9,14 +9,18 @@ import {
 import aniversarioImg from "../../assets/Aniversario.jpeg";
 import cumpleanosImg from "../../assets/cumpleanos.jpg";
 import Header from "../../components/Header";
+import LoggedInHeader from "../../components/LoggedInHeaderAdmin";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function Eventos() {
   const { t } = useTranslation()
 
+  const { autenticado } = useAuth();
+
   return (
     <div className="bg-[#1a1a1a] min-h-screen">
       {/* HEADER */}
-      <Header />
+      {autenticado ? <LoggedInHeader /> : <Header />}
 
       {/* SECCIÓN EVENTOS */}
       <section className="text-white font-overlock py-12 sm:py-16 px-4 sm:px-6 md:px-8">

@@ -3,11 +3,33 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes, faUserCircle, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import logo from "../assets/logo.png";
-import profilePic from "../assets/default-avatar.png"; // Add your profile image here
+import profilePic from "../assets/default-avatar.png";
+import { logoutUsuario } from "../services/authService";
+import { useAuth } from "../hooks/useAuth";
 
 const LoggedInHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+
+  const { logout } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      const res = await logoutUsuario();
+
+      // actualizar estado en el contexto (aunque el backend falle, limpiamos el cliente)
+      logout();
+
+      if (!res || !res.success) {
+        // opcional: informar al usuario que el cierre en servidor falló
+        console.warn("Logout en servidor no confirmado:", res);
+      }
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+      // Aun así limpiamos el estado local
+      logout();
+    }
+  };
 
   return (
     <>
@@ -50,9 +72,9 @@ const LoggedInHeader = () => {
               <Link to="/perfil" className="li-dropdown-item">
                 <FontAwesomeIcon icon={faUserCircle} /> Mi Perfil
               </Link>
-              <Link to="/logout" className="li-dropdown-item logout">
+              <button onClick={handleLogout} className="li-dropdown-item logout">
                 <FontAwesomeIcon icon={faSignOutAlt} /> Cerrar Sesión
-              </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -77,9 +99,9 @@ const LoggedInHeader = () => {
             {/* perfil responsive */}
             <div className="li-mobile-profile">
               <img src={profilePic} alt="Perfil" className="li-mobile-profile-pic" />
-              <div className="li-mobile-profile-links">
+                <div className="li-mobile-profile-links">
                 <Link to="/perfil">Mi Perfil</Link>
-                <Link to="/logout" className="logout">Cerrar Sesión</Link>
+                <button onClick={handleLogout} className="logout">Cerrar Sesión</button>
               </div>
             </div>
           </nav>

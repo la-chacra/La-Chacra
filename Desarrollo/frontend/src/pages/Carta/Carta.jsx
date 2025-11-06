@@ -12,9 +12,12 @@ import heladoImg from "../../assets/helado.png";
 
 import Footer from "../../components/Footer"; 
 import Header from "../../components/Header"; 
+import LoggedInHeader from "../../components/LoggedInHeaderAdmin";
+import { useAuth } from "../../hooks/useAuth";
 
 const Carta = () => {
   const { t } = useTranslation()
+  const { autenticado } = useAuth();
 
   const menuData = [
     {
@@ -85,7 +88,7 @@ const Carta = () => {
 
   return (
     <div className="carta-page">
-      <Header/>
+      {autenticado ? <LoggedInHeader /> : <Header />}
 
       <div className="carta-wrapper">
         <div className="sidebar left-sidebar"></div>

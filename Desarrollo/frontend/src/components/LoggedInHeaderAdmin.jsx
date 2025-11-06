@@ -4,10 +4,27 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes, faUserCircle, faSignOutAlt, faGear } from "@fortawesome/free-solid-svg-icons";
 import logo from "../assets/logo.png";
 import profilePic from "../assets/default-avatar.png"; // Add your profile image here
+import { logoutUsuario } from "../services/authService";
+import { useAuth } from "../hooks/useAuth";
 
 const LoggedInHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const { logout } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      const res = await logoutUsuario();
+      // limpiar estado local siempre
+      logout();
+      if (!res || !res.success) {
+        console.warn("Logout en servidor no confirmado:", res);
+      }
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+      logout();
+    }
+  };
 
   return (
     <>
@@ -53,9 +70,9 @@ const LoggedInHeader = () => {
               <Link to="/gestion" className="li-dropdown-item gestion">
                 <FontAwesomeIcon icon={faGear} /> Gestión
               </Link>
-              <Link to="/logout" className="li-dropdown-item logout">
+              <button onClick={handleLogout} className="li-dropdown-item logout">
                 <FontAwesomeIcon icon={faSignOutAlt} /> Cerrar Sesión
-              </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -80,10 +97,10 @@ const LoggedInHeader = () => {
             {/* perfil responsive */}
             <div className="li-mobile-profile">
               <img src={profilePic} alt="Perfil" className="li-mobile-profile-pic" />
-              <div className="li-mobile-profile-links">
+                <div className="li-mobile-profile-links">
                 <Link to="/perfil">Mi Perfil</Link>
                 <Link to="/gestion " className="gestion">Gestión</Link>
-                <Link to="/logout" className="logout">Cerrar Sesión</Link>
+                <button onClick={() => { setMenuOpen(false); handleLogout(); }} className="logout">Cerrar Sesión</button>
               </div>
             </div>
           </nav>
