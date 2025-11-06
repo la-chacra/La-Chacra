@@ -1,7 +1,10 @@
 import React from "react";
+import { useTranslation } from 'react-i18next'
 import fotoMision from "../../assets/fotoMision.jpg";
 
 export default function Mision() {
+  const { t } = useTranslation()
+
   return (
     <section className="bg-[#f8f5ef] py-12">
       <div className="max-w-4xl mx-auto px-6">
@@ -19,13 +22,10 @@ export default function Mision() {
           {/* Texto */}
           <div>
             <h3 className="bg-black text-white px-3 py-1 rounded inline-block font-bold mb-4">
-              Nuestra misión
+              {t('mision.title')}
             </h3>
             <p className="leading-relaxed text-gray-100">
-              Ofrecer a nuestros clientes una experiencia gastronómica única, 
-              combinando ingredientes orgánicos y frescos con recetas cuidadas, 
-              promoviendo un estilo de vida saludable y respetuoso con la naturaleza, 
-              mientras brindamos un servicio cálido y cercano.
+              {t('mision.paragraph')}
             </p>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from 'react-i18next'
 import heroImg from "../../assets/hero.jpeg";
 import logo from "../../assets/logo.png"; 
 import { Link } from "react-router-dom";
@@ -8,6 +9,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUtensils } from "@fortawesome/free-solid-svg-icons";
 
 const Hero = () => {
+  const { t } = useTranslation()
+
   return (
     <section
       className="he-hero-section"
@@ -25,20 +28,20 @@ const Hero = () => {
 
         {/* NAV LINKS */}
         <div className="he-nav-links font-overlock text-white font-semibold">
-          <a href="/carta" className="he-link underline-center fade-in">Carta</a>
+          <a href="/carta" className="he-link underline-center fade-in">{t('nav.carta')}</a>
           <span className="he-separator fade-in">•</span>
-          <a href="/reserva" className="he-link underline-center fade-in">Reserva</a>
+          <a href="/reserva" className="he-link underline-center fade-in">{t('nav.reserva')}</a>
           <span className="he-separator fade-in">•</span>
-          <a href="/eventos" className="he-link underline-center fade-in">Eventos</a>
+          <a href="/eventos" className="he-link underline-center fade-in">{t('nav.eventos')}</a>
         </div>
 
         {/* LOGIN / REGISTER BUTTONS */}
         <div className="he-login-buttons fade-in">
           <Link to="/login" className="he-btn he-login-btn">
-            INICIAR SESIÓN
+            {t('auth.login')}
           </Link>
           <Link to="/login" className="he-btn he-register-btn">
-            REGISTRARSE
+            {t('auth.register')}
           </Link>
         </div>
       </nav>
@@ -50,7 +53,7 @@ const Hero = () => {
         </h1>
 
         <Link to="/carta" className="menu-btn font-montserrat fade-in-up">
-          Ver menú <FontAwesomeIcon icon={faUtensils} className="he-icon" />
+          {t('hero.menu_button')} <FontAwesomeIcon icon={faUtensils} className="he-icon" />
         </Link>
       </div>
     </section>

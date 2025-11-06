@@ -1,0 +1,131 @@
+{
+  "nav": {
+    "inicio": "Inicio",
+    "carta": "Carta",
+    "reserva": "Reserva",
+    "eventos": "Eventos"
+  },
+  "auth": {
+    "login": "INICIAR SESIÓN",
+    "register": "REGISTRARSE"
+  },
+  "lang": {
+    "es": "ES 🇺🇾",
+    "en": "EN 🇺🇸",
+    "pt": "PT 🇧🇷"
+  },
+  "hero": {
+    "menu_button": "Ver menú"
+  },
+  "horarios": {
+    "title": "Horarios",
+    "fri_sat": "Viernes y Sábados",
+    "sun": "Domingos",
+    "reserve_button": "Hacé tu reserva",
+    "where": "¿Dónde estamos?"
+  },
+  "mision": {
+    "title": "Nuestra misión",
+    "paragraph": "Ofrecer a nuestros clientes una experiencia gastronómica única, combinando ingredientes orgánicos y frescos con recetas cuidadas, promoviendo un estilo de vida saludable y respetuoso con la naturaleza, mientras brindamos un servicio cálido y cercano."
+  },
+  "productos": {
+    "title": "Productos Orgánicos",
+    "paragraph": "Cultivamos de manera responsable, cuidando cada detalle para que disfrutes de ingredientes frescos y saludables en nuestros platos. La calidad y el respeto por la tierra nos definen."
+  },
+  "masVendidos": {
+    "title": "Nuestros Mejores Platos",
+    "best_seller": "Más Vendido 🔥"
+  },
+  "carta": {
+    "title": "CARTA",
+    "sections": {
+      "house": "PLATOS DE LA CASA",
+      "dishes": "PLATOS",
+      "drinks": "BEBIDAS",
+      "desserts": "POSTRES"
+    },
+    "categories": {
+      "all": "Todos",
+      "entradas": "Entradas",
+      "carnes": "Carnes",
+      "pescados": "Pescados",
+      "pastas": "Pastas",
+      "vinos": "Vinos",
+      "whiskey": "Whiskey",
+      "cervezas": "Cervezas",
+      "refrescos": "Refrescos",
+      "helados": "Helados"
+    }
+  },
+  "reserva": {
+    "title": "RESERVA DE MESAS",
+    "persons_title": "Cantidad de personas",
+    "persons_subtitle": "Seleccione la cantidad de personas que asistirán a su reserva",
+    "other": "Otro",
+    "placeholder_number": "Ingrese un número",
+    "confirm": "Confirmar",
+    "info_title": "Información",
+    "info_p1": "Cada reserva se debe hacer para una hora específica, sin hora límite más haya del cierre del local.",
+    "info_p2": "Usted tiene un margen de 15 minutos de retardo para llegar al local, si usted no llegó al local habiendo pasado ese tiempo, la reserva se vuelve inválida y la mesa puede ser ocupada.",
+    "submit": "Realizar Reserva",
+    "alerts": {
+      "incomplete": "Por favor completa todos los campos antes de continuar",
+      "success": "Reserva exitosa",
+      "error_prefix": "Error: ",
+      "connection": "Error de conexión con el servidor"
+    }
+  },
+  "eventos": {
+    "title": "EVENTOS",
+    "description": "Contamos con un servicio integral para eventos, donde no solo alquilas el local, sino toda la experiencia completa.",
+    "anniversaries": "Aniversarios",
+    "birthdays": "Cumpleaños",
+    "special": "Ocasiones Especiales",
+    "contact": "Contactanos para consultar disponibilidad y organizar tu evento",
+    "bottom": "El servicio es integral y el menú se define previamente con el cliente. No se incluye discoteca ni decoración."
+  },
+  "time": {
+    "select_date": "Selecciona la fecha",
+    "select_time": "Hora :",
+    "select_date_first": "Selecciona una fecha primero",
+    "no_times": "No hay horarios disponibles para esta fecha",
+    "restaurant_closed": "El restaurante está cerrado este día",
+    "weekdays_short": ["D", "L", "M", "M", "J", "V", "S"],
+    "weekdays": ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
+    "months": ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+  },
+  "products": {
+    "house": {
+      "braserito": {
+        "name": "Braserito",
+        "description": "Chorizo, morcilla, asado"
+      }
+    },
+    "main": {
+      "hamburguesa": {
+        "name": "Hamburguesa",
+        "description": "Hamburguesa, aderezo, lechuga, tomate, jamón cocido y queso cheddar"
+      },
+      "pasta": {
+        "name": "Pasta Alfredo",
+        "description": "Fettuccine con salsa Alfredo y parmesano"
+      },
+      "cesar": {
+        "name": "Ensalada César",
+        "description": "Lechuga, crutones, parmesano y aderezo César"
+      }
+    },
+    "drinks": {
+      "vino": {
+        "name": "Vino",
+        "description": "Vino blanco"
+      }
+    },
+    "desserts": {
+      "helado": {
+        "name": "Helado",
+        "description": "Helado de vainilla"
+      }
+    }
+  }
+}
