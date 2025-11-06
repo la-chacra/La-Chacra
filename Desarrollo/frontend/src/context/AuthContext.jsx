@@ -1,4 +1,5 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import { verificarSesion } from "../services/authService";
 import { useNavigate } from "react-router-dom";
 
 // Crear el contexto
@@ -13,9 +14,27 @@ export function AuthProvider({ children }) {
   const [autenticado, setAutenticado] = useState(false);
   const [cargando, setCargando] = useState(true);
 
+  useEffect(() => {
+    const fetchSesion = async () => {
+      try {
+        const sesion = await verificarSesion();
+
+        if(sesion.success) {
+          setUsuario(sesion.data);
+          sessionStorage.setItem("usuario", JSON.stringify(sesion.data));
+        } else {
+          setUsuario(null);
+          sessionStorage.removeItem("usuario");
+        }
+      } catch (error) {
+        
+      }
+    }
+  });
+
   // --- FUNCIONES PRINCIPALES ---
   // login(): establece sesión tras autenticarse
-  const login = async (credenciales, e) => {
+  const login = async (credenciales) => {
 
   };
 
