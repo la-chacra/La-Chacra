@@ -1,102 +1,62 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect } from "react";
 import { verificarSesion } from "../services/authService";
 import { useNavigate } from "react-router-dom";
 
-// Crear el contexto
 export const AuthContext = createContext();
 
-// Componente proveedor del contexto
 export function AuthProvider({ children }) {
-  const navigate = useNavigate();
-
-  // Estados de sesión
   const [usuario, setUsuario] = useState(null);
   const [autenticado, setAutenticado] = useState(false);
   const [cargando, setCargando] = useState(true);
 
-  useEffect(() => {
-    const fetchSesion = async () => {
-      try {
-        const sesion = await verificarSesion();
-
-        if(sesion.success) {
-          setUsuario(sesion.data);
-          sessionStorage.setItem("usuario", JSON.stringify(sesion.data));
-        } else {
-          setUsuario(null);
-          sessionStorage.removeItem("usuario");
-        }
-      } catch (error) {
-        
-      }
-    }
-  });
-
-  // --- FUNCIONES PRINCIPALES ---
-  // login(): establece sesión tras autenticarse
-  const login = async (credenciales) => {
-
-  };
-
-  // logout(): destruye sesión en backend y limpia datos locales
-  const logout = async (e) => {
-    e.preventDefault();
-    
-    try {
-      const res = await fetch("/api/logout", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          correo: credenciales.id
-        }),
-      });
-
-      const dataRes = await res.json();
-
-      return dataRes;
-    } catch (error) {
-      return error;
-    }
-
-  };
-
-  // checkSesion(): consultar /api/estadoSesion para verificar sesión
+  // --- Verificar sesión con backend ---
   const checkSesion = async () => {
-    fetch("/api/estadoSesion", { credentials: "include" })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.authenticated) {
-          setUsuario(data.usuario);
-        } else {
-          setUsuario(null);
-        }
-      })
-      .catch((err) => {
-        console.error("Error verificando sesión:", err);
-      })
-      .finally(() => {
-        setCargando(false);
-      });
+    try {
+      const sesion = await verificarSesion();
+
+      if (sesion.success) {
+        setUsuario(sesion.data);
+        setAutenticado(true);
+        sessionStorage.setItem("usuario", JSON.stringify(sesion.data));
+      } else {
+        setUsuario(null);
+        setAutenticado(false);
+        sessionStorage.removeItem("usuario");
+      }
+    } catch (error) {
+      console.error("Error verificando la sesión:", error);
+      setUsuario(null);
+      setAutenticado(false);
+    } finally {
+      setCargando(false);
+    }
   };
 
-  // Al montar el componente, verificar sesión automáticamente
+  // Ejecutar una vez al montar
   useEffect(() => {
     checkSesion();
   }, []);
 
-  // Proveer valores y funciones a toda la app
+  // --- Manejo de login ---
+  const login = async (datosUsuario) => {
+    navigate("/");
+    setUsuario(datosUsuario);
+    setAutenticado(true);
+    sessionStorage.setItem("usuario", JSON.stringify(datosUsuario));
+  };
+
+  // --- Manejo de logout ---
+  const logout = async () => {
+    navigate("/");
+    setUsuario(null);
+    setAutenticado(false);
+    sessionStorage.removeItem("usuario");
+  };
+
   return (
-    <AuthContext.Provider
-      value={{
-        usuario,
-        autenticado,
-        cargando,
-        login,
-        logout,
-        checkSesion,
-      }}
-    >
+    <AuthContext.Provider value={{
+      usuario, autenticado, cargando, login, logout, checkSesion
+    }}>
       {children}
     </AuthContext.Provider>
   );
