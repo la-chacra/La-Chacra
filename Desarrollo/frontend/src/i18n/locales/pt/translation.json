@@ -1,7 +1,7 @@
 {
   "nav": {
     "inicio": "Início",
-    "carta": "Cardápio",
+    "carta": "Menu",
     "reserva": "Reserva",
     "eventos": "Eventos"
   },
@@ -12,7 +12,7 @@
   "lang": {
     "es": "ES 🇺🇾",
     "en": "EN 🇺🇸",
-    "pt": "PT-BR 🇧🇷"
+    "pt": "PT 🇧🇷"
   },
   "hero": {
     "menu_butto": "Ver menu"
@@ -37,7 +37,7 @@
     "best_seller": "Mais Vendido 🔥"
   },
   "carta": {
-    "title": "CARDÁPIO",
+    "title": "MENU",
     "sections": {
       "house": "PRATOS DA CASA",
       "dishes": "PRATOS",
