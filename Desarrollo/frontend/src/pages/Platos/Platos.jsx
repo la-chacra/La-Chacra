@@ -43,9 +43,19 @@ const GestorPlatos = () => {
             const plato = data.data;
             setNombre(plato.nombre || "");
             setPrecio(plato.precio || "");
-            setIngredientes(
-              plato.ingredientes ? JSON.parse(plato.ingredientes) : []
-            );
+            setIngredientes(() => {
+  try {
+    return Array.isArray(plato.ingredientes)
+      ? plato.ingredientes
+      : JSON.parse(plato.ingredientes);
+  } catch {
+    // si no es JSON válido, lo dividimos por coma
+    return plato.ingredientes
+      ? plato.ingredientes.split(",").map(i => i.trim())
+      : [];
+  }
+});
+
             setCategoria(plato.categoria || "");
             setDisponibilidad(Boolean(plato.disponibilidad));
             setActivo(Boolean(plato.activo));
@@ -107,23 +117,28 @@ const GestorPlatos = () => {
     const method = id ? "PUT" : "POST";
 
     try {
-      const res = await fetch(url, {
-        method,
-        body: formData,
-        credentials: "include",
-      });
+  const res = await fetch(url, {
+    method,
+    body: formData,
+    credentials: "include",
+  });
 
-      const data = await res.json();
-      if (data.success) {
-        alert("Plato guardado correctamente");
-        navigate("/gestion/platos-tabla");
-      } else {
-        alert("Error: " + data.message);
-      }
-    } catch (error) {
-      console.error("Error en la conexión:", error);
-      alert("Error al conectar con el servidor");
-    }
+  const text = await res.text(); // primero leemos como texto
+  console.log("Respuesta cruda del servidor:", text); // 🔍 para ver el HTML o error
+
+  const data = JSON.parse(text); // después intentamos parsear
+
+  if (data.success) {
+    alert("Producto guardado correctamente");
+    navigate("/gestion/platos-tabla");
+  } else {
+    alert("Error: " + data.message);
+  }
+} catch (error) {
+  console.error("Error en la conexión:", error);
+  alert("Error al conectar con el servidor");
+}
+
   };
 
   return (
