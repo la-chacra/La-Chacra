@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const TableReservationMain = ({ selectedDate, selectedTime, selectedTable, onTableChange }) => {
+  const { t } = useTranslation()
   const [customTableCount, setCustomTableCount] = useState('')
   const [showCustomInput, setShowCustomInput] = useState(false)
 
@@ -27,7 +29,7 @@ const TableReservationMain = ({ selectedDate, selectedTime, selectedTable, onTab
 
   const handleSubmit = async () => {
     if (!selectedDate || !selectedTime || !selectedTable) {
-      alert('Por favor completa todos los campos antes de continuar')
+      alert(t('reserva.alerts.incomplete'))
       return
     }
     
@@ -56,12 +58,12 @@ const TableReservationMain = ({ selectedDate, selectedTime, selectedTable, onTab
       const dataRes = await respuesta.json();
 
       if (dataRes.success) {
-        alert("Reserva exitosa");
+        alert(t('reserva.alerts.success'));
       } else {
-        alert("Error: " + dataRes.message);
+        alert(t('reserva.alerts.error_prefix') + dataRes.message);
       }
     } catch (error) {
-      alert("Error de conexión con el servidor");
+      alert(t('reserva.alerts.connection'));
     }
     /*console.log('Reservation data:', {
       date: selectedDate,
@@ -75,9 +77,9 @@ const TableReservationMain = ({ selectedDate, selectedTime, selectedTable, onTab
   return (
     <div className="table-reservation-main">
       <div className="table-selection">
-        <h3 className="table-section-title">Cantidad de personas</h3>
+        <h3 className="table-section-title">{t('reserva.persons_title')}</h3>
         <p className="section-subtitle">
-          Seleccione la cantidad de personas que asistirán a su reserva
+          {t('reserva.persons_subtitle')}
         </p>
         
         <div className="table-options">
@@ -95,7 +97,7 @@ const TableReservationMain = ({ selectedDate, selectedTime, selectedTable, onTab
             className={`table-option custom ${showCustomInput ? 'selected' : ''}`}
             onClick={handleCustomTableClick}
           >
-            Otro
+            {t('reserva.other')}
           </button>
         </div>
         
@@ -103,7 +105,7 @@ const TableReservationMain = ({ selectedDate, selectedTime, selectedTable, onTab
           <div className="custom-input-container">
             <input
               type="number"
-              placeholder="Ingrese un número"
+              placeholder={t('reserva.placeholder_number')}
               value={customTableCount}
               onChange={(e) => setCustomTableCount(e.target.value)}
               className="custom-input"
@@ -115,7 +117,7 @@ const TableReservationMain = ({ selectedDate, selectedTime, selectedTable, onTab
               className="custom-submit"
               disabled={!customTableCount}
             >
-              Confirmar
+              {t('reserva.confirm')}
             </button>
           </div>
         )}

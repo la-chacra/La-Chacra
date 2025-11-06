@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 
 const DateSelector = ({ selectedDate, onDateChange }) => {
+  const { t } = useTranslation()
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [calendarDays, setCalendarDays] = useState([])
 
-  const months = [
-    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-  ]
-
-  const weekDays = ['D', 'L', 'M', 'M', 'J', 'V', 'S']
+  const months = t('time.months', { returnObjects: true })
+  const weekDays = t('time.weekdays_short', { returnObjects: true })
 
   useEffect(() => {
     generateCalendar()
@@ -70,9 +68,9 @@ const DateSelector = ({ selectedDate, onDateChange }) => {
   }
 
   const formatSelectedDate = () => {
-    if (!selectedDate) return 'Selecciona la fecha'
+    if (!selectedDate) return t('time.select_date')
     
-    const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
+    const days = t('time.weekdays', { returnObjects: true })
     const dayName = days[selectedDate.getDay()]
     const month = months[selectedDate.getMonth()].substring(0, 3)
     const day = selectedDate.getDate()
@@ -83,7 +81,7 @@ const DateSelector = ({ selectedDate, onDateChange }) => {
     return (
     <div className="date-selector">
         <div className="date-header">
-        <span className="date-label">Selecciona la fecha</span>
+        <span className="date-label">{t('time.select_date')}</span>
         <button className="edit-button">
             <FontAwesomeIcon icon={faPen} />
         </button>

@@ -1,0 +1,131 @@
+{
+  "nav": {
+    "inicio": "Início",
+    "carta": "Cardápio",
+    "reserva": "Reserva",
+    "eventos": "Eventos"
+  },
+  "auth": {
+    "login": "ENTRAR",
+    "register": "REGISTRAR-SE"
+  },
+  "lang": {
+    "es": "ES 🇺🇾",
+    "en": "EN 🇺🇸",
+    "pt": "PT-BR 🇧🇷"
+  },
+  "hero": {
+    "menu_butto": "Ver menu"
+  },
+  "horarios": {
+    "title": "Horários",
+    "fri_sat": "Sexta e Sábado",
+    "sun": "Domingo",
+    "reserve_button": "Faça sua reserva",
+    "where": "Onde estamos?"
+  },
+  "mision": {
+    "title": "Nossa missão",
+    "paragraph": "Oferecer aos nossos clientes uma experiência gastronômica única, combinando ingredientes orgânicos e frescos com receitas cuidadosas, promovendo um estilo de vida saudável e respeitoso com a natureza, enquanto oferecemos um serviço caloroso e próximo."
+  },
+  "productos": {
+    "title": "Produtos Orgânicos",
+    "paragraph": "Cultivamos de maneira responsável, cuidando de cada detalhe para que você desfrute de ingredientes frescos e saudáveis em nossos pratos. A qualidade e o respeito pela terra nos definem."
+  },
+  "masVendidos": {
+    "title": "Nossos Melhores Pratos",
+    "best_seller": "Mais Vendido 🔥"
+  },
+  "carta": {
+    "title": "CARDÁPIO",
+    "sections": {
+      "house": "PRATOS DA CASA",
+      "dishes": "PRATOS",
+      "drinks": "BEBIDAS",
+      "desserts": "SOBREMESAS"
+    },
+    "categories": {
+      "all": "Todos",
+      "entradas": "Entradas",
+      "carnes": "Carnes",
+      "pescados": "Peixes",
+      "pastas": "Massas",
+      "vinos": "Vinhos",
+      "whiskey": "Whisky",
+      "cervezas": "Cervejas",
+      "refrescos": "Refrigerantes",
+      "helados": "Sorvetes"
+    }
+  },
+  "reserva": {
+    "title": "RESERVA DE MESAS",
+    "persons_title": "Quantidade de pessoas",
+    "persons_subtitle": "Selecione a quantidade de pessoas que participarão da sua reserva",
+    "other": "Outro",
+    "placeholder_number": "Digite um número",
+    "confirm": "Confirmar",
+    "info_title": "Informação",
+    "info_p1": "Cada reserva deve ser feita para um horário específico, sem tolerância além do horário de fechamento.",
+    "info_p2": "Você tem um período de 15 minutos de atraso para chegar; se não chegar após esse tempo, a reserva torna-se inválida e a mesa pode ser ocupada.",
+    "submit": "Realizar Reserva",
+    "alerts": {
+      "incomplete": "Por favor complete todos os campos antes de continuar",
+      "success": "Reserva realizada com sucesso",
+      "error_prefix": "Erro: ",
+      "connection": "Erro de conexão com o servidor"
+    }
+  },
+  "eventos": {
+    "title": "EVENTOS",
+    "description": "Oferecemos um serviço completo para eventos onde você não apenas aluga o local, mas toda a experiência.",
+    "anniversaries": "Aniversários",
+    "birthdays": "Aniversários",
+    "special": "Ocasiões Especiais",
+    "contact": "Contate-nos para verificar disponibilidade e organizar seu evento",
+    "bottom": "O serviço é abrangente e o menu é definido previamente com o cliente. Discoteca ou decoração não incluída."
+  },
+  "time": {
+    "select_date": "Selecione a data",
+    "select_time": "Hora:",
+    "select_date_first": "Selecione uma data primeiro",
+    "no_times": "Não há horários disponíveis para esta data",
+    "restaurant_closed": "O restaurante está fechado neste dia",
+    "weekdays_short": ["D", "S", "T", "Q", "Q", "S", "S"],
+    "weekdays": ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"],
+    "months": ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
+  },
+  "products": {
+    "house": {
+      "braserito": {
+        "name": "Braserito",
+        "description": "Linguiça, morcilha, churrasco"
+      }
+    },
+    "main": {
+      "hamburguesa": {
+        "name": "Hambúrguer",
+        "description": "Hambúrguer, molho, alface, tomate, presunto e queijo cheddar"
+      },
+      "pasta": {
+        "name": "Massa Alfredo",
+        "description": "Fettuccine ao molho Alfredo e parmesão"
+      },
+      "cesar": {
+        "name": "Salada Caesar",
+        "description": "Alface, croutons, parmesão e molho Caesar"
+      }
+    },
+    "drinks": {
+      "vino": {
+        "name": "Vinho",
+        "description": "Vinho branco"
+      }
+    },
+    "desserts": {
+      "helado": {
+        "name": "Sorvete",
+        "description": "Sorvete de baunilha"
+      }
+    }
+  }
+}

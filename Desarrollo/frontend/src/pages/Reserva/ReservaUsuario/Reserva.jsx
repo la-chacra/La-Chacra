@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import Header from "../../../components/Header"
 import Footer from "../../../components/Footer"
 import DateSelector from '../../../components/DatePicker'
@@ -23,13 +24,15 @@ const ReservaMesas = () => {
     setSelectedTable(table)
   }
 
+  const { t } = useTranslation()
+
   return (
     <div className="reserva-mesas-page">
   <Header />
 
   <div className="reserva-center-wrapper">
     <div className="reserva-container font-montserrat">
-      <h1 className="reserva-title font-overlock fade-in">RESERVA DE MESAS</h1>
+  <h1 className="reserva-title font-overlock fade-in">{t('reserva.title')}</h1>
 
       <div className="reserva-content fade-in-up">
         <DateSelector

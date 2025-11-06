@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from 'react-i18next'
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -6,6 +7,7 @@ import logo from "../assets/logo.png";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { t, i18n } = useTranslation()
 
   return (
     <>
@@ -17,30 +19,34 @@ const Header = () => {
         </div>
 
         <nav className="nav-links">
-          <Link to="/">Inicio</Link>
+          <Link to="/">{t('nav.inicio')}</Link>
           <span>•</span>
-          <Link to="/carta">Carta</Link>
+          <Link to="/carta">{t('nav.carta')}</Link>
           <span>•</span>
-          <Link to="/reserva">Reserva</Link>
+          <Link to="/reserva">{t('nav.reserva')}</Link>
           <span>•</span>
-          <Link to="/eventos">Eventos</Link>
+          <Link to="/eventos">{t('nav.eventos')}</Link>
         </nav>
 
         <div className="right-controls">
           <div className="auth-controls">
             <Link to="/login" className="btn login">
-              INICIAR SESIÓN
+              {t('auth.login')}
             </Link>
             <Link to="/login" className="btn register">
-              REGISTRARSE
+              {t('auth.register')}
             </Link>
           </div>
 
           <div className="lang-wrapper">
-            <select className="lang-select">
-              <option value="es">ES 🇺🇾</option>
-              <option value="en">EN 🇺🇸</option>
-              <option value="en">PT-BR 🇧🇷</option>
+            <select
+              className="lang-select"
+              value={i18n.language}
+              onChange={(e) => i18n.changeLanguage(e.target.value)}
+            >
+              <option value="es">{t('lang.es')}</option>
+              <option value="en">{t('lang.en')}</option>
+              <option value="pt">{t('lang.pt')}</option>
             </select>
           </div>
         </div>
@@ -53,23 +59,23 @@ const Header = () => {
         <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
           <nav className="mobile-nav">
             <div className="mobile-nav-links">
-              <Link to="/carta" onClick={() => setMenuOpen(false)}>Carta</Link>
+              <Link to="/carta" onClick={() => setMenuOpen(false)}>{t('nav.carta')}</Link>
               <span>•</span>
-              <Link to="/sobre-nosotros" onClick={() => setMenuOpen(false)}>Sobre Nosotros</Link>
+              <Link to="/sobre-nosotros" onClick={() => setMenuOpen(false)}>{t('nav.inicio')}</Link>
               <span>•</span>
-              <Link to="/reserva" onClick={() => setMenuOpen(false)}>Reserva</Link>
+              <Link to="/reserva" onClick={() => setMenuOpen(false)}>{t('nav.reserva')}</Link>
               <span>•</span>
-              <Link to="/eventos" onClick={() => setMenuOpen(false)}>Eventos</Link>
+              <Link to="/eventos" onClick={() => setMenuOpen(false)}>{t('nav.eventos')}</Link>
             </div>
 
             <hr className="mobile-divider" />
 
             <div className="mobile-auth">
             <Link to="/login" className="btn login">
-              INICIAR SESIÓN
+              {t('auth.login')}
             </Link>
             <Link to="/login" className="btn register">
-              REGISTRARSE
+              {t('auth.register')}
             </Link>
             </div>
           </nav>
