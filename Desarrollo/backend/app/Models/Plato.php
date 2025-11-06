@@ -7,7 +7,7 @@ use App\Models\ModeloBase;
 class Plato extends ModeloBase {
 
     protected static string $pk_bd = "producto_id";
-    protected static string $tabla_bd = "menu_productos";
+    protected static string $tabla_bd = "productos_menu";
     protected static array $columnas_bd = [
         "producto_id",
         "nombre",

@@ -64,7 +64,7 @@ function App() {
         <Route path="/gestion/stock" element={<GestionStock/>}/>
         <Route path="/gestion/stock-historial" element={<StockHist/>}/>
         <Route path="/gestion/platos-tabla" element={<PlatosTabla/>}/>
-        <Route path="/gestion/plato" element={<Platos/>}/>
+<Route path="/gestion/plato/:id" element={<Platos />} />
         <Route path="/gestion/plato/:id" element={<Platos/>}/>
         <Route path="/gestion/estadisticas" element={<Estadisticas/>}/>
         <Route path="/gestion/empleados-tabla" element={<EmpleadosTabla/>}/>

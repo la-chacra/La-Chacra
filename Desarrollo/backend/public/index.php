@@ -76,7 +76,7 @@ $router->get('/api/estadistica/obtenerRankingReservas', [EstadisticaController::
 $router->get('/api/estadistica/obtenerRankingVentas', [EstadisticaController::class, 'obtenerRankingVentas']);
 
 //API StockController
-$router->get("/api/gestion/historialStock", [StockController::class, "obtenerHistorialStock"]);
+$router->get("/api/historialStock", [StockController::class, "obtenerHistorialStock"]);
 $router->get("/api/stock", [StockController::class, "obtenerStock"]);
 
 // API EmpleadoController
@@ -87,13 +87,8 @@ $router->delete("/api/empleado/desactivar/{id}", [EmpleadoController::class, "de
 $router->get("/api/empleado/obtener/{id}", [EmpleadoController::class, "obtenerPorID"]);
 $router->put("/api/empleado/modificar/{id}", [EmpleadoController::class, "modificarEmpleado"]);
 
-// API Gestión de Platos
-// =========================================
-//  API - Gestión de Platos (Menú)
-//  Prefijo base: /api/gestion/plato
-// =========================================
 
-// ✅ Rutas API Gestión de Platos
+//API Gestión de Platos
 $router->get('/api/productos-menu', [PlatoController::class, 'obtenerPlatos']);
 $router->get('/api/productos-menu/{id}', [PlatoController::class, 'obtenerPorId']);
 $router->post('/api/productos-menu', [PlatoController::class, 'crearPlato']);

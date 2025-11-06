@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faDownload, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useParams } from "react-router-dom";
 
-// si se cambian, tambien se tienen que cambiar las de la carta y tablaplatos
+// Categorías predefinidas
 const categoriasPredefinidas = [
   "Entradas",
   "Carnes",
@@ -20,9 +20,9 @@ const categoriasPredefinidas = [
 
 const GestorPlatos = () => {
   const navigate = useNavigate();
-  const { id } = useParams(); // si hay un ID, significa que estamos editando un plato existente
+  const { id } = useParams(); // si hay un ID, estamos editando un plato existente
 
-  // estados del formulario
+  // Estados del formulario
   const [nombre, setNombre] = useState("");
   const [precio, setPrecio] = useState("");
   const [ingredientes, setIngredientes] = useState([]);
@@ -33,46 +33,38 @@ const GestorPlatos = () => {
   const [imagen, setImagen] = useState(null);
   const [imagenPreview, setImagenPreview] = useState(null);
 
+  // 🔹 Si estamos editando, obtenemos los datos del plato
   useEffect(() => {
-
-  fetch("/api/gestion/plato")
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.success && Array.isArray(data.data)) {
-        setMenuData(data.data);
-      } else {
-        console.error("Error cargando platos:", data.message);
-      }
-    })
-    .catch((err) => {
-      console.error("Error de conexión con el backend:", err);
-    });
-}, []);
-const handleDelete = async (id) => {
-  if (!window.confirm("¿Seguro que quieres eliminar este plato?")) return;
-
-  try {
-    const res = await fetch(`/api/gestion/plato/eliminar/${id}`, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-    });
-
-    const data = await res.json();
-    if (data.success) {
-      alert("Plato desactivado correctamente");
-      setMenuData(menuData.filter((item) => item.producto_id !== id));
-    } else {
-      alert("Error al eliminar plato: " + data.message);
+    if (id) {
+      fetch(`/api/productos-menu/${id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.data) {
+            const plato = data.data;
+            setNombre(plato.nombre || "");
+            setPrecio(plato.precio || "");
+            setIngredientes(
+              plato.ingredientes ? JSON.parse(plato.ingredientes) : []
+            );
+            setCategoria(plato.categoria || "");
+            setDisponibilidad(Boolean(plato.disponibilidad));
+            setActivo(Boolean(plato.activo));
+            if (plato.imagen_url) {
+              setImagenPreview(plato.imagen_url);
+            }
+          } else {
+            console.error("Error al obtener plato:", data);
+            alert("No se pudo cargar la información del plato.");
+          }
+        })
+        .catch((err) => {
+          console.error("Error de conexión con el servidor:", err);
+          alert("Error al conectar con el servidor.");
+        });
     }
-  } catch (error) {
-    console.error("Error en la petición:", error);
-    alert("Error de conexión con el servidor");
-  }
-};
+  }, [id]);
 
-
-  // agrega un ingrediente al presionar Enter
+  // 🔹 Añadir un ingrediente
   const handleAddIngrediente = (e) => {
     if (e.key === "Enter" && ingredienteInput.trim() !== "") {
       e.preventDefault();
@@ -83,13 +75,12 @@ const handleDelete = async (id) => {
     }
   };
 
-  // elimina un ingrediente del listado
+  // 🔹 Eliminar un ingrediente
   const handleRemoveIngrediente = (index) => {
-    const newIngs = ingredientes.filter((_, i) => i !== index);
-    setIngredientes(newIngs);
+    setIngredientes(ingredientes.filter((_, i) => i !== index));
   };
 
-  // cambia la imagen del plato
+  // 🔹 Cambiar imagen
   const handleImagenChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -98,19 +89,20 @@ const handleDelete = async (id) => {
     }
   };
 
+  // 🔹 Guardar plato (crear o editar)
   const handleGuardar = async () => {
     const formData = new FormData();
     formData.append("nombre", nombre);
     formData.append("precio", precio);
-    formData.append("ingredientes", JSON.stringify(ingredientes)); 
+    formData.append("ingredientes", JSON.stringify(ingredientes));
     formData.append("categoria", categoria);
     formData.append("disponibilidad", disponibilidad);
     formData.append("activo", activo);
     if (imagen) formData.append("imagen", imagen);
 
     const url = id
-      ? `/api/productos-menu/${id}`
-      : "/api/productos-menu"; 
+      ? `/api/productos-menu/${id}` // PUT si existe id
+      : "/api/productos-menu"; // POST si no hay id
 
     const method = id ? "PUT" : "POST";
 
@@ -123,13 +115,14 @@ const handleDelete = async (id) => {
 
       const data = await res.json();
       if (data.success) {
-        alert("Producto guardado correctamente");
-        navigate("/gestion/menu");
+        alert("Plato guardado correctamente");
+        navigate("/gestion/platos-tabla");
       } else {
         alert("Error: " + data.message);
       }
-    } catch {
-      alert("Error de conexión con el servidor");
+    } catch (error) {
+      console.error("Error en la conexión:", error);
+      alert("Error al conectar con el servidor");
     }
   };
 
@@ -146,7 +139,6 @@ const handleDelete = async (id) => {
             <FontAwesomeIcon icon={faArrowLeft} /> Volver a Tabla de Platos
           </button>
 
-          {/* aun se tiene que incorporar el export */}
           <button className="om-export-button">
             Exportar
             <FontAwesomeIcon icon={faDownload} />
@@ -155,7 +147,7 @@ const handleDelete = async (id) => {
 
         <div className="om-main-content">
           <div className="om-left-section">
-            {/* SECCION IMAGEN */}
+            {/* SECCIÓN IMAGEN */}
             <div className="gp-image-section">
               <h3>Imagen del Plato</h3>
               <div className="gp-image-upload">
@@ -283,13 +275,13 @@ const handleDelete = async (id) => {
               <div className="om-action-buttons">
                 <button
                   className="om-save-button"
-                  onClick={handleGuardar} 
+                  onClick={handleGuardar}
                 >
                   Guardar Plato
                 </button>
                 <button
                   className="om-save-print-button"
-                  onClick={() => navigate("/gestion/platos-tabla")} 
+                  onClick={() => navigate("/gestion/platos-tabla")}
                 >
                   Cancelar
                 </button>

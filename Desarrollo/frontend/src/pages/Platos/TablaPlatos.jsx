@@ -85,8 +85,8 @@ const handleGuardar = async () => {
   if (imagen) formData.append("imagen", imagen);
 
   const url = id
-    ? `/api/gestion/plato/${id}` // PUT para editar
-    : "/api/gestion/plato"; // POST para agregar
+    ? `/api/productos-menu/${id}` // PUT para editar
+    : "/api/productos-menu"; // POST para agregar
   const method = id ? "PUT" : "POST";
 
   try {
@@ -111,7 +111,7 @@ const handleGuardar = async () => {
 const handleDelete = async (producto_id) => {
   if (window.confirm("¿Seguro que quieres eliminar este producto?")) {
     try {
-      const res = await fetch(`/api/gestion/plato/desactivar/${producto_id}`, {
+      const res = await fetch(`/api/productos-menu/desactivar/${producto_id}`, {
         method: "DELETE",
       });
 
@@ -182,6 +182,9 @@ const handleDelete = async (producto_id) => {
     // redirige a la ruta de crear producto, backend debe soportar POST /api/productos
     navigate("/gestion/plato");
   };
+  const handleEdit = (id) => {
+  navigate(`/gestion/plato/${id}`);
+};
 
   
 
@@ -345,7 +348,7 @@ const handleDelete = async (producto_id) => {
                       <div className="tp-action-menu">
                         <button
                           className="tp-action-item tp-edit"
-                          onClick={() => handleGuardar(p.producto_id)}
+                          onClick={() => handleEdit(p.producto_id)}
                         >
                           <FontAwesomeIcon icon={faPen} className="tp-action-icon" />
                           Editar
