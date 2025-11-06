@@ -15,26 +15,50 @@ export function AuthProvider({ children }) {
 
   // --- FUNCIONES PRINCIPALES ---
   // login(): establece sesión tras autenticarse
-  const login = async (credenciales) => {
-    return await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          correo: loginCorreo,
-          contrasena: loginContrasena,
-        }),
-      });
+  const login = async (credenciales, e) => {
+
   };
 
   // logout(): destruye sesión en backend y limpia datos locales
-  const logout = async () => {
-    // todo: implementar
+  const logout = async (e) => {
+    e.preventDefault();
+    
+    try {
+      const res = await fetch("/api/logout", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          correo: credenciales.id
+        }),
+      });
+
+      const dataRes = await res.json();
+
+      return dataRes;
+    } catch (error) {
+      return error;
+    }
+
   };
 
   // checkSesion(): consultar /api/estadoSesion para verificar sesión
   const checkSesion = async () => {
-    // todo: implementar
+    fetch("/api/estadoSesion", { credentials: "include" })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.authenticated) {
+          setUsuario(data.usuario);
+        } else {
+          setUsuario(null);
+        }
+      })
+      .catch((err) => {
+        console.error("Error verificando sesión:", err);
+      })
+      .finally(() => {
+        setCargando(false);
+      });
   };
 
   // Al montar el componente, verificar sesión automáticamente
