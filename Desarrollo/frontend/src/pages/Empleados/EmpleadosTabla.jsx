@@ -41,33 +41,19 @@ const EmployeesTable = () => {
     //
     // este endpoint puede consultar la base de datos "usuarios" y devolver todos
     // el frontend se encarga de filtrar por nombre, correo, rol o fecha.
-    fetch("/api/usuarios")
+    fetch("/api/empleados/obtener")
       .then((res) => res.json())
-      .then((data) => setEmployeeData(data))
+      .then((response) => {
+        if (response.success) {
+          setEmployeeData(response.data);
+        } else {
+          setEmployeeData([]);
+          alert("Error," + response.message)
+        }
+      })
       .catch(() => {
-        setEmployeeData([
-          {
-            usuario_id: 1,
-            nombre_completo: "Roberto Juan",
-            correo: "roberto@empresa.com",
-            rol: "Administrador",
-            fecha_creacion: "20/09/2025 13:24",
-          },
-          {
-            usuario_id: 2,
-            nombre_completo: "Laura Pérez",
-            correo: "laura@empresa.com",
-            rol: "Empleado",
-            fecha_creacion: "18/09/2025 10:15",
-          },
-          {
-            usuario_id: 3,
-            nombre_completo: "Carlos Díaz",
-            correo: "carlos@empresa.com",
-            rol: "Empleado",
-            fecha_creacion: "10/09/2025 09:00",
-          },
-        ]);
+        setEmployeeData([]);
+        alert("Ocurrió un error desconocido.")
       });
   }, []);
 
@@ -116,7 +102,9 @@ const EmployeesTable = () => {
     }
   };
 
-  const filteredData = employeeData.filter((e) => {
+  const safeEmployeeData = Array.isArray(employeeData) ? employeeData : [];
+
+  const filteredData = safeEmployeeData.filter((e) => {
     const matchesSearch =
       e.nombre_completo.toLowerCase().includes(searchTerm.toLowerCase()) ||
       e.correo.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -125,7 +113,7 @@ const EmployeesTable = () => {
     const matchesRole =
       roleFilter === "Rol" || e.rol.toLowerCase() === roleFilter.toLowerCase();
 
-    const [day, month, yearTime] = e.fecha_creacion.split("/");
+    const [day, month, yearTime] = e.fecha_creacion.split("-");
     const [year, time] = yearTime.split(" ");
     const fechaItem = new Date(`${year}-${month}-${day}T${time}`);
     const now = new Date();
@@ -237,10 +225,10 @@ const EmployeesTable = () => {
               <tr>
                 <th className="hs-checkbox-column">
                   <input
-                    type="checkbox"
-                    onChange={(e) => handleSelectAll(e.target.checked)}
-                    checked={selectedItems.size === employeeData.length}
-                  />
+                      type="checkbox"
+                      onChange={(e) => handleSelectAll(e.target.checked)}
+                      checked={selectedItems.size === (Array.isArray(employeeData) ? employeeData.length : 0)}
+                    />
                 </th>
                 <th>Nombre completo</th>
                 <th>Correo electrónico</th>

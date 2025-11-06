@@ -57,7 +57,17 @@ abstract class Usuario extends ModeloBase {
 
         return $resultado;
     }
-    
+
+    public static function obtenerUsuariosPorTipo (array $tipos) {
+
+        $formateados = array_map(fn($tipo) => "'". addslashes($tipo) . "'", $tipos); // Les pone ''
+
+        $condicion = implode(", ", $formateados); 
+
+        $consulta = "SELECT * FROM ". static::$tabla_bd ." WHERE tipo IN ({$condicion})";
+        return static::$conexion_bd->realizarConsulta($consulta);
+    }
+
     /**
      * Actualizar datos de un Usuario en una Base de Datos.
      * 
