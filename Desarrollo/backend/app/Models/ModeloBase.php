@@ -89,6 +89,13 @@ abstract class ModeloBase {
         return static::$conexion_bd->realizarConsulta($consulta, ["id" => $id]);
     }
 
+    public static function obtenerUsuariosPorIDs($ids) {
+        $placeholders = implode(",", array_fill(0, count($ids), "?"));
+        $consulta = "SELECT * FROM " . static::$tabla_bd . " WHERE usuario_id IN ($placeholders)";
+        return static::$conexion_bd->realizarConsulta($consulta, $ids);
+    }
+
+
     /**
      * Busca y retorna un registro de la base de datos por su correo.
      * 
@@ -131,7 +138,7 @@ abstract class ModeloBase {
      * @param array $datos Arreglo asociativo con los datos a actualizar. Debe incluir la clave primaria.
      * @return bool El resultado de la ejecución de la consulta o resultados de validaciones
      */
-    public function actualizar(array $datos) : bool { 
+    public static function actualizar(array $datos) : bool { 
 
         $columnas = array_intersect(array_keys($datos), static::$columnas_bd);
 

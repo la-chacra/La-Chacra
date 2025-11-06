@@ -9,12 +9,3 @@ class Empleado extends Usuario {
     parent::__construct($nombre, $apellido, $correo, $contrasena, $fecha_nacimiento, "E");
    }
 }
-
-   
-    // public function gestionarComanda(){
-        
-    // }
-
-
-  
-

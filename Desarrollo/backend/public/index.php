@@ -19,6 +19,7 @@ use App\Controllers\ComandaController;
 use App\Controllers\RecuperarController;
 use App\Controllers\StockController;
 use App\Controllers\EstadisticaController;
+use App\Controllers\EmpleadoController;
 
 
 
@@ -74,7 +75,14 @@ $router->get('/api/estadistica/obtenerRankingVentas', [EstadisticaController::cl
 $router->get("/api/gestion/historialStock", [StockController::class, "obtenerHistorialStock"]);
 $router->get("/api/stock", [StockController::class, "obtenerStock"]);
 
+// API EmpleadoController
 
+$router->get("/api/empleado/obtener", [EmpleadoController::class, "obtenerEmpleados"]);
+$router->get("/api/exportar-usuarios", [EmpleadoController::class, "exportarUsuarios"]);
+$router->post("/api/empleado/registrar", [EmpleadoController::class, "registrarEmpleado"]);
+$router->delete("/api/empleado/desactivar/{id}", [EmpleadoController::class, "desactivarEmpleado"]);
+$router->get("/api/empleado/obtener/{id}", [EmpleadoController::class, "obtenerPorID"]);
+$router->put("/api/empleado/modificar/{id}", [EmpleadoController::class, "modificarEmpleado"]);
 
 
 $allowedOrigin = "http://localhost:5173";

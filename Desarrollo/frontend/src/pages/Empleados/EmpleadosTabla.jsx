@@ -41,33 +41,19 @@ const EmployeesTable = () => {
     //
     // este endpoint puede consultar la base de datos "usuarios" y devolver todos
     // el frontend se encarga de filtrar por nombre, correo, rol o fecha.
-    fetch("/api/usuarios")
+    fetch("/api/empleado/obtener")
       .then((res) => res.json())
-      .then((data) => setEmployeeData(data))
+      .then((response) => {
+        if (response.success) {
+          setEmployeeData(response.data);
+        } else {
+          setEmployeeData([]);
+          alert("Error," + response.message)
+        }
+      })
       .catch(() => {
-        setEmployeeData([
-          {
-            usuario_id: 1,
-            nombre_completo: "Roberto Juan",
-            correo: "roberto@empresa.com",
-            rol: "Administrador",
-            fecha_creacion: "20/09/2025 13:24",
-          },
-          {
-            usuario_id: 2,
-            nombre_completo: "Laura Pérez",
-            correo: "laura@empresa.com",
-            rol: "Empleado",
-            fecha_creacion: "18/09/2025 10:15",
-          },
-          {
-            usuario_id: 3,
-            nombre_completo: "Carlos Díaz",
-            correo: "carlos@empresa.com",
-            rol: "Empleado",
-            fecha_creacion: "10/09/2025 09:00",
-          },
-        ]);
+        setEmployeeData([]);
+        alert("Ocurrió un error desconocido.")
       });
   }, []);
 
@@ -95,7 +81,7 @@ const EmployeesTable = () => {
     window.open(url, "_blank");
   };
 
-  const handleAddProduct = () => {
+  const handleAddEmployee = () => {
     navigate("/gestion/empleado");
   };
 
@@ -107,16 +93,33 @@ const EmployeesTable = () => {
     navigate(`/gestion/empleado/${id}`);
   };
 
-  const handleDelete = (id) => {
-    // crear endpoint tipo DELETE: /api/usuarios/:id
-    // este endpoint debe eliminar el usuario con ese ID de la base de datos.
-    if (window.confirm("¿Seguro que quieres eliminar este usuario?")) {
-      setEmployeeData(employeeData.filter((e) => e.usuario_id !== id));
-      setOpenActionMenu(null);
+  const handleDelete = async (id) => {
+    if (!window.confirm("¿Seguro que quieres eliminar este usuario?")) return;
+
+    try {
+      const res = await fetch(`/api/empleado/desactivar/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setEmployeeData(employeeData.filter((e) => e.usuario_id !== id));
+        setOpenActionMenu(null);
+        alert("Empleado desactivado correctamente");
+      } else {
+        alert("Error: " + data.message);
+      }
+    } catch (e) {
+      alert("Error de conexión con el servidor");
     }
   };
 
-  const filteredData = employeeData.filter((e) => {
+
+  const safeEmployeeData = Array.isArray(employeeData) ? employeeData : [];
+
+  const filteredData = safeEmployeeData.filter((e) => {
     const matchesSearch =
       e.nombre_completo.toLowerCase().includes(searchTerm.toLowerCase()) ||
       e.correo.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -125,7 +128,7 @@ const EmployeesTable = () => {
     const matchesRole =
       roleFilter === "Rol" || e.rol.toLowerCase() === roleFilter.toLowerCase();
 
-    const [day, month, yearTime] = e.fecha_creacion.split("/");
+    const [day, month, yearTime] = e.fecha_creacion.split("-");
     const [year, time] = yearTime.split(" ");
     const fechaItem = new Date(`${year}-${month}-${day}T${time}`);
     const now = new Date();
@@ -218,7 +221,7 @@ const EmployeesTable = () => {
             </div>
           </div>
 
-          <button className="hs-export-btn" onClick={handleAddProduct}>
+          <button className="hs-export-btn" onClick={handleAddEmployee}>
             <span>Añadir Usuario</span>
             <FontAwesomeIcon icon={faUserPlus} />
           </button>
@@ -237,10 +240,10 @@ const EmployeesTable = () => {
               <tr>
                 <th className="hs-checkbox-column">
                   <input
-                    type="checkbox"
-                    onChange={(e) => handleSelectAll(e.target.checked)}
-                    checked={selectedItems.size === employeeData.length}
-                  />
+                      type="checkbox"
+                      onChange={(e) => handleSelectAll(e.target.checked)}
+                      checked={selectedItems.size === (Array.isArray(employeeData) ? employeeData.length : 0)}
+                    />
                 </th>
                 <th>Nombre completo</th>
                 <th>Correo electrónico</th>
