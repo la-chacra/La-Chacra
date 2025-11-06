@@ -5,6 +5,7 @@ class AuthController {
     public function estadoSesion($router): array {
         if (isset($_SESSION["usuario_id"])) {
             return [
+                "success" => true,
                 "authenticated" => true,
                 "usuario" => [
                     "usuario_id" => $_SESSION["usuario_id"],
@@ -13,15 +14,13 @@ class AuthController {
                 ]
             ];
         } else {
-            http_response_code(401); // 401: unauthorized
-            header("Content-Type: application/json; charset=utf-8");
-            echo json_encode(["success" => false, "message" => "Sesión no iniciada."]);
+            return ["success" => false, "authenticated" => false, "message" => "Sesión no iniciada."];
             exit;
         }
     }
 
     public function logout($router) {
         session_destroy();
-        return json_encode(["success" => true, "message" => "Sesión cerrada"]);
+        return ["success" => true, "message" => "Sesión cerrada"];
     }
 }

@@ -1,6 +1,5 @@
 import { createContext, useState, useEffect } from "react";
 import { verificarSesion } from "../services/authService";
-import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
@@ -11,16 +10,19 @@ export function AuthProvider({ children }) {
 
   // --- Verificar sesión con backend ---
   const checkSesion = async () => {
+    setCargando(true);
+
     try {
       const sesion = await verificarSesion();
 
-      if (sesion.success) {
+      if (sesion && sesion.success) {
         setUsuario(sesion.data);
-        setAutenticado(true);
+        setAutenticado(!!sesion.autenticado);
         sessionStorage.setItem("usuario", JSON.stringify(sesion.data));
       } else {
         setUsuario(null);
-        setAutenticado(false);
+        // cuando la verificación falla asumimos no autenticado
+        setAutenticado(!!(sesion && sesion.autenticado));
         sessionStorage.removeItem("usuario");
       }
     } catch (error) {
@@ -28,6 +30,7 @@ export function AuthProvider({ children }) {
       setUsuario(null);
       setAutenticado(false);
     } finally {
+      // siempre desactivar el estado de carga al finalizar
       setCargando(false);
     }
   };
@@ -38,16 +41,18 @@ export function AuthProvider({ children }) {
   }, []);
 
   // --- Manejo de login ---
+  // Nota: no navegamos desde el contexto porque el AuthProvider
+  // puede estar fuera del Router; la navegación debe hacerla el componente
+  // que llama a login.
   const login = async (datosUsuario) => {
-    navigate("/");
     setUsuario(datosUsuario);
     setAutenticado(true);
     sessionStorage.setItem("usuario", JSON.stringify(datosUsuario));
   };
 
   // --- Manejo de logout ---
+  // Igual que en login, no hacemos navigate aquí.
   const logout = async () => {
-    navigate("/");
     setUsuario(null);
     setAutenticado(false);
     sessionStorage.removeItem("usuario");

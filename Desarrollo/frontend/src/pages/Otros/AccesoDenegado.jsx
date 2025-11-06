@@ -23,7 +23,7 @@ const AccesoDenegado = () => {
 
       {/* Botón de regreso */}
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate("/")}
         className="px-6 py-3 bg-neutral-800 hover:bg-green-950 text-white font-semibold rounded-xl transition-all shadow-md hover:shadow-lg"
       >
         Volver

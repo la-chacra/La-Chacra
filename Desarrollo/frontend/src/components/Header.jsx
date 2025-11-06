@@ -30,12 +30,12 @@ const Header = () => {
 
         <div className="right-controls">
           <div className="auth-controls">
-            <Link to="/login" className="btn login">
-              {t('auth.login')}
-            </Link>
-            <Link to="/login" className="btn register">
-              {t('auth.register')}
-            </Link>
+              <Link to="/autenticacion" state={{ openRegister: false }} className="btn login">
+                {t('auth.login')}
+              </Link>
+              <Link to="/autenticacion" state={{ openRegister: true }} className="btn register">
+                {t('auth.register')}
+              </Link>
           </div>
 
           <div className="lang-wrapper">
@@ -71,12 +71,12 @@ const Header = () => {
             <hr className="mobile-divider" />
 
             <div className="mobile-auth">
-            <Link to="/login" className="btn login">
-              {t('auth.login')}
-            </Link>
-            <Link to="/login" className="btn register">
-              {t('auth.register')}
-            </Link>
+              <Link to="/autenticacion" state={{ openRegister: false }} className="btn login">
+                {t('auth.login')}
+              </Link>
+              <Link to="/autenticacion" state={{ openRegister: true }} className="btn register">
+                {t('auth.register')}
+              </Link>
             </div>
           </nav>
         </div>

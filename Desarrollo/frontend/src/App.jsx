@@ -11,7 +11,7 @@ import Carta from "./pages/Carta/Carta";
 import Reserva from "./pages/Reserva/ReservaUsuario/Reserva";
 import Login from "./pages/LoginRegistro/Login";
 import Eventos from "./pages/Eventos/Eventos";
-import AccesoDenegado from "./pages/Otros/AccesoDenegado"; // ⚠️ crea una página simple de acceso denegado
+import AccesoDenegado from "./pages/Otros/AccesoDenegado";
 
 // --- Páginas de gestión ---
 import ReservaHist from "./pages/Reserva/ReservaAdmin/HistorialAdmin";
@@ -29,7 +29,7 @@ import EmpleadosTabla from "./pages/Empleados/EmpleadosTabla";
 import Test from "./pages/Admin/Test";
 
 function App() {
-  const { cargando } = useAuth(); // del AuthContext
+  const { cargando } = useAuth();
 
   if (cargando) {
     return (

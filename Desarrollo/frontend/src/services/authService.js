@@ -7,16 +7,16 @@ export async function verificarSesion() {
 
     const data = await response.json();
 
-    if (response.status === 200 && data.success) {
-      return { success: true, data: data.usuario };
+    if (data.success) {
+      return { success: true, autenticado: data.authenticated, data: data.usuario};
     }
 
     if (response.status === 401) {
-      return { success: false, message: "Sesión no iniciada", code: 401 };
+      return { success: false, autenticado: data.authenticated, message: "Sesión no iniciada", code: 401 };
     }
 
     if (response.status === 403) {
-      return { success: false, message: "Acceso denegado", code: 403 };
+      return { success: false, autenticado: data.authenticated, message: "Acceso denegado", code: 403 };
     }
 
     return { success: false, message: "Error al verificar sesión" };
