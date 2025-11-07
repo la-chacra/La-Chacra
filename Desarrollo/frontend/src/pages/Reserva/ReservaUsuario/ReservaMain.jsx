@@ -144,17 +144,7 @@ const TableReservationMain = ({ selectedDate, selectedTime, selectedTable, onTab
             ocupada</strong>.
           </p>
         </div>
-        
-        <button 
-          className={`submit-button ${canMakeReservation ? 'enabled' : 'disabled'}`}
-          onClick={handleSubmit}
-          disabled={!canMakeReservation}
-        >
-          Realizar Reserva
-        </button>
       </div>
     </div>
   ) 
 }
-
-export default TableReservationMain
