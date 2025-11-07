@@ -16,7 +16,6 @@ import { useAuth } from "../../hooks/useAuth";
 
 const Carta = () => {
   const { t } = useTranslation()
-  const { autenticado } = useAuth();
 
   const menuData = [
     {
@@ -93,7 +92,7 @@ const Carta = () => {
         <div className="sidebar left-sidebar"></div>
 
         <div className="carta-container">
-          <h1 className="carta-title">{t('carta.title')}</h1>
+          <h1 className="carta-title text-3xl">{t('carta.title')}</h1>
           {menuData.map((section, index) => (
             <MenuSection key={index} {...section} />
           ))}

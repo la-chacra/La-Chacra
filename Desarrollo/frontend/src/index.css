@@ -283,9 +283,26 @@
 
 /* titulo carta */
 .carta-title {
-  font-size: 2rem;
-  margin-bottom: 30px;
-  font-family: overlock, serif;
+  /* match Eventos title: centered, Texturina font and responsive sizes */
+  text-align: center;
+  font-family: 'Texturina', serif;
+  font-size: 1.875rem; /* tailwind text-3xl */
+  margin-top: 3rem; /* match py-12 top spacing from header */
+  margin-bottom: 2.5rem; /* tailwind mb-10 */
+  font-weight: 400;
+}
+
+@media (min-width: 640px) {
+  .carta-title {
+    font-size: 2.25rem; /* tailwind text-4xl */
+    margin-top: 4rem; /* sm:py-16 */
+  }
+}
+
+@media (min-width: 768px) {
+  .carta-title {
+    font-size: 3rem; /* tailwind text-5xl */
+  }
 }
 
 .menu-section {
@@ -504,7 +521,7 @@
 /*menu desplegable*/
 .hamburger {
   display: none;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   cursor: pointer;
   align-items: center;
   font-weight: 600;
@@ -1466,11 +1483,27 @@ input {
 }
 
 .reserva-title {
+  /* match Eventos title: centered, Texturina font and responsive sizes */
   text-align: center;
-  font-size: 2rem;
-  font-weight: 300;
+  font-family: 'Texturina', serif;
+  font-size: 1.875rem; /* tailwind text-3xl */
+  margin-top: 1rem; /* match py-12 top spacing from header */
+  margin-bottom: 2.5rem; /* tailwind mb-10 */
+  font-weight: 400;
   letter-spacing: 2px;
-  margin-bottom: 20px;
+}
+
+@media (min-width: 640px) {
+  .reserva-title {
+    font-size: 2.25rem; /* tailwind text-4xl */
+    margin-top: 4rem; /* sm:py-16 */
+  }
+}
+
+@media (min-width: 768px) {
+  .reserva-title {
+    font-size: 3rem; /* tailwind text-5xl */
+  }
 }
 
 .reserva-content {
@@ -3930,3 +3963,49 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .sb-button {
   animation: sb-bounce 2.2s infinite ease-in-out;
 }
+
+
+@media (max-width: 1138px) {
+  /* Mantiene avatar oculto y botones desktop fuera */
+  .right-controls,
+  .li-profile-wrapper {
+    display: none !important;
+  }
+
+  /* Fija selector de idioma en su lugar, arriba */
+  .lang-mobile {
+    position: fixed;
+    top: 2rem;
+    right: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    z-index: 100; /* por encima del menú desplegable */
+  }
+
+  .lang-mobile .lang-select {
+    background: #00000000;
+    color: #d7d8d9;
+    border: none;
+    padding: 0.3rem 0.6rem;
+    font-size: 18px;
+  }
+
+  /* Fija el botón hamburguesa también */
+  .hamburger {
+    position: fixed;
+    top: 2.2rem;
+    right: 1rem;
+    transform: none;
+    z-index: 101;
+  }
+
+  /* Evita que el logo quede cubierto */
+  .logo-img {
+    position: relative;
+    z-index: 102;
+  }
+}
+
+
+

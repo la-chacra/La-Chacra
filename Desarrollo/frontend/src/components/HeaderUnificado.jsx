@@ -54,122 +54,122 @@ const HeaderUnificado = () => {
           </NavLink>
         </div>
 
-{/* NAV DESKTOP */}
-<nav className="admin-nav-links">
-  {role === "A" ? (
-    <>
-      <NavLink to="/gestion/stock" className="admin-nav-link">
-        <FontAwesomeIcon icon={faBoxesStacked} /> Stock
-      </NavLink>
-      <NavLink to="/gestion/reserva" className="admin-nav-link">
-        <FontAwesomeIcon icon={faCalendarCheck} /> Reservas
-      </NavLink>
-      <NavLink to="/gestion/comanda" className="admin-nav-link">
-        <FontAwesomeIcon icon={faConciergeBell} /> Comanda
-      </NavLink>
-      <NavLink to="/gestion/empleados-tabla" className="admin-nav-link">
-        <FontAwesomeIcon icon={faUsers} /> Empleados
-      </NavLink>
-      <NavLink to="/gestion/estadisticas" className="admin-nav-link">
-        <FontAwesomeIcon icon={faChartBar} /> Estadísticas
-      </NavLink>
-      <NavLink to="/gestion/platos-tabla" className="admin-nav-link">
-        <FontAwesomeIcon icon={faUtensils} /> Platos
-      </NavLink>
-      <NavLink to="/gestion/historialStock" className="admin-nav-link">
-        <FontAwesomeIcon icon={faArrowsRotate} /> StockCambios
-      </NavLink>
-    </>
-  ) : (
-    <>
-      <NavLink to="/gestion/reserva" className="admin-nav-link">
-        <FontAwesomeIcon icon={faCalendarCheck} /> Reservas
-      </NavLink>
-      <NavLink to="/gestion/comanda" className="admin-nav-link">
-        <FontAwesomeIcon icon={faConciergeBell} /> Comanda
-      </NavLink>
-    </>
-  )}
-</nav>
+        {/* NAV DESKTOP */}
+        <nav className="admin-nav-links">
+          {role === "A" ? (
+            <>
+              <NavLink to="/gestion/stock" className="admin-nav-link">
+                <FontAwesomeIcon icon={faBoxesStacked} /> Stock
+              </NavLink>
+              <NavLink to="/gestion/reserva" className="admin-nav-link">
+                <FontAwesomeIcon icon={faCalendarCheck} /> Reservas
+              </NavLink>
+              <NavLink to="/gestion/comanda" className="admin-nav-link">
+                <FontAwesomeIcon icon={faConciergeBell} /> Comanda
+              </NavLink>
+              <NavLink to="/gestion/empleados-tabla" className="admin-nav-link">
+                <FontAwesomeIcon icon={faUsers} /> Empleados
+              </NavLink>
+              <NavLink to="/gestion/estadisticas" className="admin-nav-link">
+                <FontAwesomeIcon icon={faChartBar} /> Estadísticas
+              </NavLink>
+              <NavLink to="/gestion/platos-tabla" className="admin-nav-link">
+                <FontAwesomeIcon icon={faUtensils} /> Platos
+              </NavLink>
+              <NavLink to="/gestion/historialStock" className="admin-nav-link">
+                <FontAwesomeIcon icon={faArrowsRotate} /> StockCambios
+              </NavLink>
+            </>
+          ) : (
+            <>
+              <NavLink to="/gestion/reserva" className="admin-nav-link">
+                <FontAwesomeIcon icon={faCalendarCheck} /> Reservas
+              </NavLink>
+              <NavLink to="/gestion/comanda" className="admin-nav-link">
+                <FontAwesomeIcon icon={faConciergeBell} /> Comanda
+              </NavLink>
+            </>
+          )}
+        </nav>
 
-{/* PERFIL */}
-<div className="right-controls">
-  <div
-    className="li-profile-wrapper"
-    onClick={() => setProfileOpen(!profileOpen)}
-  >
-    <img src={profilePic} alt="Perfil" className="li-profile-pic" />
-    <div className={`li-dropdown font-montserrat ${profileOpen ? "open" : ""}`}>
-      <Link to="/perfil" className="li-dropdown-item">
-        <FontAwesomeIcon icon={faUserCircle} /> Mi Perfil
-      </Link>
-      <Link to="/gestion" className="li-dropdown-item gestion">
-        <FontAwesomeIcon icon={faGear} /> Gestión
-      </Link>
-      <button onClick={handleLogout} className="li-dropdown-item logout">
-        <FontAwesomeIcon icon={faSignOutAlt} /> Cerrar Sesión
-      </button>
-    </div>
-  </div>
-</div>
+        {/* PERFIL */}
+        <div className="right-controls">
+          <div
+            className="li-profile-wrapper"
+            onClick={() => setProfileOpen(!profileOpen)}
+          >
+            <img src={profilePic} alt="Perfil" className="li-profile-pic" />
+            <div className={`li-dropdown font-montserrat ${profileOpen ? "open" : ""}`}>
+              <Link to="/perfil" className="li-dropdown-item">
+                <FontAwesomeIcon icon={faUserCircle} /> Mi Perfil
+              </Link>
+              <Link to="/gestion" className="li-dropdown-item gestion">
+                <FontAwesomeIcon icon={faGear} /> Gestión
+              </Link>
+              <button onClick={handleLogout} className="li-dropdown-item logout">
+                <FontAwesomeIcon icon={faSignOutAlt} /> Cerrar Sesión
+              </button>
+            </div>
+          </div>
+        </div>
 
-{/* MOBILE TOGGLE */}
-<div className="admin-hamburger" onClick={() => setMenuOpen(!menuOpen)}>
-  <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} />
-</div>
+        {/* MOBILE TOGGLE */}
+        <div className="admin-hamburger" onClick={() => setMenuOpen(!menuOpen)}>
+          <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} />
+        </div>
 
-{/* MOBILE MENU */}
-<div className={`admin-mobile-menu ${menuOpen ? "open" : ""}`}>
-  <nav className="admin-mobile-nav">
-    {(role === "A"
-      ? [
-          ["Stock", "/gestion/stock", faBoxesStacked],
-          ["Reservas", "/gestion/reserva", faCalendarCheck],
-          ["Comanda", "/gestion/comanda", faConciergeBell],
-          ["Empleados", "/gestion/empleados-tabla", faUsers],
-          ["Estadísticas", "/gestion/estadisticas", faChartBar],
-          ["Platos", "/gestion/platos-tabla", faUtensils],
-          ["StockCambios", "/gestion/historialStock", faArrowsRotate],
-        ]
-      : [
-          ["Reservas", "/gestion/reserva", faCalendarCheck],
-          ["Comanda", "/gestion/comanda", faConciergeBell],
-        ]
-    ).map(([text, path, icon]) => (
-      <NavLink
-        key={path}
-        to={path}
-        onClick={() => setMenuOpen(false)}
-        className="admin-mobile-link"
-      >
-        <FontAwesomeIcon icon={icon} className="admin-nav-icon" /> {text}
-      </NavLink>
-    ))}
+        {/* MOBILE MENU */}
+        <div className={`admin-mobile-menu ${menuOpen ? "open" : ""}`}>
+          <nav className="admin-mobile-nav">
+            {(role === "A"
+              ? [
+                ["Stock", "/gestion/stock", faBoxesStacked],
+                ["Reservas", "/gestion/reserva", faCalendarCheck],
+                ["Comanda", "/gestion/comanda", faConciergeBell],
+                ["Empleados", "/gestion/empleados-tabla", faUsers],
+                ["Estadísticas", "/gestion/estadisticas", faChartBar],
+                ["Platos", "/gestion/platos-tabla", faUtensils],
+                ["StockCambios", "/gestion/historialStock", faArrowsRotate],
+              ]
+              : [
+                ["Reservas", "/gestion/reserva", faCalendarCheck],
+                ["Comanda", "/gestion/comanda", faConciergeBell],
+              ]
+            ).map(([text, path, icon]) => (
+              <NavLink
+                key={path}
+                to={path}
+                onClick={() => setMenuOpen(false)}
+                className="admin-mobile-link"
+              >
+                <FontAwesomeIcon icon={icon} className="admin-nav-icon" /> {text}
+              </NavLink>
+            ))}
 
-    <hr className="mobile-divider" />
+            <hr className="mobile-divider" />
 
-    <div className="li-mobile-profile">
-      <img src={profilePic} alt="Perfil" className="li-mobile-profile-pic" />
-      <div className="li-mobile-profile-links">
-        <Link to="/perfil" onClick={() => setMenuOpen(false)}>
-          Mi Perfil
-        </Link>
-        <Link to="/gestion" onClick={() => setMenuOpen(false)} className="gestion">
-          Gestión
-        </Link>
-        <button
-          onClick={() => {
-            setMenuOpen(false);
-            handleLogout();
-          }}
-          className="logout"
-        >
-          Cerrar Sesión
-        </button>
-      </div>
-    </div>
-  </nav>
-</div>
+            <div className="li-mobile-profile">
+              <img src={profilePic} alt="Perfil" className="li-mobile-profile-pic" />
+              <div className="li-mobile-profile-links">
+                <Link to="/perfil" onClick={() => setMenuOpen(false)}>
+                  Mi Perfil
+                </Link>
+                <Link to="/gestion" onClick={() => setMenuOpen(false)} className="gestion">
+                  Gestión
+                </Link>
+                <button
+                  onClick={() => {
+                    setMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="logout"
+                >
+                  Cerrar Sesión
+                </button>
+              </div>
+            </div>
+          </nav>
+        </div>
 
       </header>
     );
@@ -202,19 +202,19 @@ const HeaderUnificado = () => {
         </nav>
 
         {/* CONTROLES DERECHA */}
-        <div className="right-controls">
+        <div className="right-controls hidden md:flex">
           {/* Selector de idioma (si es público o cliente logeado) */}
-            <div className="lang-wrapper">
-              <select
-                className="lang-select"
-                value={i18n.language.split("-")[0]}
-                onChange={(e) => i18n.changeLanguage(e.target.value)}
-              >
-                <option value="es">{t("lang.es")}</option>
-                <option value="en">{t("lang.en")}</option>
-                <option value="pt">{t("lang.pt")}</option>
-              </select>
-            </div>
+          <div className="lang-wrapper">
+            <select
+              className="lang-select"
+              value={i18n.language.split("-")[0]}
+              onChange={(e) => i18n.changeLanguage(e.target.value)}
+            >
+              <option value="es">{t("lang.es")}</option>
+              <option value="en">{t("lang.en")}</option>
+              <option value="pt">{t("lang.pt")}</option>
+            </select>
+          </div>
 
           {/* Botones Login/Register */}
           {!autenticado && (
@@ -263,6 +263,18 @@ const HeaderUnificado = () => {
               </div>
             </div>
           )}
+        </div>
+
+        <div className="lang-mobile lg:hidden flex items-center gap-2 mr-3">
+          <select
+            className="lang-select"
+            value={i18n.language.split("-")[0]}
+            onChange={(e) => i18n.changeLanguage(e.target.value)}
+          >
+            <option value="es">{t("lang.es")}</option>
+            <option value="en">{t("lang.en")}</option>
+            <option value="pt">{t("lang.pt")}</option>
+          </select>
         </div>
 
         {/* BOTÓN MENÚ MÓVIL */}

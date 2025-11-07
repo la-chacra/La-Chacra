@@ -35,7 +35,7 @@ const ReservaMesas = () => {
 
   <div className="reserva-center-wrapper">
     <div className="reserva-container font-montserrat">
-  <h1 className="reserva-title font-overlock fade-in">{t('reserva.title')}</h1>
+  <h1 className="reserva-title font-overlock fade-in text-3xl">{t('reserva.title')}</h1>
 
       <div className="reserva-content fade-in-up">
         <DateSelector
