@@ -3,6 +3,8 @@ import Header from "../../../components/HeaderAdmin";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import Header from "../../../components/HeaderUnificado";
+import logo from "../../../assets/logo2.png";
 
 export default function HistorialRes() {
   const navigate = useNavigate();

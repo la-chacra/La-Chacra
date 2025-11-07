@@ -1,0 +1,135 @@
+{
+  "nav": {
+    "inicio": "Home",
+    "carta": "Menu",
+    "reserva": "Reservation",
+    "eventos": "Events"
+  },
+  "auth": {
+    "login": "LOG IN",
+    "register": "SIGN UP"
+  },
+  "lang": {
+    "es": "ES 🇺🇾",
+    "en": "EN 🇺🇸",
+    "pt": "PT 🇧🇷"
+  },
+  "hero": {
+    "menu_button": "See menu"
+  },
+  "horarios": {
+    "title": "Opening Hours",
+    "fri_sat": "Fridays & Saturdays",
+    "sun": "Sundays",
+    "reserve_button": "Make a reservation",
+    "where": "Where are we?"
+  },
+  "mision": {
+    "title": "Our mission",
+    "paragraph": "Provide our customers with a unique gastronomic experience, combining organic and fresh ingredients with carefully crafted recipes, promoting a healthy lifestyle respectful of nature, while offering warm and friendly service."
+  },
+  "productos": {
+    "title": "Organic Products",
+    "paragraph": "We cultivate responsibly, caring for every detail so you enjoy fresh and healthy ingredients in our dishes. Quality and respect for the land define us."
+  },
+  "masVendidos": {
+    "title": "OUR BEST DISHES",
+    "best_seller": "Recommended"
+  },
+  "carta": {
+    "title": "MENU",
+    "sections": {
+      "house": "HOUSE SPECIALS",
+      "dishes": "DISHES",
+      "drinks": "DRINKS",
+      "desserts": "DESSERTS"
+    },
+    "categories": {
+      "all": "All",
+      "entradas": "Starters",
+      "carnes": "Meats",
+      "pescados": "Fish",
+      "pastas": "Pastas",
+      "vinos": "Wines",
+      "whiskey": "Whiskey",
+      "cervezas": "Beers",
+      "refrescos": "Soft Drinks",
+      "helados": "Ice Creams"
+    }
+  },
+  "reserva": {
+    "title": "TABLE RESERVATION",
+    "persons_title": "Number of people",
+    "persons_subtitle": "Select the number of people attending your reservation",
+    "other": "Other",
+    "placeholder_number": "Enter a number",
+    "confirm": "Confirm",
+    "info_title": "Information",
+    "info_p1": "Each reservation must be made for a specific time; there is no time allowance beyond closing time.",
+    "info_p2": "You have a 15-minute grace period to arrive; if you haven't arrived after that time, the reservation becomes invalid and the table may be taken.",
+    "submit": "Make Reservation",
+    "alerts": {
+      "incomplete": "Please complete all fields before continuing",
+      "success": "Reservation successful",
+      "error_prefix": "Error: ",
+      "connection": "Connection error with the server"
+    }
+  },
+  "eventos": {
+    "title": "EVENTS",
+    "description": "We offer a full event service where you not only rent the venue but the complete experience.",
+    "anniversaries": "Anniversaries",
+    "birthdays": "Birthdays",
+    "special": "Special Occasions",
+    "contact": "Contact us to check availability and organize your event",
+    "bottom": "The service is comprehensive and the menu is defined in advance with the client. Disco or decoration not included."
+  },
+  "time": {
+    "select_date": "Select date",
+    "select_time": "Time:",
+    "select_date_first": "Select a date first",
+    "no_times": "No available times for this date",
+    "restaurant_closed": "Restaurant is closed on this day",
+    "weekdays_short": ["S", "M", "T", "W", "T", "F", "S"],
+    "weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+  },
+  "products": {
+    "house": {
+      "braserito": {
+        "name": "Braserito",
+        "description": "Chorizo, blood sausage, grilled meat"
+      }
+    },
+    "main": {
+      "hamburguesa": {
+        "name": "Hamburger",
+        "description": "Burger, sauce, lettuce, tomato, ham and cheddar cheese"
+      },
+      "pasta": {
+        "name": "Alfredo Pasta",
+        "description": "Fettuccine with Alfredo sauce and parmesan"
+      },
+      "cesar": {
+        "name": "Caesar Salad",
+        "description": "Lettuce, croutons, parmesan and Caesar dressing"
+      }
+    },
+    "drinks": {
+      "vino": {
+        "name": "Wine",
+        "description": "White wine"
+      }
+    },
+    "desserts": {
+      "helado": {
+        "name": "Ice Cream",
+        "description": "Vanilla ice cream"
+      }
+    }
+  },
+  "perfil": {
+    "mi_perfil": "My Profile",
+    "cerrar_sesion": "Log out"
+  }
+}

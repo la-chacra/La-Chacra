@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Header from "../../components/HeaderAdmin";
+import Header from "../../components/HeaderUnificado";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faClipboardList, faCheckCircle, faCheckDouble, faTimesCircle, faCheck, faTimes, faArrowLeft, faDownload, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from 'react-router-dom';
@@ -153,7 +153,7 @@ const OrderManagement = () => {
 
   return (
     <div className="om-order-management font-montserrat">
-      <Header />
+  <Header />
 
       <div className="om-content">
         <div className="om-header-actions">

@@ -3,10 +3,10 @@ import ProductCard from "../../components/ProductCard";
 import CategoryNav from "./CategoryNav";
 
 const MenuSection = ({ title, categories, products }) => {
-  const [selectedCategory, setSelectedCategory] = useState("Todos");
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
   const filteredProducts =
-    selectedCategory === "Todos"
+    selectedCategory === "all"
       ? products
       : products.filter((p) => p.category === selectedCategory);
 

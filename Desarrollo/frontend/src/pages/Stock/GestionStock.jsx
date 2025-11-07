@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { FaSearch, FaFilter, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
-import AdminHeader from "../../components/HeaderAdmin";
+import { FaSearch, FaFilter, FaDownload, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+import Header from "../../components/HeaderUnificado";
 
 export default function GestionStock() {
   const [stock, setStock] = useState([]);

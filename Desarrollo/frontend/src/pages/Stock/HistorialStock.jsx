@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Header from "../../components/HeaderAdmin";
+import Header from "../../components/HeaderUnificado";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faFilter, faDownload } from "@fortawesome/free-solid-svg-icons";
 import DatePicker from "../../components/DatePickerNormal";

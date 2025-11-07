@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
-import Header from "../../../components/Header"
+import { useTranslation } from 'react-i18next'
+import Header from "../../../components/HeaderUnificado"
+import { useAuth } from "../../../hooks/useAuth"
 import Footer from "../../../components/Footer"
 import DateSelector from '../../../components/DatePicker'
 import TimeSelector from '../../../components/TimePicker'
@@ -23,13 +25,17 @@ const ReservaMesas = () => {
     setSelectedTable(table)
   }
 
+  const { t } = useTranslation()
+
+  const { autenticado } = useAuth()
+
   return (
     <div className="reserva-mesas-page">
   <Header />
 
   <div className="reserva-center-wrapper">
     <div className="reserva-container font-montserrat">
-      <h1 className="reserva-title font-overlock fade-in">RESERVA DE MESAS</h1>
+  <h1 className="reserva-title font-overlock fade-in text-3xl">{t('reserva.title')}</h1>
 
       <div className="reserva-content fade-in-up">
         <DateSelector

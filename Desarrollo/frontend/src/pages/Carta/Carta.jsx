@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from 'react-i18next'
 import MenuSection from "./MenuSection";
 
 /* imágenes */
@@ -10,72 +11,74 @@ import vinoImg from "../../assets/vino.png";
 import heladoImg from "../../assets/helado.png";
 
 import Footer from "../../components/Footer"; 
-import Header from "../../components/Header"; 
+import Header from "../../components/HeaderUnificado";
+import { useAuth } from "../../hooks/useAuth";
 
 const Carta = () => {
+  const { t } = useTranslation()
+
   const menuData = [
     {
-      title: "PLATOS DE LA CASA",
+      title: t('carta.sections.house'),
       products: [
         {
-          name: "Braserito",
-          description: "Chorizo, morcilla, asado",
+          name: t('products.house.braserito.name'),
+          description: t('products.house.braserito.description'),
           price: 1000,
           image: braseritoImg,
         },
       ],
     },
     {
-      title: "PLATOS",
-      categories: ["Todos", "Entradas", "Carnes", "Pescados", "Pastas"],
+      title: t('carta.sections.dishes'),
+      categories: ["all", "entradas", "carnes", "pescados", "pastas"],
       products: [
         {
-          name: "Hamburguesa",
-          description:
-            "Hamburguesa, aderezo, lechuga, tomate, jamón cocido y queso cheddar.",
+          name: t('products.main.hamburguesa.name'),
+          description: t('products.main.hamburguesa.description'),
           price: 500,
           image: hamburguesaImg,
-          category: "Carnes",
+          category: "carnes",
         },
         {
-          name: "Pasta Alfredo",
-          description: "Fettuccine con salsa Alfredo y parmesano.",
+          name: t('products.main.pasta.name'),
+          description: t('products.main.pasta.description'),
           price: 650,
           image: pastaImg,
-          category: "Pastas",
+          category: "pastas",
         },
         {
-          name: "Ensalada César",
-          description: "Lechuga, crutones, parmesano y aderezo César.",
+          name: t('products.main.cesar.name'),
+          description: t('products.main.cesar.description'),
           price: 400,
           image: cesarImg,
-          category: "Entradas",
+          category: "entradas",
         },
       ],
     },
     {
-      title: "BEBIDAS",
-      categories: ["Todos", "Vinos", "Whiskey", "Cervezas", "Refrescos"],
+      title: t('carta.sections.drinks'),
+      categories: ["all", "vinos", "whiskey", "cervezas", "refrescos"],
       products: [
         {
-          name: "Vino",
-          description: "Vino blanco",
+          name: t('products.drinks.vino.name'),
+          description: t('products.drinks.vino.description'),
           price: 800,
           image: vinoImg,
-          category: "Vinos",
+          category: "vinos",
         },
       ],
     },
     {
-      title: "POSTRES",
-      categories: ["Todos", "Helados", "Postres"],
+      title: t('carta.sections.desserts'),
+      categories: ["all", "helados", "postres"],
       products: [
         {
-          name: "Helado",
-          description: "Helado de vainilla",
+          name: t('products.desserts.helado.name'),
+          description: t('products.desserts.helado.description'),
           price: 300,
           image: heladoImg,
-          category: "Helados",
+          category: "helados",
         },
       ],
     },
@@ -83,13 +86,13 @@ const Carta = () => {
 
   return (
     <div className="carta-page">
-      <Header/>
+      <Header />
 
       <div className="carta-wrapper">
         <div className="sidebar left-sidebar"></div>
 
         <div className="carta-container">
-          <h1 className="carta-title">CARTA</h1>
+          <h1 className="carta-title text-3xl">{t('carta.title')}</h1>
           {menuData.map((section, index) => (
             <MenuSection key={index} {...section} />
           ))}

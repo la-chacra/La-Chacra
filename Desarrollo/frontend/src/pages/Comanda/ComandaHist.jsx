@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AdminHeader from "../../components/HeaderAdmin";
+import Header from "../../components/HeaderUnificado";
 import { FaClock, FaCheck, FaTrash, FaPlus, FaDownload } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
