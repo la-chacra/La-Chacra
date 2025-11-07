@@ -6,34 +6,51 @@ use App\Models\Plato;
 use App\Services\ControllerService;
 use Exception;
 
-class PlatoController {
-
-    public function obtenerPlatos($router)
+class PlatoController
 {
-    try {
-        $platos = Plato::obtenerTodos(); // o el método que uses para traer los platos
-        return [
-            "success" => true,
-            "data" => $platos
-        ];
-    } catch (Exception $e) {
-        http_response_code(500);
-        return [
-            "success" => false,
-            "message" => "Error al obtener los platos: " . $e->getMessage()
-        ];
+    // Obtener todos los platos
+    public function obtenerPlatos($router)
+    {
+        try {
+            $platos = Plato::obtenerTodos();
+
+            // ✅ Decodificar ingredientes antes de enviarlos al frontend
+            foreach ($platos as &$plato) {
+                if (isset($plato['ingredientes']) && is_string($plato['ingredientes'])) {
+                    $plato['ingredientes'] = json_decode($plato['ingredientes'], true);
+                }
+            }
+
+            return [
+                "success" => true,
+                "data" => $platos
+            ];
+        } catch (Exception $e) {
+            http_response_code(500);
+            return [
+                "success" => false,
+                "message" => "Error al obtener los platos: " . $e->getMessage()
+            ];
+        }
     }
-}
 
     // Obtener un plato por ID
-    public function obtenerPorId($router, $params): array {
+    public function obtenerPorId($router, $params): array
+    {
         $id = (int)$params["id"];
         try {
             $plato = ControllerService::handlerErrorConexion(fn() => Plato::buscarPorId($id));
+
             if (!$plato) {
                 http_response_code(404);
                 return ["success" => false, "message" => "Plato no encontrado."];
             }
+
+            // ✅ Decodificar ingredientes si vienen como texto
+            if (isset($plato['ingredientes']) && is_string($plato['ingredientes'])) {
+                $plato['ingredientes'] = json_decode($plato['ingredientes'], true);
+            }
+
             return ["success" => true, "data" => $plato];
         } catch (Exception $e) {
             http_response_code(500);
@@ -42,7 +59,8 @@ class PlatoController {
     }
 
     // Crear nuevo plato
-    public function crearPlato($router): array {
+    public function crearPlato($router): array
+    {
         try {
             $nombre = $_POST["nombre"] ?? "";
             $precio = $_POST["precio"] ?? 0;
@@ -56,6 +74,7 @@ class PlatoController {
                 return ["success" => false, "message" => "Datos incompletos."];
             }
 
+            // ✅ Manejo de imagen (opcional)
             $imagenUrl = null;
             if (!empty($_FILES["imagen"]["name"])) {
                 $nombreArchivo = uniqid("plato_") . "_" . basename($_FILES["imagen"]["name"]);
@@ -64,7 +83,17 @@ class PlatoController {
                 $imagenUrl = "/img/platos/" . $nombreArchivo;
             }
 
-            $plato = new Plato($nombre, $precio, $ingredientes, $categoria, $disponibilidad, $activo, $imagenUrl);
+            // ✅ Crear plato con ingredientes como array
+            $plato = new Plato(
+                $nombre,
+                $precio,
+                $ingredientes,
+                $categoria,
+                $disponibilidad,
+                $activo,
+                $imagenUrl
+            );
+
             $resultado = ControllerService::handlerErrorConexion(fn() => $plato->registrarPlato());
 
             return $resultado
@@ -73,87 +102,85 @@ class PlatoController {
 
         } catch (Exception $e) {
             http_response_code(500);
-            return ["success" => false, "message" => "Error interno del servidor."];
+            return ["success" => false, "message" => "Error interno del servidor: " . $e->getMessage()];
         }
     }
 
     // Actualizar plato existente
-  public function actualizarPlato($router, $params): array {
-    $id = (int)$params["id"];
+    public function actualizarPlato($router, $params): array
+    {
+        $id = (int)$params["id"];
 
-    try {
-        // Buscar plato existente
-        $platoExistente = Plato::buscarPorId($id);
-        if (!$platoExistente) {
-            http_response_code(404);
-            return ["success" => false, "message" => "Plato no encontrado."];
-        }
-
-        // Datos del formulario, usando valores previos como respaldo
-        $nombre = $_POST["nombre"] ?? $platoExistente["nombre"];
-        $precio = $_POST["precio"] ?? $platoExistente["precio"];
-        $ingredientes = json_decode($_POST["ingredientes"] ?? "[]", true);
-        $categoria = $_POST["categoria"] ?? $platoExistente["categoria"];
-        $disponibilidad = isset($_POST["disponibilidad"]) ? (int)$_POST["disponibilidad"] : $platoExistente["disponibilidad"];
-        $activo = isset($_POST["activo"]) ? (int)$_POST["activo"] : $platoExistente["activo"];
-
-        // Manejo de imagen
-        $imagenUrl = $platoExistente["imagen_url"] ?? null;
-
-        // Si se envió una nueva imagen, procesarla
-        if (isset($_FILES["imagen"]) && $_FILES["imagen"]["error"] === UPLOAD_ERR_OK) {
-            $nombreArchivo = uniqid("plato_") . "_" . basename($_FILES["imagen"]["name"]);
-            $rutaDestino = __DIR__ . "/../../public/img/platos/" . $nombreArchivo;
-
-            // Intentar mover el archivo
-            if (move_uploaded_file($_FILES["imagen"]["tmp_name"], $rutaDestino)) {
-                $imagenUrl = "/img/platos/" . $nombreArchivo;
-            } else {
-                return [
-                    "success" => false,
-                    "message" => "Error al guardar la nueva imagen del plato."
-                ];
+        try {
+            $platoExistente = Plato::buscarPorId($id);
+            if (!$platoExistente) {
+                http_response_code(404);
+                return ["success" => false, "message" => "Plato no encontrado."];
             }
-        }
 
-        // Crear objeto Plato actualizado
-        $plato = new Plato(
-            $nombre,
-            $precio,
-            $ingredientes,
-            $categoria,
-            $disponibilidad,
-            $activo,
-            $imagenUrl
-        );
+            $nombre = $_POST["nombre"] ?? $platoExistente["nombre"];
+            $precio = $_POST["precio"] ?? $platoExistente["precio"];
+            $categoria = $_POST["categoria"] ?? $platoExistente["categoria"];
+            $disponibilidad = isset($_POST["disponibilidad"])
+                ? filter_var($_POST["disponibilidad"], FILTER_VALIDATE_BOOLEAN)
+                : $platoExistente["disponibilidad"];
+            $activo = isset($_POST["activo"])
+                ? filter_var($_POST["activo"], FILTER_VALIDATE_BOOLEAN)
+                : $platoExistente["activo"];
 
-        $plato->setProductoId($id);
+            $ingredientesRaw = $_POST["ingredientes"] ?? "[]";
 
-        // Ejecutar actualización
-        $resultado = ControllerService::handlerErrorConexion(fn() => $plato->actualizarPlato());
-
-        if ($resultado) {
-            return [
-                "success" => true,
-                "message" => "Plato actualizado correctamente."
-            ];
-        } else {
-            return [
-                "success" => false,
-                "message" => "No se pudo actualizar el plato."
-            ];
-        }
-
-    } catch (Exception $e) {
-        http_response_code(500);
-        return [
-            "success" => false,
-            "message" => "Error interno al actualizar: " . $e->getMessage()
-        ];
+if (is_string($ingredientesRaw)) {
+    $ingredientes = json_decode($ingredientesRaw, true);
+    if (!is_array($ingredientes)) {
+        $ingredientes = array_map("trim", explode(",", $ingredientesRaw));
     }
+} elseif (is_array($ingredientesRaw)) {
+    $ingredientes = $ingredientesRaw;
+} else {
+    $ingredientes = [];
 }
 
-    public function desactivarPlato($router, $params): array {
+
+            // ✅ Manejo de imagen (solo si se sube una nueva)
+            $imagenUrl = $platoExistente["imagen_url"] ?? null;
+            if (!empty($_FILES["imagen"]["name"])) {
+                $nombreArchivo = uniqid("plato_") . "_" . basename($_FILES["imagen"]["name"]);
+                $rutaDestino = __DIR__ . "/../../public/img/platos/" . $nombreArchivo;
+                move_uploaded_file($_FILES["imagen"]["tmp_name"], $rutaDestino);
+                $imagenUrl = "/img/platos/" . $nombreArchivo;
+            }
+
+            // ✅ Crear objeto actualizado
+            $plato = new Plato(
+                $nombre,
+                $precio,
+                $ingredientes, // <-- array, no JSON
+                $categoria,
+                $disponibilidad,
+                $activo,
+                $imagenUrl
+            );
+            $plato->setProductoId($id);
+
+            $resultado = ControllerService::handlerErrorConexion(fn() => $plato->actualizarPlato());
+
+            return $resultado
+                ? ["success" => true, "message" => "Plato actualizado correctamente."]
+                : ["success" => false, "message" => "No se pudo actualizar el plato."];
+
+        } catch (Exception $e) {
+            http_response_code(500);
+            return [
+                "success" => false,
+                "message" => "Error interno al actualizar: " . $e->getMessage()
+            ];
+        }
+    }
+
+    // Desactivar plato
+    public function desactivarPlato($router, $params): array
+    {
         $id = (int)$params["id"];
         try {
             $resultado = ControllerService::handlerErrorConexion(fn() => Plato::actualizarActividad($id, false));
