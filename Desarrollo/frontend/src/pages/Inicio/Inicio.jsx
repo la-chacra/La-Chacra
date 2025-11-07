@@ -5,18 +5,19 @@ import Horarios from "./Horarios";
 import MasVendidos from "./MasVendidos";
 import Productos from "./Productos";
 import Footer from "../../components/Footer";
-
+import ScrollButton from "./ScrollButton";
 
 const Inicio = () => {
   return (
     <>
-      <Hero />
-      <Horarios />
-      <Mision />
-      <Productos />
-      <MasVendidos />
-      <Footer /> 
+      <section id="hero"><Hero /></section>
+      <section id="horarios"><Horarios /></section>
+      <section id="mision"><Mision /></section>
+      <section id="productos"><Productos /></section>
+      <section id="mas-vendidos"><MasVendidos /></section>
+      <section id="footer"><Footer /></section>
 
+      <ScrollButton />
     </>
   );
 };
