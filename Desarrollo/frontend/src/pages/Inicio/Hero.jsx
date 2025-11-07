@@ -1,15 +1,16 @@
-import React from "react";
-import { useTranslation } from 'react-i18next'
+import React, { useState } from "react";
 import heroImg from "../../assets/hero.jpeg";
 import logo from "../../assets/logo.png"; 
 import { Link } from "react-router-dom";
 
-// Font Awesome
+import { useTranslation } from "react-i18next";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUtensils } from "@fortawesome/free-solid-svg-icons";
 
 const Hero = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <section
@@ -35,18 +36,38 @@ const Hero = () => {
           <a href="/eventos" className="he-link underline-center fade-in">{t('nav.eventos')}</a>
         </div>
 
-        {/* LOGIN / REGISTER BUTTONS */}
+        {/* LOGIN / REGISTER BUTTONS + LANG SELECTOR */}
         <div className="he-login-buttons fade-in">
-          <Link to="/autenticacion" state={{ openRegister: false }} className="btn login">
-            {t('auth.login')}
-          </Link>
-          <Link to="/autenticacion" state={{ openRegister: true }} className="btn registro">
-            {t('auth.register')}
-          </Link>
+          <Link to="/login" className="he-btn he-login-btn">{t('auth.login')}</Link>
+          <Link to="/login" className="he-btn he-register-btn">{t('auth.register')}</Link>
+
+          <div className="lang-wrapper he-lang-desktop">
+            <select
+              className="lang-select"
+              value={i18n.language.split('-')[0]}
+              onChange={(e) => i18n.changeLanguage(e.target.value)}
+            >
+              <option value="es">{t('lang.es')}</option>
+              <option value="en">{t('lang.en')}</option>
+              <option value="pt">{t('lang.pt')}</option>
+            </select>
+          </div>
         </div>
       </nav>
 
-      {/* HERO CONTENT */}
+      {/* LANG-SELECT responsive */}
+      <div className="lang-wrapper he-lang-mobile fade-in">
+        <select
+          className="he-lang-select font-overlock"
+          value={i18n.language.split('-')[0]}
+          onChange={(e) => i18n.changeLanguage(e.target.value)}
+        >
+          <option value="es">{t('lang.es')}</option>
+          <option value="en">{t('lang.en')}</option>
+          <option value="pt">{t('lang.pt')}</option>
+        </select>
+      </div>
+
       <div className="he-hero-content">
         <h1 className="text-shadow text-hero-title font-texturina text-[#F2E3B3] tracking-wider fade-in-up">
           La Chacra Gourmet
