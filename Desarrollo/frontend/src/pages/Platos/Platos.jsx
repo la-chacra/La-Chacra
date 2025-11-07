@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Header from "../../components/HeaderUnificado";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faDownload, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeft,
+  faDownload,
+  faPlus,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useParams } from "react-router-dom";
 
-// si se cambian, tambien se tienen que cambiar las de la carta y tablaplatos
 const categoriasPredefinidas = [
   "Entradas",
   "Carnes",
@@ -18,11 +22,10 @@ const categoriasPredefinidas = [
   "Postres",
 ];
 
-const GestorPlatos = () => {
+const EditarPlato = () => {
   const navigate = useNavigate();
-  const { id } = useParams(); // si hay un ID, significa que estamos editando un plato existente
+  const { id } = useParams(); // Si hay ID, estamos editando
 
-  // estados del formulario
   const [nombre, setNombre] = useState("");
   const [precio, setPrecio] = useState("");
   const [ingredientes, setIngredientes] = useState([]);
@@ -35,27 +38,37 @@ const GestorPlatos = () => {
 
   useEffect(() => {
     if (id) {
-      // si estamos editando un plato, necesitamos un endpoint GET /api/productos-menu/:id
-      // que devuelva un objeto con los campos:
-      // nombre, precio, ingredientes[], categoria, disponibilidad, activo, imagen_url
       fetch(`/api/productos-menu/${id}`)
         .then((res) => res.json())
         .then((data) => {
-          setNombre(data.nombre);
-          setPrecio(data.precio);
-          setIngredientes(data.ingredientes || []);
-          setCategoria(data.categoria);
-          setDisponibilidad(data.disponibilidad);
-          setActivo(data.activo);
-          setImagenPreview(data.imagen_url || null);
+          if (data.success && data.data) {
+            const plato = data.data;
+            setNombre(plato.nombre || "");
+            setPrecio(plato.precio || "");
+            setCategoria(plato.categoria || "");
+            setDisponibilidad(!!plato.disponibilidad);
+            setActivo(!!plato.activo);
+            setImagenPreview(plato.imagen_url || null);
+
+            try {
+              setIngredientes(
+                Array.isArray(plato.ingredientes)
+                  ? plato.ingredientes
+                  : JSON.parse(plato.ingredientes || "[]")
+              );
+            } catch {
+              setIngredientes([]);
+            }
+          } else {
+            alert("Error al cargar el plato: " + data.message);
+          }
         })
-        .catch(() => {
-          // en caso de error, se podría mostrar un mensaje o redirigir
+        .catch((err) => {
+          console.error("Error al obtener plato:", err);
         });
     }
   }, [id]);
 
-  // agrega un ingrediente al presionar Enter
   const handleAddIngrediente = (e) => {
     if (e.key === "Enter" && ingredienteInput.trim() !== "") {
       e.preventDefault();
@@ -66,13 +79,10 @@ const GestorPlatos = () => {
     }
   };
 
-  // elimina un ingrediente del listado
   const handleRemoveIngrediente = (index) => {
-    const newIngs = ingredientes.filter((_, i) => i !== index);
-    setIngredientes(newIngs);
+    setIngredientes(ingredientes.filter((_, i) => i !== index));
   };
 
-  // cambia la imagen del plato
   const handleImagenChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -81,42 +91,47 @@ const GestorPlatos = () => {
     }
   };
 
-  // guarda o actualiza el plato
   const handleGuardar = async () => {
-    // se utiliza formdata porque puede incluir imagen
     const formData = new FormData();
     formData.append("nombre", nombre);
     formData.append("precio", precio);
-    formData.append("ingredientes", JSON.stringify(ingredientes)); // backend debe aceptar JSON string para array
+formData.append("ingredientes", JSON.stringify(ingredientes).replace(/\\/g, ""));
     formData.append("categoria", categoria);
-    formData.append("disponibilidad", disponibilidad);
-    formData.append("activo", activo);
+    formData.append("disponibilidad", disponibilidad ? "1" : "0");
+    formData.append("activo", activo ? "1" : "0");
     if (imagen) formData.append("imagen", imagen);
 
-    // determina URL y método según si es creación o edición
     const url = id
-      ? `/api/productos-menu/${id}` // PUT /api/productos-menu/:id para editar
-      : "/api/productos-menu"; // POST /api/productos-menu para crear
-
+      ? `/api/productos-menu/${id}`
+      : "/api/productos-menu";
     const method = id ? "PUT" : "POST";
 
     try {
-      // el backend debe aceptar formdata con todos los campos y devolver { success: true/false, message: "..." }
       const res = await fetch(url, {
         method,
         body: formData,
         credentials: "include",
       });
 
-      const data = await res.json();
+      const rawText = await res.text();
+      console.log("Respuesta cruda:", rawText);
+
+      let data;
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        throw new Error("Respuesta inválida del servidor");
+      }
+
       if (data.success) {
-        alert("Producto guardado correctamente");
-        navigate("/gestion/menu");
+        alert(id ? "Plato actualizado correctamente" : "Plato creado correctamente");
+        navigate("/gestion/platos-tabla");
       } else {
         alert("Error: " + data.message);
       }
-    } catch {
-      alert("Error de conexión con el servidor");
+    } catch (error) {
+      console.error("Error en conexión:", error);
+      alert("No se pudo conectar con el servidor");
     }
   };
 
@@ -133,16 +148,14 @@ const GestorPlatos = () => {
             <FontAwesomeIcon icon={faArrowLeft} /> Volver a Tabla de Platos
           </button>
 
-          {/* aun se tiene que incorporar el export */}
           <button className="om-export-button">
-            Exportar
-            <FontAwesomeIcon icon={faDownload} />
+            Exportar <FontAwesomeIcon icon={faDownload} />
           </button>
         </div>
 
         <div className="om-main-content">
+          {/* SECCIÓN IZQUIERDA */}
           <div className="om-left-section">
-            {/* SECCION IMAGEN */}
             <div className="gp-image-section">
               <h3>Imagen del Plato</h3>
               <div className="gp-image-upload">
@@ -167,7 +180,6 @@ const GestorPlatos = () => {
               </div>
             </div>
 
-            {/* NOMBRE */}
             <div className="om-mesa-section">
               <h3>Nombre del Plato</h3>
               <input
@@ -179,7 +191,6 @@ const GestorPlatos = () => {
               />
             </div>
 
-            {/* PRECIO */}
             <div className="om-cdp-section">
               <h3>Precio</h3>
               <input
@@ -192,34 +203,37 @@ const GestorPlatos = () => {
               />
             </div>
 
-            {/* INGREDIENTES */}
             <div className="gp-ingredientes-section">
               <h3>Ingredientes</h3>
               <div className="gp-ingredientes-input">
                 <input
                   type="text"
-                  placeholder="Ingresar ingredientes"
+                  placeholder="Agregar ingrediente y presionar Enter"
                   value={ingredienteInput}
                   onChange={(e) => setIngredienteInput(e.target.value)}
                   onKeyDown={handleAddIngrediente}
                 />
               </div>
+
               <div className="gp-ingredientes-tags">
-                {ingredientes.map((ing, index) => (
-                  <span key={index} className="gp-tag">
-                    {ing}
-                    <button
-                      onClick={() => handleRemoveIngrediente(index)}
-                      className="gp-tag-remove"
-                    >
-                      <FontAwesomeIcon icon={faTimes} />
-                    </button>
-                  </span>
-                ))}
+                {ingredientes && ingredientes.length > 0 ? (
+                  ingredientes.map((ing, index) => (
+                    <span key={index} className="gp-tag">
+                      {ing.trim()}
+                      <button
+                        onClick={() => handleRemoveIngrediente(index)}
+                        className="gp-tag-remove"
+                      >
+                        <FontAwesomeIcon icon={faTimes} />
+                      </button>
+                    </span>
+                  ))
+                ) : (
+                  <span className="gp-no-ingredientes">Sin ingredientes</span>
+                )}
               </div>
             </div>
 
-            {/* CATEGORÍA */}
             <div className="om-estado-section">
               <h3>Categoría</h3>
               <div className="om-status-dropdown">
@@ -238,7 +252,6 @@ const GestorPlatos = () => {
               </div>
             </div>
 
-            {/* DISPONIBILIDAD */}
             <div className="gp-switch-section2">
               <label>
                 <input
@@ -250,7 +263,6 @@ const GestorPlatos = () => {
               </label>
             </div>
 
-            {/* ACTIVO */}
             <div className="gp-switch-section">
               <label>
                 <input
@@ -263,20 +275,17 @@ const GestorPlatos = () => {
             </div>
           </div>
 
-          {/* BOTONES DE ACCIÓN */}
+          {/* SECCIÓN DERECHA */}
           <div className="om-right-section">
             <div className="om-total-section">
               <h3>Acciones</h3>
               <div className="om-action-buttons">
-                <button
-                  className="om-save-button"
-                  onClick={handleGuardar} // POST/PUT según corresponda
-                >
-                  Guardar Plato
+                <button className="om-save-button" onClick={handleGuardar}>
+                  {id ? "Actualizar Plato" : "Guardar Plato"}
                 </button>
                 <button
                   className="om-save-print-button"
-                  onClick={() => navigate("/gestion/platos-tabla")} // cancelar y volver a tabla
+                  onClick={() => navigate("/gestion/platos-tabla")}
                 >
                   Cancelar
                 </button>
@@ -289,4 +298,4 @@ const GestorPlatos = () => {
   );
 };
 
-export default GestorPlatos;
+export default EditarPlato;

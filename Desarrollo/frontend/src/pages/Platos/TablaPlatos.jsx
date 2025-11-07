@@ -55,52 +55,80 @@ const MenuTable = () => {
     Todos: "#495057",
   };
 
-  useEffect(() => { 
-     // necesitan exponer un endpoint GET /api/productos-menu 
-     // que devuelva todos los productos con campos:
-     // producto_id, nombre, precio, ingredientes[], categoria, disponibilidad, activo, imagen_url
-     // imagen URL es importante para mostrar la imagen en la carta y tabla. 
-     // puede ser ruta relativa o absoluta
-     // tal vez se tenga que cambiar la forma que la carta funciona para soportar esto, si ustedes pueden revisar
-    fetch("/api/productos-menu")
-      .then((res) => res.json())
-      .then((data) => setMenuData(data))
-      .catch(() => {
-        // mock para pruebas
-        setMenuData([
-          {
-            producto_id: 1,
-            nombre: "Hamburguesa",
-            precio: 500,
-            ingredientes: ["Carne", "Queso", "Lechuga", "Tomate"],
-            categoria: "Carnes",
-            disponibilidad: true,
-            activo: true,
-            imagen_url: "/src/assets/hamburguesa.png",
-          },
-          {
-            producto_id: 2,
-            nombre: "Pasta Alfredo",
-            precio: 650,
-            ingredientes: ["Fettuccine", "Salsa Alfredo", "Parmesano"],
-            categoria: "Pastas",
-            disponibilidad: true,
-            activo: true,
-            imagen_url: "/src/assets/pasta.png",
-          },
-          {
-            producto_id: 3,
-            nombre: "Ensalada César",
-            precio: 400,
-            ingredientes: ["Lechuga", "Crutones", "Parmesano", "Aderezo César"],
-            categoria: "Entradas",
-            disponibilidad: false,
-            activo: true,
-            imagen_url: "/src/assets/cesar.png",
-          },
-        ]);
+ useEffect(() => {
+  fetch("/api/productos-menu")
+    .then((res) => res.json())
+    .then((data) => {
+      if (Array.isArray(data)) {
+        setMenuData(data);
+      } else if (data.success && Array.isArray(data.data)) {
+        setMenuData(data.data);
+      } else {
+        console.error("Formato inesperado de respuesta:", data);
+      }
+    })
+    .catch((err) => {
+      console.error("Error al cargar los platos:", err);
+      alert("No se pudieron cargar los productos del menú");
+    });
+}, []);
+
+
+const handleGuardar = async () => {
+  const formData = new FormData();
+  formData.append("nombre", nombre);
+  formData.append("precio", precio);
+  formData.append("ingredientes", JSON.stringify(ingredientes));
+  formData.append("categoria", categoria);
+  formData.append("disponibilidad", disponibilidad);
+  formData.append("activo", activo);
+  if (imagen) formData.append("imagen", imagen);
+
+  const url = id
+    ? `/api/productos-menu/${id}` // PUT para editar
+    : "/api/productos-menu"; // POST para agregar
+  const method = id ? "PUT" : "POST";
+
+  try {
+    const res = await fetch(url, {
+      method,
+      body: formData,
+      credentials: "include",
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      alert("Plato guardado correctamente");
+      navigate("/gestion/platos-tabla");
+    } else {
+      alert("Error: " + data.message);
+    }
+  } catch (error) {
+    console.error("Error en la conexión:", error);
+    alert("Error al conectar con el servidor");
+  }
+};
+const handleDelete = async (producto_id) => {
+  if (window.confirm("¿Seguro que quieres eliminar este producto?")) {
+    try {
+      const res = await fetch(`/api/productos-menu/desactivar/${producto_id}`, {
+        method: "DELETE",
       });
-  }, []);
+
+      const data = await res.json();
+      if (data.success) {
+        setMenuData(menuData.filter((item) => item.producto_id !== producto_id));
+        alert("Plato desactivado correctamente");
+      } else {
+        alert("Error al desactivar: " + data.message);
+      }
+    } catch {
+      alert("Error de conexión con el servidor");
+    }
+  }
+};
+
+
 
   const handleSelectAll = (checked) => {
     if (checked) setSelectedItems(new Set(menuData.map((p) => p.producto_id)));
@@ -154,20 +182,13 @@ const MenuTable = () => {
     // redirige a la ruta de crear producto, backend debe soportar POST /api/productos
     navigate("/gestion/plato");
   };
-
   const handleEdit = (id) => {
-    // redirige a editar producto, backend debe soportar PUT /api/productos/:id
-    navigate(`/gestion/plato/${id}`);
-  };
+  navigate(`/gestion/plato/${id}`);
+};
 
-  const handleDelete = (id) => {
-     // necesitan DELETE /api/productos/:id
-     // para eliminar el producto del menú
-    if (window.confirm("¿Seguro que quieres eliminar este producto?")) {
-      setMenuData(menuData.filter((item) => item.producto_id !== id));
-      setOpenActionMenu(null);
-    }
-  };
+  
+
+
 
   return (
     <div className="hs-history-container font-montserrat">

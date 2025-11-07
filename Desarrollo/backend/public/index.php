@@ -20,6 +20,7 @@ use App\Controllers\RecuperarController;
 use App\Controllers\StockController;
 use App\Controllers\EstadisticaController;
 use App\Controllers\EmpleadoController;
+use App\Controllers\PlatoController;
 
 
 
@@ -39,18 +40,16 @@ $router->post("/api/registro", [RegistroController::class, "registrar"]);
 $router->get("/api/logout", [AuthController::class, "logout"]);
 $router->get("/api/estadoSesion", [AuthController::class, "estadoSesion"]);
 
-// API Reserva
+// API Reserva Cliente
 $router->post('/api/reservas/registrar', [ReservaController::class, 'registrar']);
 $router->post('/api/reservas/actualizar', [ReservaController::class, 'actualizar']);
 $router->post('/api/reservas/cancelar', [ReservaController::class, 'cancelar']);
 
+//API Reserva Admin
 $router->get("/api/reservas/obtener", [ReservaController::class, "obtenerReservas"]);
 $router->get("/api/reservas/obtener/{id}", [ReservaController::class, "obtenerPorID"]);
 $router->put("/api/reservas/modificar/{id}", [ReservaController::class, "modificarReserva"]);
 $router->delete('/api/reservas/desactivar/{id}', [ReservaController::class, 'desactivarReserva']);
-
-
-
 
 
 //API Comanda
@@ -77,18 +76,29 @@ $router->get('/api/estadistica/obtenerRankingReservas', [EstadisticaController::
 $router->get('/api/estadistica/obtenerRankingVentas', [EstadisticaController::class, 'obtenerRankingVentas']);
 
 //API StockController
-
-$router->get("/api/gestion/historialStock", [StockController::class, "obtenerHistorialStock"]);
-$router->get("/api/stock", [StockController::class, "obtenerStock"]);
+$router->get("/api/stock", [StockController::class, "obtenerInsumos"]);
+$router->get("/api/stock/{id}", [StockController::class, "obtenerPorID"]);
+$router->post("/api/stock/registrar", [StockController::class, "registrarInsumo"]);
+$router->put("/api/stock/{id}/modificar", [StockController::class, "modificarInsumo"]);
+$router->put("/api/stock/{id}/desactivar", [StockController::class, "desactivarInsumo"]);
+$router->put("/api/stock/{id}/activar", [StockController::class, "activarInsumo"]);
 
 // API EmpleadoController
-
 $router->get("/api/empleado/obtener", [EmpleadoController::class, "obtenerEmpleados"]);
 $router->get("/api/exportar-usuarios", [EmpleadoController::class, "exportarUsuarios"]);
 $router->post("/api/empleado/registrar", [EmpleadoController::class, "registrarEmpleado"]);
 $router->delete("/api/empleado/desactivar/{id}", [EmpleadoController::class, "desactivarEmpleado"]);
 $router->get("/api/empleado/obtener/{id}", [EmpleadoController::class, "obtenerPorID"]);
 $router->put("/api/empleado/modificar/{id}", [EmpleadoController::class, "modificarEmpleado"]);
+
+
+//API Gestión de Platos
+$router->get('/api/productos-menu', [PlatoController::class, 'obtenerPlatos']);
+$router->get('/api/productos-menu/{id}', [PlatoController::class, 'obtenerPorId']);
+$router->post('/api/productos-menu', [PlatoController::class, 'crearPlato']);
+$router->put('/api/productos-menu/{id}', [PlatoController::class, 'actualizarPlato']);
+$router->delete('/api/productos-menu/desactivar/{id}', [PlatoController::class, 'desactivarPlato']);
+
 
 
 
