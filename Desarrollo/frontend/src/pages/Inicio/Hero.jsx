@@ -109,7 +109,7 @@ const Hero = () => {
                     <FontAwesomeIcon icon={faUserCircle} /> {t("perfil.mi_perfil")}
                   </Link>
                   {(role === "A" || role === "E") && (
-                    <Link to="/gestion" className="li-dropdown-item gestion">
+                    <Link to={role === "A" ? "/gestion/estadisticas" : "/gestion/comanda"}  className="li-dropdown-item gestion">
                       <FontAwesomeIcon icon={faGear} /> Gestión
                     </Link>
                   )}
@@ -155,7 +155,7 @@ const Hero = () => {
             {/* GESTIÓN */}
             {(role === "A" || role === "E") && (
               <Link
-                to="/gestion"
+                to={role === "A" ? "/gestion/estadisticas" : "/gestion/comanda"} 
                 onClick={() => setMenuOpen(false)}
                 className="flex items-center gap-3 hover:text-[#F2E3B3] transition"
               >

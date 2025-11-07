@@ -65,7 +65,7 @@ function App() {
         <Route element={<RutaProtegida rolRequerido="A" />}>
           <Route path="/gestion/reserva" element={<ReservaHist />} />
           <Route path="/gestion/stock" element={<GestionStock />} />
-          <Route path="/gestion/stock-historial" element={<StockHist />} />
+          <Route path="/gestion/stock-historial" element={<Navigate to="/en-construccion" replace />} />
           <Route path="/gestion/platos-tabla" element={<PlatosTabla />} />
           <Route path="/gestion/plato" element={<Platos />} />
           <Route path="/gestion/plato/:id" element={<Platos />} />

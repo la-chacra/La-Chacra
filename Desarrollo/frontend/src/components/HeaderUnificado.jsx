@@ -103,7 +103,7 @@ const HeaderUnificado = () => {
               <Link to="/perfil" className="li-dropdown-item">
                 <FontAwesomeIcon icon={faUserCircle} /> Mi Perfil
               </Link>
-              <Link to="/gestion" className="li-dropdown-item gestion">
+              <Link to={role === "A" ? "/gestion/estadisticas" : "/gestion/comanda"} className="li-dropdown-item gestion">
                 <FontAwesomeIcon icon={faGear} /> Gestión
               </Link>
               <button onClick={handleLogout} className="li-dropdown-item logout">
@@ -154,7 +154,7 @@ const HeaderUnificado = () => {
                 <Link to="/perfil" onClick={() => setMenuOpen(false)}>
                   Mi Perfil
                 </Link>
-                <Link to="/gestion" onClick={() => setMenuOpen(false)} className="gestion">
+                <Link to={role === "A" ? "/gestion/estadisticas" : "/gestion/comanda"}  onClick={() => setMenuOpen(false)} className="gestion">
                   Gestión
                 </Link>
                 <button
@@ -250,7 +250,7 @@ const HeaderUnificado = () => {
                   <FontAwesomeIcon icon={faUserCircle} /> {t("perfil.mi_perfil")}
                 </Link>
                 {(role === "A" || role === "E") && (
-                  <Link to="/gestion" className="li-dropdown-item gestion">
+                  <Link to={role === "A" ? "/gestion/estadisticas" : "/gestion/comanda"}  className="li-dropdown-item gestion">
                     <FontAwesomeIcon icon={faGear} /> Gestión
                   </Link>
                 )}
@@ -330,7 +330,7 @@ const HeaderUnificado = () => {
                   </Link>
                   {(role === "A" || role === "E") && (
                     <Link
-                      to="/gestion"
+                      to={role === "A" ? "/gestion/estadisticas" : "/gestion/comanda"} 
                       className="gestion"
                       onClick={() => setMenuOpen(false)}
                     >

@@ -123,7 +123,7 @@ export default function GestionStock() {
 
   return (
     <div className="min-h-screen bg-neutral-950 text-gray-200 flex flex-col">
-      <AdminHeader />
+      <Header />
 
       <div className="p-6 flex flex-col flex-1 max-w-7xl mx-auto w-full">
         <div className="flex flex-wrap md:flex-nowrap justify-between items-center gap-3 mb-6 bg-neutral-900 p-4 rounded-xl shadow-md border border-neutral-800">

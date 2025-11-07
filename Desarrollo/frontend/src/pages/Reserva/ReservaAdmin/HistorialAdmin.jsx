@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Header from "../../../components/HeaderAdmin";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";

@@ -36,23 +36,27 @@ class AuthMiddleware {
      */
     private const mapaDeAccesos = [
         "C" => [ // C = cliente
-            "/api/reserva/crear",
-            "/api/reserva/cancelar",
-            "/api/reserva/actualizar"
+            "/api/reservas/registrar",
+            "/api/reservas/cancelar",
+            "/api/reservas/actualizar"
         ],
         "E" => [ // E = empleado
-            "/api/comanda/crear",
-            "/api/comanda/actualizar",
-            "/api/comanda/listar"
-        ],
-        "A" => [ // A = admin
-            "/api/gestion/reservas",
-            "/api/gestion/reservas/eliminarReserva",
-            // Comanda
+            /* Empleado (operaciones sobre comandas gestionadas por empleados)
+               Rutas definidas en public/index.php usan el prefijo /api/gestion/comanda */
             "/api/gestion/comanda/crear",
             "/api/gestion/comanda/actualizar",
-            "/api/gestion/comanda/listar",
-            // Estadisticas
+            /* si en el futuro existe un endpoint de listado para empleados, agregarlo aquí */
+        ],
+        "A" => [ // A = admin
+            // Reservas (admin)
+            "/api/reservas/obtener",
+            "/api/reservas/obtener/{id}",
+            "/api/reservas/modificar/{id}",
+            "/api/reservas/desactivar/{id}",
+            // Comanda (gestión)
+            "/api/gestion/comanda/crear",
+            "/api/gestion/comanda/actualizar",
+            // Estadísticas
             "/api/estadistica/obtenerDashboard",
             "/api/estadistica/topPlatos",
             "/api/estadistica/pedidosTotales",
@@ -62,9 +66,29 @@ class AuthMiddleware {
             "/api/estadistica/obtenerRankingProductos",
             "/api/estadistica/obtenerRankingReservas",
             "/api/estadistica/obtenerRankingVentas",
-            //Stock
-            "api/gestion/historialStock",
-            "api/gestion/stock",
+            // Stock / Insumos
+            "/api/stock",
+            "/api/stock/{id}",
+            "/api/stock/registrar",
+            "/api/stock/{id}/modificar",
+            "/api/stock/{id}/desactivar",
+            "/api/stock/{id}/activar",
+            /* también hay endpoints en StockController que usan /api/insumo/... */
+            "/api/insumo/eliminar",
+            "/api/insumo/actualizar",
+            // Empleados
+            "/api/empleado/obtener",
+            "/api/exportar-usuarios",
+            "/api/empleado/registrar",
+            "/api/empleado/desactivar/{id}",
+            "/api/empleado/obtener/{id}",
+            "/api/empleado/modificar/{id}",
+            // Platos / Productos del menú
+            "/api/productos-menu",
+            "/api/productos-menu/{id}",
+            "/api/productos-menu",
+            "/api/productos-menu/{id}",
+            "/api/productos-menu/desactivar/{id}",
             
             
              
@@ -77,7 +101,15 @@ class AuthMiddleware {
      *
      * @var array<string>
      */
-    private const whitelist = ["/api/login", "/api/registro", "/api/logout", "/api/estadoSesion"];
+    private const whitelist = [
+        "/api/login",
+        "/api/registro",
+        "/api/logout",
+        "/api/estadoSesion",
+        // Recuperar contraseña (deben ser públicos para poder iniciar el flujo de recuperación)
+        "/api/recuperar/enviarCodigo",
+        "/api/recuperar/cambiarPassword"
+    ];
 
 
     /**
@@ -140,9 +172,24 @@ class AuthMiddleware {
 
         $accesoURLs = self::mapaDeAccesos[$tipo];
 
+        // Soporte simple para rutas con parámetros como /api/stock/{id}.
         foreach($accesoURLs as $url) {
-            if($urlActual === $url) {
-                return;
+            // ruta exacta
+            if ($urlActual === $url) return;
+
+            // si la ruta permitida contiene un placeholder {, comparamos por prefijo
+            $pos = strpos($url, '{');
+            if ($pos !== false) {
+                $prefix = rtrim(substr($url, 0, $pos), '/');
+                // permitir coincidencias con y sin slash después del prefijo
+                if ($prefix !== '' && (strpos($urlActual, $prefix) === 0)) {
+                    return;
+                }
+            }
+            // permitir rutas que son prefijos (por ejemplo /api/productos-menu matches /api/productos-menu/123)
+            if (substr($url, -1) === '/') {
+                $trimmed = rtrim($url, '/');
+                if ($trimmed !== '' && strpos($urlActual, $trimmed) === 0) return;
             }
         }
         
