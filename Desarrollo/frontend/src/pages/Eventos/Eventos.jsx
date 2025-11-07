@@ -8,10 +8,13 @@ import {
 } from "react-icons/fa";
 import aniversarioImg from "../../assets/Aniversario.jpeg";
 import cumpleanosImg from "../../assets/cumpleanos.jpg";
-import Header from "../../components/Header";
+import Header from "../../components/HeaderUnificado";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function Eventos() {
   const { t } = useTranslation()
+
+  const { autenticado } = useAuth();
 
   return (
     <div className="bg-[#1a1a1a] min-h-screen">

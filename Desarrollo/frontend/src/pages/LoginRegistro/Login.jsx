@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle, faFacebookF } from "@fortawesome/free-brands-svg-icons";
-import Header from "../../components/Header";
+import Header from "../../components/HeaderUnificado";
 import Footer from "../../components/Footer";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
+import { loginUsuario } from "../../services/authService";
 import logo2 from "../../assets/logo2.png";
 import fuego from "../../assets/fuego.gif";
 
@@ -25,7 +28,35 @@ const Auth = () => {
   const [loginCorreo, setLoginCorreo] = useState("");
   const [loginContrasena, setLoginContrasena] = useState("");
 
-   const handleLogin = async (e) => {
+  const navigate = useNavigate();
+  const { usuario, login, checkSesion } = useAuth();
+
+    if (usuario) {
+    return (
+      <>
+        <Header />
+        <div className="fixed inset-0 flex flex-col items-center justify-center backdrop-blur-md bg-black/40 z-50">
+          <div className="bg-neutral-950 rounded-2xl shadow-xl p-10 text-center max-w-md">
+            <h2 className="text-2xl font-semibold mb-4 text-gray-300">
+              Ya estás logeado
+            </h2>
+            <p className="text-gray-300 mb-6">
+              No es necesario volver a iniciar sesión o registrarte.
+            </p>
+            <button
+              onClick={() => navigate("/")}
+              className="bg-green-700 hover:bg-green-800 text-white px-6 py-2 rounded-lg transition"
+            >
+              Volver al inicio
+            </button>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     if (!loginCorreo || !loginContrasena) {
@@ -34,23 +65,19 @@ const Auth = () => {
     }
 
     try {
-      const res = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          correo: loginCorreo,
-          contrasena: loginContrasena,
-        }),
-      });
+      const result = await loginUsuario({ loginCorreo, loginContrasena });
 
-      const dataRes = await res.json();
-      // console.log("Login response:", dataRes);
+      if (result.success) {
+        // actualizar contexto si el backend devolvió usuario
+        if (result.usuario) login(result.usuario);
 
-      if (dataRes.success) {
-        alert("Login exitoso");
+        // Aseguramos estado fresco del servidor (opcional)
+        if (checkSesion) await checkSesion();
+
+        // redirigir a inicio
+        navigate("/");
       } else {
-        alert("Error: " + dataRes.message);
+        alert(result.message || "Credenciales inválidas");
       }
     } catch (error) {
       console.error("Error en login:", error);
@@ -85,8 +112,12 @@ const Auth = () => {
 
       if (dataRes.success) {
         alert("Usuario registrado correctamente");
-        // Opcional: cambiar a login automáticamente
-        setesRegistrado(false);
+
+        // Intentamos obtener sesión/actualizar contexto si el backend inició sesión automáticamente
+        if (checkSesion) await checkSesion();
+
+        // Navegar a inicio
+        navigate("/");
       } else {
         alert("Error: " + dataRes.message);
       }
@@ -246,7 +277,7 @@ const Auth = () => {
                 </div>
               </form>
             ) : (
-              <form className="sign-in-container-mobile">
+              <form className="sign-in-container-mobile" onSubmit={handleLogin}>
                 <h2 className="auth-title">INICIO DE SESIÓN</h2>
                 <label>Correo Electrónico</label>
                 <input type="email" id="LogCorreoMobile" name="loginCorreo" placeholder="Ingrese su correo electrónico" value={loginCorreo} onChange={(e) => setLoginCorreo(e.target.value)} />

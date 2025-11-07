@@ -11,7 +11,8 @@ import vinoImg from "../../assets/vino.png";
 import heladoImg from "../../assets/helado.png";
 
 import Footer from "../../components/Footer"; 
-import Header from "../../components/Header"; 
+import Header from "../../components/HeaderUnificado";
+import { useAuth } from "../../hooks/useAuth";
 
 const Carta = () => {
   const { t } = useTranslation()
@@ -85,13 +86,13 @@ const Carta = () => {
 
   return (
     <div className="carta-page">
-      <Header/>
+      <Header />
 
       <div className="carta-wrapper">
         <div className="sidebar left-sidebar"></div>
 
         <div className="carta-container">
-          <h1 className="carta-title">{t('carta.title')}</h1>
+          <h1 className="carta-title text-3xl">{t('carta.title')}</h1>
           {menuData.map((section, index) => (
             <MenuSection key={index} {...section} />
           ))}

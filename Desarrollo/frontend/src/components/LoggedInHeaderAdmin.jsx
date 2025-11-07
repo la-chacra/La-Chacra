@@ -4,10 +4,30 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes, faUserCircle, faSignOutAlt, faGear } from "@fortawesome/free-solid-svg-icons";
 import logo from "../assets/logo.png";
 import profilePic from "../assets/default-avatar.png"; // Add your profile image here
+import { logoutUsuario } from "../services/authService";
+import { useAuth } from "../hooks/useAuth";
+import { useTranslation } from 'react-i18next'
 
 const LoggedInHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const { logout } = useAuth();
+  const { t } = useTranslation();
+  
+
+  const handleLogout = async () => {
+    try {
+      const res = await logoutUsuario();
+      // limpiar estado local siempre
+      logout();
+      if (!res || !res.success) {
+        console.warn("Logout en servidor no confirmado:", res);
+      }
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+      logout();
+    }
+  };
 
   return (
     <>
@@ -19,22 +39,18 @@ const LoggedInHeader = () => {
         </div>
 
         <nav className="nav-links">
-          <Link to="/">Inicio</Link>
+          <Link to="/">{t('nav.inicio')}</Link>
           <span>•</span>
-          <Link to="/carta">Carta</Link>
+          <Link to="/carta">{t('nav.carta')}</Link>
           <span>•</span>
-          <Link to="/reserva">Reserva</Link>
+          <Link to="/reserva">{t('nav.reserva')}</Link>
           <span>•</span>
-          <Link to="/eventos">Eventos</Link>
+          <Link to="/eventos">{t('nav.eventos')}</Link>
         </nav>
 
         <div className="right-controls">
           <div className="lang-wrapper">
-            <select className="lang-select">
-              <option value="es">ES 🇺🇾</option>
-              <option value="en">EN 🇺🇸</option>
-              <option value="pt">PT-BR 🇧🇷</option>
-            </select>
+            <LanguageSelector />
           </div>
 
           <div
@@ -48,14 +64,14 @@ const LoggedInHeader = () => {
             />
             <div className={`li-dropdown font-montserrat ${profileOpen ? "open" : ""}`}>
               <Link to="/perfil" className="li-dropdown-item">
-                <FontAwesomeIcon icon={faUserCircle} /> Mi Perfil
+                <FontAwesomeIcon icon={faUserCircle} /> {t("perfil.mi_perfil")}
               </Link>
               <Link to="/gestion" className="li-dropdown-item gestion">
                 <FontAwesomeIcon icon={faGear} /> Gestión
               </Link>
-              <Link to="/logout" className="li-dropdown-item logout">
-                <FontAwesomeIcon icon={faSignOutAlt} /> Cerrar Sesión
-              </Link>
+              <button onClick={handleLogout} className="li-dropdown-item logout">
+                <FontAwesomeIcon icon={faSignOutAlt} /> {t("perfil.cerrar_sesion")}
+              </button>
             </div>
           </div>
         </div>
@@ -68,11 +84,11 @@ const LoggedInHeader = () => {
         <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
           <nav className="mobile-nav">
             <div className="mobile-nav-links">
-              <Link to="/carta" onClick={() => setMenuOpen(false)}>Carta</Link>
+              <Link to="/carta" onClick={() => setMenuOpen(false)}>{t("nav.carta")}</Link>
               <span>•</span>
-              <Link to="/reserva" onClick={() => setMenuOpen(false)}>Reserva</Link>
+              <Link to="/reserva" onClick={() => setMenuOpen(false)}>{t("nav.reserva")}</Link>
               <span>•</span>
-              <Link to="/eventos" onClick={() => setMenuOpen(false)}>Eventos</Link>
+              <Link to="/eventos" onClick={() => setMenuOpen(false)}>{t("nav.eventos")}</Link>
             </div>
 
             <hr className="mobile-divider" />
@@ -80,10 +96,10 @@ const LoggedInHeader = () => {
             {/* perfil responsive */}
             <div className="li-mobile-profile">
               <img src={profilePic} alt="Perfil" className="li-mobile-profile-pic" />
-              <div className="li-mobile-profile-links">
-                <Link to="/perfil">Mi Perfil</Link>
+                <div className="li-mobile-profile-links">
+                <Link to="/perfil">{t("perfil.mi_perfil")}</Link>
                 <Link to="/gestion " className="gestion">Gestión</Link>
-                <Link to="/logout" className="logout">Cerrar Sesión</Link>
+                <button onClick={() => { setMenuOpen(false); handleLogout(); }} className="logout">{t("perfil.cerrar_sesion")}</button>
               </div>
             </div>
           </nav>
@@ -100,3 +116,19 @@ const LoggedInHeader = () => {
 };
 
 export default LoggedInHeader;
+
+function LanguageSelector() {
+  const { t, i18n } = useTranslation();
+
+  return (
+    <select
+      className="lang-select"
+      value={i18n.language.split('-')[0]}
+      onChange={(e) => i18n.changeLanguage(e.target.value)}
+    >
+      <option value="es">{t('lang.es')}</option>
+      <option value="en">{t('lang.en')}</option>
+      <option value="pt">{t('lang.pt')}</option>
+    </select>
+  );
+}

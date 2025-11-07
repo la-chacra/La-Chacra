@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AdminHeader from "../../../components/HeaderAdmin";
+import Header from "../../../components/HeaderUnificado";
 import logo from "../../../assets/logo2.png";
 
 export default function HistorialRes() {
