@@ -4007,5 +4007,155 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 }
 
+/* ===== DROPDOWN PERFIL (Hero) ===== */
+.li-profile-wrapper {
+  position: relative;
+  cursor: pointer;
+}
 
+.li-profile-pic {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
 
+.li-profile-pic:hover {
+  transform: scale(1.05);
+}
+
+.li-dropdown {
+  position: absolute;
+  right: 0;
+  top: 120%;
+  background: rgba(230, 230, 230, 0.9);
+  border-radius: 10px;
+  min-width: 180px;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.li-dropdown.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.li-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  color: #070707;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.li-dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ===== MOBILE DROPDOWN ===== */
+.mobile-dropdown-menu {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 240px;
+  height: 100vh;
+  background: #080808fd;
+  padding: 80px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: right 0.4s ease;
+  z-index: 55;
+}
+
+.mobile-dropdown-menu.open {
+  right: 0;
+}
+
+.mobile-dropdown-item {
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: color 0.2s ease;
+}
+
+.mobile-dropdown-menu .logout {
+  margin-top: 2rem;
+  background: rgb(70, 2, 2);
+}
+
+.hamburger-index {
+  z-index: 200;
+}
+
+.mobile-dropdown-item:hover {
+  color: #f2e3b3;
+}
+
+.mobile-divider {
+  align-self: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  margin: 0.5rem 0;
+  margin-top: 2rem;
+}
+
+.mobile-lang {
+  margin-top: auto;
+  text-align: center;
+}
+
+/* ===== OVERLAY PARA CIERRE ===== */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.35s ease forwards;
+}
+
+.he-mobile-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 70%;
+  height: 100vh;
+  background-color: rgba(15, 15, 15, 0.95);
+  backdrop-filter: blur(4px);
+  z-index: 55;
+  box-shadow: -4px 0 10px rgba(0, 0, 0, 0.4);
+}
+
+.mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 50;
+  animation: fadeIn 0.3s ease forwards;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

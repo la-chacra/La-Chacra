@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate} from "react-router-dom";
 
 // --- Contexto y protección de rutas ---
 import { useAuth } from "./hooks/useAuth";
@@ -27,6 +27,7 @@ import EmpleadosTabla from "./pages/Empleados/EmpleadosTabla";
 
 // --- Testing ---
 import Test from "./pages/Admin/Test";
+import EnConstruccion from "./pages/Otros/EnConstruccion";
 
 function App() {
   const { cargando } = useAuth();
@@ -51,6 +52,7 @@ function App() {
         {/* Rutas protegidas para usuarios autenticados (cualquier rol) */}
         <Route element={<RutaProtegida />}>
           <Route path="/reserva" element={<Reserva />} />
+          <Route path="/perfil" element={<Navigate to="/en-construccion" replace />} />
         </Route>
 
         {/* Rutas protegidas para empleados */}
@@ -75,6 +77,7 @@ function App() {
 
         {/* Página de acceso denegado */}
         <Route path="/acceso-denegado" element={<AccesoDenegado />} />
+        <Route path="/en-construccion" element={<EnConstruccion />} />
 
         {/* Rutas de prueba */}
         <Route path="/test" element={<Test />} />
