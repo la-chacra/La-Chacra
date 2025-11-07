@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle, faFacebookF } from "@fortawesome/free-brands-svg-icons";
-import Header from "../../components/Header";
+import Header from "../../components/HeaderUnificado";
 import Footer from "../../components/Footer";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";

@@ -3213,3 +3213,40 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     transform: translateY(0);
   }
 }
+
+/* === Ajustes del Header Unificado para pantallas menores a 1138px === */
+
+/* Ocultar avatar, mantener idioma, y reubicar idioma junto al botón de menú */
+@media (max-width: 1138px) {
+  /* Oculta el avatar */
+  .right-controls .li-profile-wrapper {
+    display: none !important;
+  }
+
+  /* Reubica el selector de idioma */
+  .right-controls .lang-wrapper {
+    position: absolute;
+    right: 60px; /* justo al lado del botón hamburguesa */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 999;
+  }
+
+  /* Ajusta el tamaño visual del selector */
+  .right-controls .lang-select {
+    padding: 3px 8px;
+    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+}
+
+/* Ajuste extra para pantallas más pequeñas (celular) */
+@media (max-width: 768px) {
+  .right-controls .lang-wrapper {
+    right: 50px;
+  }
+}
+
+

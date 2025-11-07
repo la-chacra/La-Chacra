@@ -48,8 +48,8 @@ function App() {
         <Route path="/eventos" element={<Eventos />} />
         <Route path="/autenticacion" element={<Login />} />
 
-        {/* Rutas protegidas para usuarios autenticados (cliente) */}
-        <Route element={<RutaProtegida rolRequerido="C" />}>
+        {/* Rutas protegidas para usuarios autenticados (cualquier rol) */}
+        <Route element={<RutaProtegida />}>
           <Route path="/reserva" element={<Reserva />} />
         </Route>
 

@@ -11,8 +11,7 @@ import vinoImg from "../../assets/vino.png";
 import heladoImg from "../../assets/helado.png";
 
 import Footer from "../../components/Footer"; 
-import Header from "../../components/Header"; 
-import LoggedInHeader from "../../components/LoggedInHeader";
+import Header from "../../components/HeaderUnificado";
 import { useAuth } from "../../hooks/useAuth";
 
 const Carta = () => {
@@ -88,7 +87,7 @@ const Carta = () => {
 
   return (
     <div className="carta-page">
-      {autenticado ? <LoggedInHeader /> : <Header />}
+      <Header />
 
       <div className="carta-wrapper">
         <div className="sidebar left-sidebar"></div>

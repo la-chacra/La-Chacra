@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import Header from "../../../components/Header"
-import LoggedInHeader from "../../../components/LoggedInHeader"
+import Header from "../../../components/HeaderUnificado"
 import { useAuth } from "../../../hooks/useAuth"
 import Footer from "../../../components/Footer"
 import DateSelector from '../../../components/DatePicker'
@@ -32,7 +31,7 @@ const ReservaMesas = () => {
 
   return (
     <div className="reserva-mesas-page">
-  {autenticado ? <LoggedInHeader /> : <Header />}
+  <Header />
 
   <div className="reserva-center-wrapper">
     <div className="reserva-container font-montserrat">
