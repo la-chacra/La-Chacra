@@ -76,8 +76,23 @@ $router->get('/api/estadistica/obtenerRankingReservas', [EstadisticaController::
 $router->get('/api/estadistica/obtenerRankingVentas', [EstadisticaController::class, 'obtenerRankingVentas']);
 
 //API StockController
-$router->get("/api/historialStock", [StockController::class, "obtenerHistorialStock"]);
-$router->get("/api/stock", [StockController::class, "obtenerStock"]);
+// 📦 Obtener todos los insumos activos
+$router->get("/api/stock", [StockController::class, "obtenerInsumos"]);
+
+// 🔍 Obtener un insumo por ID
+$router->get("/api/stock/{id}", [StockController::class, "obtenerPorID"]);
+
+// ➕ Registrar un nuevo insumo
+$router->post("/api/stock/registrar", [StockController::class, "registrarInsumo"]);
+
+// ✏️ Modificar un insumo existente
+$router->put("/api/stock/{id}/modificar", [StockController::class, "modificarInsumo"]);
+
+// 🗑️ Desactivar (borrado lógico) un insumo
+$router->put("/api/stock/{id}/desactivar", [StockController::class, "desactivarInsumo"]);
+
+// 🔄 Activar nuevamente un insumo
+$router->put("/api/stock/{id}/activar", [StockController::class, "activarInsumo"]);
 
 // API EmpleadoController
 $router->get("/api/empleado/obtener", [EmpleadoController::class, "obtenerEmpleados"]);
