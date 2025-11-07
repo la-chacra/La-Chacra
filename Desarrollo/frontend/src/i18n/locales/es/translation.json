@@ -29,12 +29,12 @@
     "paragraph": "Ofrecer a nuestros clientes una experiencia gastronómica única, combinando ingredientes orgánicos y frescos con recetas cuidadas, promoviendo un estilo de vida saludable y respetuoso con la naturaleza, mientras brindamos un servicio cálido y cercano."
   },
   "productos": {
-    "title": "Productos Orgánicos",
+    "title": "Productos Orgánicos", 
     "paragraph": "Cultivamos de manera responsable, cuidando cada detalle para que disfrutes de ingredientes frescos y saludables en nuestros platos. La calidad y el respeto por la tierra nos definen."
   },
   "masVendidos": {
-    "title": "Nuestros Mejores Platos",
-    "best_seller": "Más Vendido 🔥"
+    "title": "NUESTROS MEJORES PLATOS",
+    "best_seller": "Recomendado"
   },
   "carta": {
     "title": "CARTA",
