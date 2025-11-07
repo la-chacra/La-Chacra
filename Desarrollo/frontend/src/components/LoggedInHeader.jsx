@@ -6,11 +6,13 @@ import logo from "../assets/logo.png";
 import profilePic from "../assets/default-avatar.png";
 import { logoutUsuario } from "../services/authService";
 import { useAuth } from "../hooks/useAuth";
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from "react-i18next"
 
 const LoggedInHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const { t } = useTranslation();
+
 
   const { logout } = useAuth();
 
@@ -42,18 +44,17 @@ const LoggedInHeader = () => {
         </div>
 
         <nav className="nav-links">
-          <Link to="/">Inicio</Link>
+          <Link to="/">{t("nav.inicio")}</Link>
           <span>•</span>
-          <Link to="/carta">Carta</Link>
+          <Link to="/carta">{t("nav.carta")}</Link>
           <span>•</span>
-          <Link to="/reserva">Reserva</Link>
+          <Link to="/reserva">{t("nav.reserva")}</Link>
           <span>•</span>
-          <Link to="/eventos">Eventos</Link>
+          <Link to="/eventos">{t("nav.eventos")}</Link>
         </nav>
 
         <div className="right-controls">
           <div className="lang-wrapper">
-            {/* Usar misma lógica de selección de idioma que el Header principal */}
             <LanguageSelector />
           </div>
 
@@ -68,10 +69,10 @@ const LoggedInHeader = () => {
             />
             <div className={`li-dropdown font-montserrat ${profileOpen ? "open" : ""}`}>
               <Link to="/perfil" className="li-dropdown-item">
-                <FontAwesomeIcon icon={faUserCircle} /> Mi Perfil
+                <FontAwesomeIcon icon={faUserCircle} /> {t("perfil.mi_perfil")}
               </Link>
               <button onClick={handleLogout} className="li-dropdown-item logout">
-                <FontAwesomeIcon icon={faSignOutAlt} /> Cerrar Sesión
+                <FontAwesomeIcon icon={faSignOutAlt} /> {t("perfil.cerrar_sesion")}
               </button>
             </div>
           </div>
@@ -85,11 +86,11 @@ const LoggedInHeader = () => {
         <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
           <nav className="mobile-nav">
             <div className="mobile-nav-links">
-              <Link to="/carta" onClick={() => setMenuOpen(false)}>Carta</Link>
+              <Link to="/carta" onClick={() => setMenuOpen(false)}>{t("nav.carta")}</Link>
               <span>•</span>
-              <Link to="/reserva" onClick={() => setMenuOpen(false)}>Reserva</Link>
+              <Link to="/reserva" onClick={() => setMenuOpen(false)}>{t("nav.reserva")}</Link>
               <span>•</span>
-              <Link to="/eventos" onClick={() => setMenuOpen(false)}>Eventos</Link>
+              <Link to="/eventos" onClick={() => setMenuOpen(false)}>{t("nav.eventos")}</Link>
             </div>
 
             <hr className="mobile-divider" />
@@ -98,8 +99,8 @@ const LoggedInHeader = () => {
             <div className="li-mobile-profile">
               <img src={profilePic} alt="Perfil" className="li-mobile-profile-pic" />
                 <div className="li-mobile-profile-links">
-                <Link to="/perfil">Mi Perfil</Link>
-                <button onClick={handleLogout} className="logout">Cerrar Sesión</button>
+                <Link to="/perfil">{t("perfil.mi_perfil")}</Link>
+                <button onClick={handleLogout} className="logout">{t("perfil.cerrar_sesion")}</button>
               </div>
             </div>
           </nav>
@@ -116,17 +117,17 @@ const LoggedInHeader = () => {
 };
 
 function LanguageSelector() {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   return (
     <select
       className="lang-select"
-      value={i18n.language.split('-')[0]}
+      value={i18n.language.split("-")[0]}
       onChange={(e) => i18n.changeLanguage(e.target.value)}
     >
-      <option value="es">ES 🇺🇾</option>
-      <option value="en">EN 🇺🇸</option>
-      <option value="pt">PT 🇧🇷</option>
+      <option value="es">{t("lang.es")}</option>
+      <option value="en">{t("lang.en")}</option>
+      <option value="pt">{t("lang.pt")}</option>
     </select>
   );
 }

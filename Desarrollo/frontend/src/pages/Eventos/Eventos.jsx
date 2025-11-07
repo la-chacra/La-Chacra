@@ -9,7 +9,7 @@ import {
 import aniversarioImg from "../../assets/Aniversario.jpeg";
 import cumpleanosImg from "../../assets/cumpleanos.jpg";
 import Header from "../../components/Header";
-import LoggedInHeader from "../../components/LoggedInHeaderAdmin";
+import LoggedInHeader from "../../components/LoggedInHeader";
 import { useAuth } from "../../hooks/useAuth";
 
 export default function Eventos() {

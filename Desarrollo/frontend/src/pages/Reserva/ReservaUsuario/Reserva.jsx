@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Header from "../../../components/Header"
-import LoggedInHeader from "../../../components/LoggedInHeaderAdmin"
+import LoggedInHeader from "../../../components/LoggedInHeader"
 import { useAuth } from "../../../hooks/useAuth"
 import Footer from "../../../components/Footer"
 import DateSelector from '../../../components/DatePicker'

@@ -30,18 +30,18 @@ const Header = () => {
 
         <div className="right-controls">
           <div className="auth-controls">
-              <Link to="/autenticacion" state={{ openRegister: false }} className="btn login">
-                {t('auth.login')}
-              </Link>
-              <Link to="/autenticacion" state={{ openRegister: true }} className="btn register">
-                {t('auth.register')}
-              </Link>
+            <Link to="/autenticacion" state={{ openRegister: false }} className="btn login">
+              {t('auth.login')}
+            </Link>
+            <Link to="/autenticacion" state={{ openRegister: true }} className="btn register">
+              {t('auth.register')}
+            </Link>
           </div>
 
           <div className="lang-wrapper">
             <select
               className="lang-select"
-              value={i18n.language.split('-')[0]} // Asegura que 'es-ES' se convierta en 'es'
+              value={i18n.language.split('-')[0]}
               onChange={(e) => i18n.changeLanguage(e.target.value)}
             >
               <option value="es">{t('lang.es')}</option>

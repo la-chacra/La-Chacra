@@ -12,7 +12,7 @@ import heladoImg from "../../assets/helado.png";
 
 import Footer from "../../components/Footer"; 
 import Header from "../../components/Header"; 
-import LoggedInHeader from "../../components/LoggedInHeaderAdmin";
+import LoggedInHeader from "../../components/LoggedInHeader";
 import { useAuth } from "../../hooks/useAuth";
 
 const Carta = () => {
