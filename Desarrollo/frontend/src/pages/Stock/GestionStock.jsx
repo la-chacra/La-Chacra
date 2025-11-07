@@ -55,7 +55,7 @@ export default function GestionStock() {
     );
   };
 
-  const handleAdd = () => alert("➕ Añadir producto (pendiente de implementación)");
+  const handleAdd = () => alert("Añadir producto (pendiente de implementación)");
 
   const handleEdit = async (producto) => {
     const nuevoNombre = prompt("Nuevo nombre del producto:", producto.nombre);
@@ -79,7 +79,7 @@ export default function GestionStock() {
 
       const data = await res.json();
       if (!data.success) throw new Error(data.message);
-      alert("✅ Producto actualizado con éxito");
+      alert("Producto actualizado con éxito");
 
       setStock((prev) =>
         prev.map((p) =>
@@ -94,7 +94,7 @@ export default function GestionStock() {
         )
       );
     } catch (err) {
-      alert("❌ Error al actualizar el producto: " + err.message);
+      alert("Error al actualizar el producto: " + err.message);
     }
   };
 
@@ -117,7 +117,7 @@ export default function GestionStock() {
         )
       );
     } catch (err) {
-      alert("❌ Error al desactivar el producto: " + err.message);
+      alert("Error al desactivar el producto: " + err.message);
     }
   };
 
@@ -126,7 +126,6 @@ export default function GestionStock() {
       <AdminHeader />
 
       <div className="p-6 flex flex-col flex-1 max-w-7xl mx-auto w-full">
-        {/* 🔍 Barra de búsqueda y filtro */}
         <div className="flex flex-wrap md:flex-nowrap justify-between items-center gap-3 mb-6 bg-neutral-900 p-4 rounded-xl shadow-md border border-neutral-800">
           <div className="flex flex-wrap md:flex-nowrap items-center gap-3 w-full md:w-auto">
             <div className="flex items-center bg-neutral-800 rounded-md px-3 w-full md:w-72 h-10">
