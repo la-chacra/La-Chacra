@@ -37,6 +37,7 @@
 }
 
 /* HERO */
+
 .he-hero-section {
   height: 100vh;
   background-size: cover;
@@ -69,7 +70,7 @@
   margin-bottom: 0.5rem;
 }
 
-@media (min-width: 899px) {
+@media (min-width: 1076px) {
   .he-navbar {
     flex-direction: row;
     justify-content: flex-start;
@@ -107,7 +108,7 @@
   font-size: clamp(18px, 2vw, 25px);
 }
 
-@media (min-width: 899px) {
+@media (min-width: 1076px) {
   .he-nav-links {
     position: absolute;
     left: 50%;
@@ -146,13 +147,29 @@
   width: 100%; 
 }
 
-@media (min-width: 899px) {
+@media (min-width: 1076px) {
   .he-login-buttons {
     justify-content: flex-end;
     width: auto;
     margin-top: 0;
     margin-left: auto;
   }
+}
+
+.he-lang-select {
+  background-color: #00000063;
+  font-size: 18px;
+  color: white;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.he-lang-select option {
+  background-color: #f8f8f8f8;
+  font-size: 20px;
+  color: rgb(29, 29, 29);
+  border-radius: 10px;
+  padding: 5px;
 }
 
 .he-btn {
@@ -209,6 +226,7 @@
 .he-icon {
   margin-left: 0.5rem;
 }
+
 .text-shadow {
   text-shadow: 3px 5px 1px #221206b2;
 }
@@ -218,12 +236,29 @@
   font-weight: bold;
 }
 
+.he-lang-desktop {
+  display: none;
+}
 
-/*horarios*/
+.he-lang-mobile {
+  display: block;
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 50;
+}
 
-/*más vendidos*/
+@media (min-width: 1076px) {
+  .he-lang-desktop {
+    display: block;
+    margin-left: 0.75rem;
+  }
 
-/*mision*/
+  .he-lang-mobile {
+    display: none; /* hide on large screens */
+  }
+}
+
 
 /*CARTA*/
 .carta-wrapper {
@@ -453,12 +488,18 @@
 /*seleccion de lenguaje*/
 .lang-select {
   font-family: overlock, sans-serif;
+  font-size: 20px;
   background: #00000000;
   color: rgb(215, 216, 217);
   padding: 0.2rem 0.5rem;
   cursor: pointer;
   font-weight: 500;
 }
+
+.lang-select option { 
+  color: #2c2c2c;
+}
+
 
 /*menu desplegable*/
 .hamburger {
@@ -538,7 +579,7 @@
   }
 
   .lang-select {
-    margin-left: 0.75rem;
+    margin-left:3rem;
   }
 }
 
@@ -3214,39 +3255,678 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 }
 
-/* === Ajustes del Header Unificado para pantallas menores a 1138px === */
-
-/* Ocultar avatar, mantener idioma, y reubicar idioma junto al botón de menú */
-@media (max-width: 1138px) {
-  /* Oculta el avatar */
-  .right-controls .li-profile-wrapper {
-    display: none !important;
-  }
-
-  /* Reubica el selector de idioma */
-  .right-controls .lang-wrapper {
-    position: absolute;
-    right: 60px; /* justo al lado del botón hamburguesa */
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 999;
-  }
-
-  /* Ajusta el tamaño visual del selector */
-  .right-controls .lang-select {
-    padding: 3px 8px;
-    font-size: 0.9rem;
-    background: rgba(255, 255, 255, 0.85);
-    border-radius: 8px;
-    border: 1px solid #ccc;
-  }
+/* HORARIOS */
+.rh-section {
+  position: relative;
+  min-height: 100vh;
+  background-image:
+    linear-gradient(rgb(27, 27, 27), rgb(46, 46, 46)),
+    url("https://www.transparenttextures.com/patterns/asfalt-light.png"),
+    radial-gradient(circle at top left, #0e0e0e 0%, #070707 40%, #000000 100%);
+  background-blend-mode: overlay, lighten;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 4rem 2rem;
 }
 
-/* Ajuste extra para pantallas más pequeñas (celular) */
+
+.rh-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  width: 100%;
+  z-index: 2;
+}
+
+
+.rh-sidebar {
+  position: absolute;
+  top: 0;
+  width: 60px;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.644);
+  backdrop-filter: blur(4px);
+  z-index: 1;
+}
+
+
+.rh-sidebar-left {
+  left: 0;
+}
+
+
+.rh-sidebar-right {
+  right: 0;
+}
+
+
+.rh-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 420px;
+}
+
+
+.rh-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45);
+}
+
+
+.rh-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+
+
+.rh-icon {
+  color: #202020;
+  margin-right: 10px;
+  font-size: 1.4rem;
+}
+
+
+.rh-icon1 {
+  color: #f2e3b3;
+  margin-right: 10px;
+  font-size: 1.4rem;
+}
+
+
+.rh-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+
+.rh-day {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #fff;
+  margin-top: 30px;
+}
+
+
+.rh-time {
+  color: #cfcfcf;
+  margin-bottom: 0.5rem;
+}
+
+
+.rh-button {
+  margin-top: 2rem;
+  background: #f2e3b3;
+  color: #000000;
+  font-size: 20px;
+  font-weight: 600;
+  border: 2px solid #000;
+  padding: 0.8rem 1.5rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 2px 3px 0px #000;
+}
+
+
+.rh-button:hover {
+  background: #dac785;
+  transform: translateY(-2px);
+  box-shadow: 3px 4px 0px #000;
+}
+
+
+.rh-map-card {
+  background: #f8f8f8;
+  color: #111;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+
+.rh-map {
+  border: none;
+  width: 100%;
+  height: 310px;
+  border-radius: 8px;
+  margin-top: 1rem;
+  filter: grayscale(0.1) contrast(1.05);
+  border: 1px solid #000000;
+  box-shadow: 2px 2px 0px #000;
+}
+
+
+/* HORARIOS responsive */
 @media (max-width: 768px) {
-  .right-controls .lang-wrapper {
-    right: 50px;
+  .rh-sidebar {
+    display: none;
+  }
+
+
+  .rh-card {
+    min-height: 360px;
+  }
+
+
+  .rh-section {
+    padding: 2rem 1rem;
+  }
+}
+
+/* MAS VENDIDOS */
+.mv-section {
+  background-color: #F6F1E7;
+  color: white;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mv-container {
+  width: 100%;
+  margin: 0 auto;
+
+}
+
+.mv-card {
+  position: relative;
+  background: #FFFCF5;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  padding: 2rem;
+  text-align: center;
+}
+
+.mv-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: #1D1D1B;
+}
+
+.mv-divider {
+  height: 3px;
+  background: #A65D03;
+  width: 100%;
+  margin: 0.5rem 0;
+}
+
+.mv-divider-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.mv-divider-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.mv-swiper {
+  width: 100%;
+  padding-bottom: 3rem;
+  overflow: visible;
+}
+
+.swiper-slide {
+  transition: all 0.4s ease;
+  filter: blur(2px);
+  transform: scale(0.9);
+}
+
+.swiper-slide-active {
+  filter: blur(0);
+  transform: scale(1.05);
+}
+
+.mv-plate-card {
+  color: black;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 2px 3px 0px #000;
+  border: 2px solid #000;
+}
+
+.mv-section, .mv-container, .mv-card {
+  overflow-x: hidden;
+}
+
+.mv-plate-card:hover {
+  transform: translateY(-5px);
+  transition: 0.3s ease;
+}
+
+.mv-badge {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  background-color: #141414;
+  color: white;
+  font-size: 15px;
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.mv-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.mv-plate-title {
+  background-color: #141414;
+  color: #ececec;
+  font-weight: 600;
+  padding: 0.75rem;
+  font-size: 20px;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #fff !important;
+  transition: 0.3s;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  color: #f97316 !important;
+}
+
+/* MAS VENDIDOS responsive */
+@media (max-width: 640px) {
+  .mv-title {
+    font-size: 1.5rem;
+  }
+
+  .mv-img {
+    height: 180px;
+  }
+}
+
+/*NUESTRA MISION*/
+.nm-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.nm-swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.nm-slide {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.nm-bg-wrapper,
+.nm-bg,
+.nm-bg-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nm-bg {
+  background-size: cover;
+  background-position: center;
+  filter: blur(6px);
+  transform: scale(1.05);
+}
+
+.nm-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(3px);
+  z-index: 1;
+}
+
+.nm-card {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  background: #3E5E4A;
+  border-radius: 1.5rem;
+  padding: 2rem 3rem;
+  color: white;
+  border: 2px solid #000;
+  box-shadow: 4px 5px 0px rgb(0, 0, 0);
+  max-width: 900px;
+  margin: auto;
+}
+
+.nm-left {
+  flex-direction: row;
+}
+
+.nm-right {
+  flex-direction: row-reverse;
+}
+
+.nm-card-img {
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.699);
+}
+
+.nm-card-text {
+  max-width: 500px;
+}
+
+.nm-title {
+  font-size: 25px;
+  font-weight: 700;
+  background: #141414;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+.nm-paragraph {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #f0f0f0;
+}
+
+.nm-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: grid;
+  place-items: center;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nm-nav:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.nm-prev {
+  left: 30px;
+}
+
+.nm-next {
+  right: 30px;
+}
+
+.swiper-pagination-bullet {
+  background: white !important;
+  opacity: 0.6;
+}
+.swiper-pagination-bullet-active {
+  opacity: 1;
+}
+
+/* NUESTRA MISION responsive */
+@media (max-width: 900px) {
+  .nm-card {
+    flex-direction: column !important;
+    text-align: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    max-width: 90%;
+  }
+
+  .nm-card-img {
+    width: 200px;
+    height: 200px;
+  }
+
+  .nm-title {
+    font-size: 1.6rem;
+  }
+
+  .nm-paragraph {
+    font-size: 1rem;
+  }
+
+  .nm-nav {
+    display: none;
+  }
+}
+
+/* PRODUCTOS ORGANICOS */
+.po-section {
+  position: relative;
+  min-height: 100vh;
+  background-image:
+    linear-gradient(rgb(27, 27, 27), rgb(46, 46, 46)),
+    url("https://www.transparenttextures.com/patterns/asfalt-light.png"),
+    radial-gradient(circle at top left, #0e0e0e 0%, #070707 40%, #000000 100%);
+  background-blend-mode: overlay, lighten;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 4rem 2rem;
+}
+
+.po-container {
+  max-width: 1200px;
+  width: 100%;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+}
+
+.po-sidebar {
+  position: absolute;
+  top: 0;
+  width: 60px;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.644);
+  backdrop-filter: blur(4px);
+  z-index: 1;
+}
+
+.po-sidebar-left {
+  left: 0;
+}
+
+.po-sidebar-right {
+  right: 0;
+}
+
+.po-card.po-main-card {
+  background: #f8f5ef;
+  color: #111;
+  border: 2px solid #000;
+  border-radius: 20px;
+  box-shadow: 3px 3px 0px #000;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  max-width: 1000px;
+  width: 100%;
+}
+
+.po-card.po-main-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 6px 6px 0px #000;
+}
+
+.po-image-wrapper {
+  flex: 1;
+  background: #f8f8f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.po-image {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid #000;
+  box-shadow: 2px 2px 0px #000;
+}
+
+.po-content {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.po-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #000;
+}
+
+.po-text {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #333;
+}
+
+.po-button {
+  margin-top: 2rem;
+  background: #141414;
+  color: #000000;
+  font-size: 18px;
+  font-weight: 600;
+  border: 2px solid #000;
+  padding: 0.8rem 1.5rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 2px 3px 0px #000;
+  align-self: flex-start;
+}
+
+.po-button:hover {
+  background: #dac785;
+  transform: translateY(-2px);
+  box-shadow: 3px 4px 0px #000;
+}
+
+/* PRODUCOTS ORGANICOS responsive */
+@media (max-width: 900px) {
+  .po-card.po-main-card {
+    flex-direction: column;
+  }
+
+  .po-image-wrapper {
+    padding: 1rem;
+  }
+
+  .po-content {
+    padding: 1.5rem;
+  }
+
+  .po-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .po-sidebar {
+    display: none;
+  }
+
+  .po-section {
+    padding: 2rem 1rem;
+  }
+
+  .po-button {
+    font-size: 16px;
   }
 }
 
 
+.sb-button {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 50;
+
+  background: #f2e3b3;
+  color: #000000;
+  font-size: 20px;
+  font-weight: 600;
+  border: 2px solid #000;
+  padding: 0.8rem 1.5rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: transform 0.25s ease, background 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 2px 3px 0px #000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sb-button:hover {
+  background: #e5d49b;
+  transform: translateY(-4px);
+  box-shadow: 3px 5px 0px #000;
+}
+
+.sb-button:active {
+  transform: translateY(2px);
+  box-shadow: 1px 2px 0px #000;
+}
+
+.sb-icon {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+@keyframes sb-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.sb-button {
+  animation: sb-bounce 2.2s infinite ease-in-out;
+}
