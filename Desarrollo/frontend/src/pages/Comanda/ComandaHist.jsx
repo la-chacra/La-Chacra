@@ -8,7 +8,7 @@ import DatePicker from "../../components/DatePickerNormal";
 export default function ComandaHistorial() {
   const navigate = useNavigate();
 
-  // --- Estado de datos simulados ---
+  // --- Datos simulados ---
   const [orders, setOrders] = useState(
     Array.from({ length: 10 }).map((_, i) => ({
       id: i + 1,
@@ -26,6 +26,7 @@ export default function ComandaHistorial() {
   );
 
   // --- Estado de filtros ---
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectAll, setSelectAll] = useState(false);
   const [statusFilter, setStatusFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("Fecha");
@@ -34,7 +35,7 @@ export default function ComandaHistorial() {
   const [maxPrice, setMaxPrice] = useState("");
   const [openOrderId, setOpenOrderId] = useState(null);
 
-  // --- Lógica de selección ---
+  // --- Selección ---
   const handleCheck = (id) => {
     setOrders((prev) => {
       const updated = prev.map((o) =>
@@ -63,11 +64,22 @@ export default function ComandaHistorial() {
     setSelectedDate(null);
     setMinPrice("");
     setMaxPrice("");
+    setSearchTerm("");
   };
 
+  // --- 🔍 Filtrado con búsqueda ---
   const filteredOrders = orders.filter((o) => {
-    const withinStatus = statusFilter === "" || o.status === statusFilter;
+    // 🔸 Búsqueda por nombre de producto dentro de la comanda
+    const matchesSearch =
+      searchTerm === "" ||
+      o.items.some((item) =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
 
+    // 🔸 Filtro por estado
+    const matchesStatus = statusFilter === "" || o.status === statusFilter;
+
+    // 🔸 Filtro por fecha
     const [year, month, day] = o.date.split("-");
     const orderDate = new Date(`${year}-${month}-${day}`);
     const now = new Date();
@@ -89,10 +101,11 @@ export default function ComandaHistorial() {
       matchesDate = orderDate.toDateString() === selectedDate.toDateString();
     }
 
-    const withinMin = minPrice === "" || Number(o.price) >= Number(minPrice);
-    const withinMax = maxPrice === "" || Number(o.price) <= Number(maxPrice);
+    // 🔸 Filtros por precio
+    const matchesMin = minPrice === "" || Number(o.price) >= Number(minPrice);
+    const matchesMax = maxPrice === "" || Number(o.price) <= Number(maxPrice);
 
-    return withinStatus && matchesDate && withinMin && withinMax;
+    return matchesSearch && matchesStatus && matchesDate && matchesMin && matchesMax;
   });
 
   const toggleItems = (id) => {
@@ -105,6 +118,7 @@ export default function ComandaHistorial() {
     0
   );
 
+  // --- Configuración de filtros y botones ---
   const filters = [
     {
       label: "Estado",
@@ -169,14 +183,14 @@ export default function ComandaHistorial() {
       <div className="hs-history-content space-y-6">
         {/* --- BARRA DE CONTROL --- */}
         <ControlBar
-          searchValue={""}
-          onSearchChange={() => {}}
+          searchValue={searchTerm}
+          onSearchChange={setSearchTerm}
           filters={filters}
           onClearFilters={handleClearFilters}
           buttons={buttons}
         />
 
-        {/* --- TABLA DE COMANDAS --- */}
+        {/* --- TABLA --- */}
         <div className="hs-table-container">
           <table className="hs-history-table">
             <thead>
@@ -260,13 +274,23 @@ export default function ComandaHistorial() {
 
         {/* --- TOTAL SELECCIONADO --- */}
         {selectedOrders.length > 0 && (
-          <div className="mt-4 bg-[#0D0F10] text-white p-4 rounded-md flex justify-between items-center shadow-lg">
+          <div
+            className="
+              fixed bottom-0 left-0 right-0
+              bg-[#0D0F10] text-white
+              p-4 flex justify-between items-center
+              shadow-[0_-2px_10px_rgba(0,0,0,0.5)]
+              border-t border-gray-700
+              font-montserrat z-50
+            "
+          >
             <p className="font-semibold">Total de comandas seleccionadas</p>
             <p>
               ${totalSelected.toFixed(2)} — {selectedOrders.length} comandas
             </p>
           </div>
         )}
+
       </div>
     </div>
   );
