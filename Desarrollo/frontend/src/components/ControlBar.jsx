@@ -11,7 +11,9 @@ const ControlBar = ({
   const [showFilters, setShowFilters] = useState(false);
 
   return (
-    <div className="hs-controls-bar">
+    <div
+      className={`hs-controls-bar bg-[#0D0F10] text-white p-3 rounded-lg shadow-md`}
+    >
       {/* 🔍 Sección de búsqueda */}
       <div className="hs-search-section">
         <div className="hs-search-input-container">
