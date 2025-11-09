@@ -2120,6 +2120,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   color: #666;
 }
 
+.hs-date-select[type="number"] {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+}
+
+
 @media (max-width: 768px) {
   .hs-filters-left input[type="text"] {
     width: 100%;
@@ -3347,6 +3355,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .et-role-badge.empleado {
   background-color: #65a80c;
 }
+
+.et-filters-container .hs-export-btn {
+  margin-top: 21px;
+  height: 38px; 
+  background-color: #070707;
+  color: white;
+}
+
 
 /*ALERTA*/
 .ww-overlay {

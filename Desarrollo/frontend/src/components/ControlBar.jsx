@@ -7,6 +7,7 @@ const ControlBar = ({
   onSearchChange,
   filters = [],
   buttons = [],
+  onClearFilters, // ✅ Nuevo prop opcional
 }) => {
   const [showFilters, setShowFilters] = useState(false);
 
@@ -14,7 +15,7 @@ const ControlBar = ({
     <div
       className={`hs-controls-bar bg-[#0D0F10] text-white p-3 rounded-lg shadow-md`}
     >
-      {/* Barra de búsqueda */}
+      {/* 🔍 Barra de búsqueda */}
       <div className="hs-search-section">
         <div className="hs-search-input-container">
           <input
@@ -38,15 +39,19 @@ const ControlBar = ({
         )}
       </div>
 
-      {/* Submenú de filtros */}
+      {/* 🎛️ Submenú de filtros */}
       {filters.length > 0 && (
         <div
-          className={`hs-date-filter-wrapper text-black ${showFilters ? "visible" : ""}`}
+          className={`hs-date-filter-wrapper text-black ${
+            showFilters ? "visible" : ""
+          }`}
         >
           <div className="et-filters-container">
             {filters.map((f, idx) => (
               <div className="et-filter-group" key={idx}>
                 {f.label && <label>{f.label}:</label>}
+
+                {/* SELECT */}
                 {f.type === "select" && (
                   <select
                     value={f.value}
@@ -60,6 +65,8 @@ const ControlBar = ({
                     ))}
                   </select>
                 )}
+
+                {/* DATE */}
                 {f.type === "date" && (
                   <>
                     <select
@@ -80,14 +87,40 @@ const ControlBar = ({
                     )}
                   </>
                 )}
+
+                {/* ✅ NUMBER */}
+                {f.type === "number" && (
+                  <input
+                    type="number"
+                    placeholder={f.placeholder || ""}
+                    value={f.value}
+                    onChange={(e) => f.onChange(e.target.value)}
+                    className="hs-date-select"
+                    style={{ padding: "6px 8px" }}
+                  />
+                )}
+
+                {/* ✅ CUSTOM */}
                 {f.type === "custom" && f.customComponent}
               </div>
             ))}
+
+            {/* ✅ Botón “Limpiar filtros” dentro del submenú */}
+            {onClearFilters && (
+              <div className="et-filter-group mt-2">
+                <button
+                  onClick={onClearFilters}
+                  className="hs-export-btn bg-[#E6E6F1] text-black hover:bg-[#DADAE3] transition-colors"
+                >
+                  Limpiar filtros
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
 
-      {/* Botones de acción */}
+      {/* ⚙️ Botones de acción principales */}
       {buttons.map((b, idx) => (
         <button key={idx} className="hs-export-btn" onClick={b.onClick}>
           <span>{b.label}</span>

@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import Header from "../../components/HeaderUnificado";
 import { FaClock, FaCheck, FaTrash, FaPlus, FaDownload } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import ControlBar from "../../components/ControlBar";
+import DatePicker from "../../components/DatePickerNormal";
 
 export default function ComandaHistorial() {
   const navigate = useNavigate();
+
+  // --- Estado de datos simulados ---
   const [orders, setOrders] = useState(
     Array.from({ length: 10 }).map((_, i) => ({
       id: i + 1,
@@ -21,13 +25,16 @@ export default function ComandaHistorial() {
     }))
   );
 
+  // --- Estado de filtros ---
   const [selectAll, setSelectAll] = useState(false);
   const [statusFilter, setStatusFilter] = useState("");
-  const [dateFilter, setDateFilter] = useState("");
+  const [dateFilter, setDateFilter] = useState("Fecha");
+  const [selectedDate, setSelectedDate] = useState(null);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [openOrderId, setOpenOrderId] = useState(null);
 
+  // --- Lógica de selección ---
   const handleCheck = (id) => {
     setOrders((prev) => {
       const updated = prev.map((o) =>
@@ -50,98 +57,126 @@ export default function ComandaHistorial() {
     }
   };
 
-  const selectedOrders = orders.filter((o) => o.checked);
-  const totalSelected = selectedOrders.reduce(
-    (acc, o) => acc + Number(o.price),
-    0
-  );
+  const handleClearFilters = () => {
+    setStatusFilter("");
+    setDateFilter("Fecha");
+    setSelectedDate(null);
+    setMinPrice("");
+    setMaxPrice("");
+  };
 
   const filteredOrders = orders.filter((o) => {
     const withinStatus = statusFilter === "" || o.status === statusFilter;
-    const withinDate = dateFilter === "" || o.date === dateFilter;
+
+    const [year, month, day] = o.date.split("-");
+    const orderDate = new Date(`${year}-${month}-${day}`);
+    const now = new Date();
+    let matchesDate = true;
+
+    if (dateFilter === "Hoy") {
+      matchesDate = orderDate.toDateString() === now.toDateString();
+    } else if (dateFilter === "Esta semana") {
+      const start = new Date(now);
+      start.setDate(now.getDate() - now.getDay());
+      const end = new Date(start);
+      end.setDate(start.getDate() + 7);
+      matchesDate = orderDate >= start && orderDate < end;
+    } else if (dateFilter === "Este mes") {
+      matchesDate =
+        orderDate.getMonth() === now.getMonth() &&
+        orderDate.getFullYear() === now.getFullYear();
+    } else if (dateFilter === "Fecha personalizada" && selectedDate) {
+      matchesDate = orderDate.toDateString() === selectedDate.toDateString();
+    }
+
     const withinMin = minPrice === "" || Number(o.price) >= Number(minPrice);
     const withinMax = maxPrice === "" || Number(o.price) <= Number(maxPrice);
-    return withinStatus && withinDate && withinMin && withinMax;
+
+    return withinStatus && matchesDate && withinMin && withinMax;
   });
 
   const toggleItems = (id) => {
     setOpenOrderId(openOrderId === id ? null : id);
   };
 
+  const selectedOrders = orders.filter((o) => o.checked);
+  const totalSelected = selectedOrders.reduce(
+    (acc, o) => acc + Number(o.price),
+    0
+  );
+
+  const filters = [
+    {
+      label: "Estado",
+      type: "select",
+      value: statusFilter,
+      onChange: setStatusFilter,
+      options: ["Seleccionar", "Pendiente", "Hecho"],
+    },
+    {
+      label: "Fecha",
+      type: "date",
+      value: dateFilter,
+      onChange: setDateFilter,
+      options: [
+        "Fecha",
+        "Hoy",
+        "Esta semana",
+        "Este mes",
+        "Fecha personalizada",
+      ],
+      customComponent:
+        dateFilter === "Fecha personalizada" && (
+          <DatePicker
+            selectedDate={selectedDate}
+            onDateChange={setSelectedDate}
+          />
+        ),
+    },
+    {
+      label: "Precio mínimo",
+      type: "number",
+      value: minPrice,
+      onChange: setMinPrice,
+      placeholder: "Min",
+    },
+    {
+      label: "Precio máximo",
+      type: "number",
+      value: maxPrice,
+      onChange: setMaxPrice,
+      placeholder: "Max",
+    },
+  ];
+
+  const buttons = [
+    {
+      label: "Añadir",
+      icon: FaPlus,
+      onClick: () => navigate("/gestion/comanda"),
+    },
+    {
+      label: "Exportar",
+      icon: FaDownload,
+      onClick: () => alert("⬇️ Exportando historial..."),
+    },
+  ];
+
   return (
     <div className="hs-history-container font-montserrat">
       <Header />
 
       <div className="hs-history-content space-y-6">
-        {/* --- FILTROS --- */}
-        <div className="hs-filters-bar">
-          <div className="hs-filters-left">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-white text-black px-3 py-2 rounded-md text-sm focus:outline-none"
-            >
-              <option value="">Todos los estados</option>
-              <option value="Pendiente">Pendiente</option>
-              <option value="Hecho">Hecho</option>
-            </select>
+        {/* --- BARRA DE CONTROL --- */}
+        <ControlBar
+          searchValue={""}
+          onSearchChange={() => {}}
+          filters={filters}
+          onClearFilters={handleClearFilters}
+          buttons={buttons}
+        />
 
-            <input
-              type="date"
-              value={dateFilter}
-              onChange={(e) => setDateFilter(e.target.value)}
-              className="bg-white text-black px-3 py-2 rounded-md text-sm focus:outline-none w-32"
-            />
-
-            <input
-              type="number"
-              placeholder="Precio mínimo"
-              value={minPrice}
-              onChange={(e) => setMinPrice(e.target.value)}
-              className="bg-white text-black px-3 py-2 rounded-md text-sm focus:outline-none w-32"
-            />
-
-            <input
-              type="number"
-              placeholder="Precio máximo"
-              value={maxPrice}
-              onChange={(e) => setMaxPrice(e.target.value)}
-              className="bg-white text-black px-3 py-2 rounded-md text-sm focus:outline-none w-32"
-            />
-          </div>
-
-          <div className="hs-filters-right">
-            <button
-              onClick={() => {
-                setStatusFilter("");
-                setDateFilter("");
-                setMinPrice("");
-                setMaxPrice("");
-              }}
-              className="hs-export-btn hs-clear-filters"
-              style={{
-                background: "#E6E6F1",
-                color: "#29292b",
-              }}
-            >
-              Limpiar filtros
-            </button>
-            <button
-              onClick={() => navigate("/gestion/comanda")}
-              className="hs-export-btn bg-white hover:bg-gray-100"
-            >
-              <FaPlus /> Añadir
-            </button>
-            <button
-              onClick={() => alert("⬇️ Exportando historial...")}
-              className="hs-export-btn bg-white hover:bg-gray-100"
-            >
-              <FaDownload /> Exportar
-            </button>
-          </div>
-        </div>
-
-        {/* --- TABLA --- */}
+        {/* --- TABLA DE COMANDAS --- */}
         <div className="hs-table-container">
           <table className="hs-history-table">
             <thead>
@@ -223,7 +258,7 @@ export default function ComandaHistorial() {
           </table>
         </div>
 
-        {/* --- Total seleccionado --- */}
+        {/* --- TOTAL SELECCIONADO --- */}
         {selectedOrders.length > 0 && (
           <div className="mt-4 bg-[#0D0F10] text-white p-4 rounded-md flex justify-between items-center shadow-lg">
             <p className="font-semibold">Total de comandas seleccionadas</p>
