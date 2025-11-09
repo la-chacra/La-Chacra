@@ -14,7 +14,7 @@ const ControlBar = ({
     <div
       className={`hs-controls-bar bg-[#0D0F10] text-white p-3 rounded-lg shadow-md`}
     >
-      {/* 🔍 Sección de búsqueda */}
+      {/* Barra de búsqueda */}
       <div className="hs-search-section">
         <div className="hs-search-input-container">
           <input
@@ -38,10 +38,10 @@ const ControlBar = ({
         )}
       </div>
 
-      {/* 🎚️ Submenú de filtros */}
+      {/* Submenú de filtros */}
       {filters.length > 0 && (
         <div
-          className={`hs-date-filter-wrapper ${showFilters ? "visible" : ""}`}
+          className={`hs-date-filter-wrapper text-black ${showFilters ? "visible" : ""}`}
         >
           <div className="et-filters-container">
             {filters.map((f, idx) => (
@@ -87,7 +87,7 @@ const ControlBar = ({
         </div>
       )}
 
-      {/* ⚙️ Botones de acción */}
+      {/* Botones de acción */}
       {buttons.map((b, idx) => (
         <button key={idx} className="hs-export-btn" onClick={b.onClick}>
           <span>{b.label}</span>
