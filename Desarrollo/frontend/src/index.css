@@ -1638,6 +1638,10 @@ input {
   .admin-hamburger {
     display: block;
   }
+
+  .admin-header .right-controls {
+    display: none;
+  }
 }
 
 /* Right Gestión */
