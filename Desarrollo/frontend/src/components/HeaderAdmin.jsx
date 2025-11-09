@@ -113,7 +113,7 @@ const AdminHeader = () => {
           <NavLink to="/gestion/platos-tabla" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
             <FontAwesomeIcon icon={faUtensils} className="admin-nav-icon" /> Platos
           </NavLink>
-          <NavLink to="/gestion/historialStock" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
+          <NavLink to="/gestion/stock-historial" onClick={() => setMenuOpen(false)} className="admin-mobile-link">
             <FontAwesomeIcon icon={faArrowsRotate} className="admin-nav-icon" /> StockCambios
           </NavLink>
 

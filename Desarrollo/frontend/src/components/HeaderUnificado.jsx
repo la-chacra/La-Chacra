@@ -76,7 +76,7 @@ const HeaderUnificado = () => {
               <NavLink to="/gestion/platos-tabla" className="admin-nav-link">
                 <FontAwesomeIcon icon={faUtensils} /> Platos
               </NavLink>
-              <NavLink to="/gestion/historialStock" className="admin-nav-link">
+              <NavLink to="/gestion/stock-historial" className="admin-nav-link">
                 <FontAwesomeIcon icon={faArrowsRotate} /> StockCambios
               </NavLink>
             </>
@@ -129,7 +129,7 @@ const HeaderUnificado = () => {
                 ["Empleados", "/gestion/empleados-tabla", faUsers],
                 ["Estadísticas", "/gestion/estadisticas", faChartBar],
                 ["Platos", "/gestion/platos-tabla", faUtensils],
-                ["StockCambios", "/gestion/historialStock", faArrowsRotate],
+                ["StockCambios", "/gestion/stock-historial", faArrowsRotate],
               ]
               : [
                 ["Reservas", "/gestion/reserva", faCalendarCheck],
