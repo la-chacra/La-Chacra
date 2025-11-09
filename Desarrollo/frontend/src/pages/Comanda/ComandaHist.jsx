@@ -69,7 +69,7 @@ export default function ComandaHistorial() {
   };
 
   return (
-    <div className="hs-history-container font-overlock">
+    <div className="hs-history-container font-monstserrat">
       <Header />
 
       <div className="hs-history-content space-y-6">
@@ -122,7 +122,6 @@ export default function ComandaHistorial() {
               style={{
                 background: "#E6E6F1",
                 color: "#29292b",
-                fontWeight: "bold",
               }}
             >
               Limpiar filtros
