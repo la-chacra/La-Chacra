@@ -133,7 +133,7 @@ export default function HistorialRes() {
       <div className="hs-history-container font-overlock text-gray-200">
         <Header />
         <div className="flex justify-center items-center h-[70vh] text-gray-400">
-          Cargando reservas...
+          <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
         </div>
       </div>
     );

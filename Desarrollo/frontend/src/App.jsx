@@ -14,7 +14,7 @@ import Eventos from "./pages/Eventos/Eventos";
 import AccesoDenegado from "./pages/Otros/AccesoDenegado";
 
 // --- Páginas de gestión ---
-import ReservaHist from "./pages/Reserva/ReservaAdmin/HistorialAdmin";
+import ReservaHist from "./pages/Reserva/ReservaAdmin/ReservaHistorial";
 import Comanda from "./pages/Comanda/Comanda";
 import ComandaHist from "./pages/Comanda/ComandaHist";
 import GestionStock from "./pages/Stock/GestionStock";
