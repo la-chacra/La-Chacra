@@ -69,7 +69,7 @@ export default function ComandaHistorial() {
   };
 
   return (
-    <div className="hs-history-container font-monstserrat">
+    <div className="hs-history-container font-montserrat">
       <Header />
 
       <div className="hs-history-content space-y-6">
@@ -118,7 +118,7 @@ export default function ComandaHistorial() {
                 setMinPrice("");
                 setMaxPrice("");
               }}
-              className="hs-export-btn"
+              className="hs-export-btn hs-clear-filters"
               style={{
                 background: "#E6E6F1",
                 color: "#29292b",

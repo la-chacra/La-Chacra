@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
 import Header from "../../../components/HeaderUnificado";
-import logo from "../../../assets/logo2.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 export default function HistorialRes() {
-  const navigate = useNavigate();
   const [reservas, setReservas] = useState([]);
   const [filteredReservas, setFilteredReservas] = useState([]);
   const [search, setSearch] = useState("");
@@ -83,7 +80,7 @@ export default function HistorialRes() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#111] font-montserrat text-gray-200">
+      <div className="hs-history-container font-overlock text-gray-200">
         <Header />
         <div className="flex justify-center items-center h-[70vh] text-gray-400">
           Cargando reservas...
@@ -93,158 +90,142 @@ export default function HistorialRes() {
   }
 
   return (
-    <div className="min-h-screen bg-[#111] font-montserrat text-gray-200">
+    <div className="hs-history-container font-montserrat ">
       <Header />
 
-      <div className="max-w-7xl mx-auto p-8">
-        {/* 🔹 Header de acciones */}
-        <div className="flex justify-between items-center mb-8">
-          <button
-            onClick={() => navigate("/gestion")}
-            className="flex items-center gap-2 bg-[#1a1a1a] border border-[#2a2a2a] shadow-sm px-4 py-2 rounded-lg hover:bg-[#222] transition"
-          >
-            <FontAwesomeIcon icon={faArrowLeft} />
-            <span>Volver al Panel</span>
-          </button>
+      <div className="hs-history-content space-y-6">
+        {/* 🔹 FILTROS Y ACCIONES */}
+        <div className="hs-filters-bar">
+          <div className="hs-filters-left">
+            <input
+              type="text"
+              placeholder="Buscar por nombre o correo..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <select
+              value={filterEstado}
+              onChange={(e) => setFilterEstado(e.target.value)}
+            >
+              <option value="">Todos los estados</option>
+              <option value="Pendiente">Pendiente</option>
+              <option value="Confirmada">Confirmada</option>
+              <option value="Cancelada">Cancelada</option>
+            </select>
+          </div>
+
+          <div className="hs-filters-right">
+            <button
+              onClick={() => {
+                setSearch("");
+                setFilterEstado("");
+              }}
+                style={{
+                background: "#E6E6F1",
+                color: "#29292b",
+              }}
+            >
+              Limpiar filtros
+            </button>
+          </div>
         </div>
 
-        {/* 🔹 Contenedor principal */}
-        <div className="flex gap-8">
-          {/* 🧭 Sección izquierda (tabla) */}
-          <div className="flex-1 bg-[#181818] rounded-2xl shadow-md p-6 border border-[#2a2a2a]">
-            
-
-            {/* Filtros y búsqueda alineados */}
-            <div className="flex items-center gap-4 mb-6">
-              <input
-                type="text"
-                placeholder="Buscar reserva..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="bg-[#111] border border-[#333] text-gray-200 placeholder-gray-500 px-4 py-3 rounded-md w-78 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-              />
-              <select
-                value={filterEstado}
-                onChange={(e) => setFilterEstado(e.target.value)}
-                className="bg-[#111] border border-[#333] text-gray-200 px-3 py-3 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-              >
-                <option value="">Estado</option>
-                <option value="Pendiente">Pendiente</option>
-                <option value="Confirmada">Confirmada</option>
-                <option value="Cancelada">Cancelada</option>
-              </select>
-            </div>
-
-            {/* Tabla */}
-            <div className="overflow-x-auto rounded-xl border border-[#2a2a2a] shadow-sm">
-              <table className="w-full text-sm text-left text-gray-300">
-                <thead className="bg-[#101010] text-gray-100 uppercase text-xs">
-                  <tr>
-                    <th className="px-4 py-3 text-center">
+        {/* 🔹 TABLA DE RESERVAS */}
+        <div className="hs-table-container">
+          <table className="hs-history-table">
+            <thead>
+              <tr>
+                <th className="hs-checkbox-column">
+                  <input
+                    type="checkbox"
+                    onChange={toggleSelectAll}
+                    checked={
+                      filteredReservas.length > 0 &&
+                      selected.length === filteredReservas.length
+                    }
+                  />
+                </th>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Personas</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredReservas.length > 0 ? (
+                filteredReservas.map((r) => (
+                  <tr
+                    key={r.reserva_id}
+                    className={
+                      selected.includes(r.reserva_id) ? "hs-selected" : ""
+                    }
+                  >
+                    <td className="text-center">
                       <input
                         type="checkbox"
-                        onChange={toggleSelectAll}
-                        checked={selected.length === filteredReservas.length}
-                        className="accent-emerald-500"
+                        checked={selected.includes(r.reserva_id)}
+                        onChange={() => toggleSelect(r.reserva_id)}
                       />
-                    </th>
-                    <th className="px-4 py-3">Nombre</th>
-                    <th className="px-4 py-3">Correo</th>
-                    <th className="px-4 py-3 text-center">Personas</th>
-                    <th className="px-4 py-3 text-center">Fecha</th>
-                    <th className="px-4 py-3 text-center">Estado</th>
-                    <th className="px-4 py-3 text-center">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredReservas.length > 0 ? (
-                    filteredReservas.map((r) => (
-                      <tr
-                        key={r.reserva_id}
-                        className={`border-b border-[#2a2a2a] hover:bg-[#222]/60 transition ${
-                          selected.includes(r.reserva_id)
-                            ? "bg-emerald-900/20"
-                            : ""
+                    </td>
+                    <td>{r.nombre_completo}</td>
+                    <td>{r.correo_electronico}</td>
+                    <td className="text-center">{r.cantidad_personas}</td>
+                    <td className="text-center">{r.fecha}</td>
+                    <td className="text-center">
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                          r.estado === "Confirmada"
+                            ? "bg-green-500/20 text-green-400"
+                            : r.estado === "Pendiente"
+                            ? "bg-yellow-500/20 text-yellow-400"
+                            : "bg-red-500/20 text-red-400"
                         }`}
                       >
-                        <td className="px-4 py-3 text-center">
-                          <input
-                            type="checkbox"
-                            checked={selected.includes(r.reserva_id)}
-                            onChange={() => toggleSelect(r.reserva_id)}
-                            className="accent-emerald-500"
-                          />
-                        </td>
-                        <td className="px-4 py-3 font-medium">
-                          {r.nombre_completo}
-                        </td>
-                        <td className="px-4 py-3">{r.correo_electronico}</td>
-                        <td className="px-4 py-3 text-center">
-                          {r.cantidad_personas}
-                        </td>
-                        <td className="px-4 py-3 text-center">{r.fecha}</td>
-                        <td className="px-4 py-3 text-center">
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                              r.estado === "Confirmada"
-                                ? "bg-green-500/20 text-green-400"
-                                : r.estado === "Pendiente"
-                                ? "bg-yellow-500/20 text-yellow-400"
-                                : "bg-red-500/20 text-red-400"
-                            }`}
-                          >
-                            {r.estado}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-center">
-                          <button
-                            onClick={() => desactivarReserva(r.reserva_id)}
-                            className="hover:scale-110 transition"
-                          >
-                            <FontAwesomeIcon
-                              icon={faTrash}
-                              className="text-red-500 hover:text-red-600"
-                            />
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td
-                        colSpan="8"
-                        className="text-center py-6 text-gray-500 italic"
+                        {r.estado}
+                      </span>
+                    </td>
+                    <td className="text-center">
+                      <button
+                        onClick={() => desactivarReserva(r.reserva_id)}
+                        className="hover:scale-110 transition"
                       >
-                        No se encontraron reservas.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* 🧭 Sección derecha (acciones) */}
-          <div className="w-64 flex-shrink-0 bg-[#181818] rounded-2xl shadow-md p-6 border border-[#2a2a2a] h-fit">
-            <h3 className="text-lg font-semibold mb-4 text-gray-100">
-              Acciones
-            </h3>
-            <div className="flex flex-col gap-3">
-              <button
-                onClick={() => alert("Exportar historial...")}
-                className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition"
-              >
-                Exportar
-              </button>
-              <button
-                onClick={() => navigate("/gestion")}
-                className="bg-[#222] text-gray-200 px-4 py-2 rounded-lg hover:bg-[#2f2f2f] transition"
-              >
-                Volver
-              </button>
-            </div>
-          </div>
+                        <FontAwesomeIcon
+                          icon={faTrash}
+                          className="text-red-500 hover:text-red-600"
+                        />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={7} className="text-center py-6 text-gray-500 italic">
+                    No se encontraron reservas.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
+
+        {/* 🔹 TOTAL SELECCIONADO */}
+        {selected.length > 0 && (
+          <div className="mt-4 bg-[#0D0F10] text-white p-4 rounded-md flex justify-between items-center shadow-lg">
+            <p className="font-semibold">
+              Reservas seleccionadas: {selected.length}
+            </p>
+            <button
+              onClick={() =>
+                selected.forEach((id) => desactivarReserva(id))
+              }
+              className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md text-sm font-semibold"
+            >
+              Eliminar seleccionadas
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

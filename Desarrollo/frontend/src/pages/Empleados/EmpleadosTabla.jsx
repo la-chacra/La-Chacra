@@ -3,8 +3,6 @@ import Header from "../../components/HeaderUnificado";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faSearch,
-  faFilter,
   faDownload,
   faEllipsisV,
   faPen,
@@ -12,6 +10,7 @@ import {
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import DatePicker from "../../components/DatePickerNormal";
+import ControlBar from "../../components/ControlBar";
 
 const EmployeesTable = () => {
   const [selectedItems, setSelectedItems] = useState(new Set());
@@ -19,28 +18,12 @@ const EmployeesTable = () => {
   const [roleFilter, setRoleFilter] = useState("Rol");
   const [dateFilter, setDateFilter] = useState("Fecha");
   const [selectedDate, setSelectedDate] = useState(null);
-  const [showFilters, setShowFilters] = useState(false);
   const [openActionMenu, setOpenActionMenu] = useState(null);
   const [employeeData, setEmployeeData] = useState([]);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    // se debe crear un endpoint tipo GET: /api/usuarios
-    // este endpoint debe devolver un array de usuarios con esta estructura
-    // [
-    //   {
-    //     usuario_id: number,
-    //     nombre_completo: string,
-    //     correo: string,
-    //     rol: "Administrador" | "Empleado",
-    //     fecha_creacion: "dd/mm/yyyy hh:mm"
-    //   },
-    //   ...
-    // ]
-    //
-    // este endpoint puede consultar la base de datos "usuarios" y devolver todos
-    // el frontend se encarga de filtrar por nombre, correo, rol o fecha.
     fetch("/api/empleado/obtener")
       .then((res) => res.json())
       .then((response) => {
@@ -48,12 +31,12 @@ const EmployeesTable = () => {
           setEmployeeData(response.data);
         } else {
           setEmployeeData([]);
-          alert("Error," + response.message)
+          alert("Error," + response.message);
         }
       })
       .catch(() => {
         setEmployeeData([]);
-        alert("Ocurrió un error desconocido.")
+        alert("Ocurrió un error desconocido.");
       });
   }, []);
 
@@ -70,12 +53,6 @@ const EmployeesTable = () => {
   };
 
   const handleExport = () => {
-    // crear endpoint tipo GET: /api/exportar-usuarios
-    // sste endpoint debe generar un archivo (CSV o Excel) con los usuarios seleccionados
-    // si se pasan IDs, ejemplo: /api/exportar-usuarios?ids=1,2,3
-    // entonces debe exportar solo esos. si no, exportar todos los usuarios
-    //
-    // el frontend simplemente abre ese archivo en una nueva pestaña
     const ids = Array.from(selectedItems).join(",");
     const url = ids ? `/api/exportar-usuarios?ids=${ids}` : `/api/exportar-usuarios`;
     window.open(url, "_blank");
@@ -86,10 +63,6 @@ const EmployeesTable = () => {
   };
 
   const handleEdit = (id) => {
-    // al navegar a /gestion/empleado/:id
-    // el formulario de edición debe hacer:
-    //   - GET /api/usuarios/:id → obtener los datos del usuario
-    //   - PUT /api/usuarios/:id → actualizar nombre, correo, rol, etc.
     navigate(`/gestion/empleado/${id}`);
   };
 
@@ -116,6 +89,40 @@ const EmployeesTable = () => {
     }
   };
 
+  // Configuración para ControlBar
+  const filters = [
+    {
+      label: "Rol",
+      type: "select",
+      value: roleFilter,
+      onChange: setRoleFilter,
+      options: ["Rol", "Administrador", "Empleado"],
+    },
+    {
+      label: "Fecha de adición",
+      type: "date",
+      value: dateFilter,
+      onChange: setDateFilter,
+      options: ["Fecha", "Hoy", "Esta semana", "Este mes", "Fecha personalizada"],
+      customComponent:
+        dateFilter === "Fecha personalizada" && (
+          <DatePicker selectedDate={selectedDate} onDateChange={setSelectedDate} />
+        ),
+    },
+  ];
+
+  const buttons = [
+    {
+      label: "Añadir Usuario",
+      icon: faUserPlus,
+      onClick: handleAddEmployee,
+    },
+    {
+      label: selectedItems.size > 0 ? "Exportar seleccionados" : "Exportar",
+      icon: faDownload,
+      onClick: handleExport,
+    },
+  ];
 
   const safeEmployeeData = Array.isArray(employeeData) ? employeeData : [];
 
@@ -158,92 +165,28 @@ const EmployeesTable = () => {
       <Header />
 
       <div className="hs-history-content">
-        <div className="hs-controls-bar">
-          <div className="hs-search-section">
-            <div className="hs-search-input-container">
-              <input
-                type="text"
-                placeholder="Buscar"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="hs-search-input"
-              />
-              <FontAwesomeIcon icon={faSearch} className="hs-search-icon" />
-            </div>
+        {/* ✅ Reemplazo visual: ControlBar */}
+        <ControlBar
+          searchValue={searchTerm}
+          onSearchChange={setSearchTerm}
+          filters={filters}
+          buttons={buttons}
+        />
 
-            <button
-              className="hs-filter-btn"
-              onClick={() => setShowFilters((prev) => !prev)}
-            >
-              <span>Filtrar</span>
-              <FontAwesomeIcon icon={faFilter} />
-            </button>
-          </div>
-
-          <div className={`hs-date-filter-wrapper ${showFilters ? "visible" : ""}`}>
-            <div className="et-filters-container">
-              <div className="et-filter-group">
-                <label>Rol:</label>
-                <select
-                  value={roleFilter}
-                  onChange={(e) => setRoleFilter(e.target.value)}
-                  className="hs-date-select"
-                >
-                  <option value="Rol">Rol</option>
-                  <option value="Administrador">Administrador</option>
-                  <option value="Empleado">Empleado</option>
-                </select>
-              </div>
-
-              <div className="et-filter-group">
-                <label>Fecha de adición:</label>
-                <select
-                  value={dateFilter}
-                  onChange={(e) => setDateFilter(e.target.value)}
-                  className="hs-date-select"
-                >
-                  <option value="Fecha">Fecha</option>
-                  <option value="Hoy">Hoy</option>
-                  <option value="Esta semana">Esta semana</option>
-                  <option value="Este mes">Este mes</option>
-                  <option value="Fecha personalizada">Fecha personalizada</option>
-                </select>
-
-                {dateFilter === "Fecha personalizada" && (
-                  <div className="hs-date-picker-container">
-                    <DatePicker
-                      selectedDate={selectedDate}
-                      onDateChange={setSelectedDate}
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <button className="hs-export-btn" onClick={handleAddEmployee}>
-            <span>Añadir Usuario</span>
-            <FontAwesomeIcon icon={faUserPlus} />
-          </button>
-
-          <button className="hs-export-btn" onClick={handleExport}>
-            <span>
-              {selectedItems.size > 0 ? "Exportar seleccionados" : "Exportar"}
-            </span>
-            <FontAwesomeIcon icon={faDownload} />
-          </button>
-        </div>
-
+        {/* 🔽 Tabla original sin cambios */}
         <div className="hs-table-container">
           <table className="hs-history-table">
             <thead>
               <tr>
                 <th className="hs-checkbox-column">
                   <input
-                      type="checkbox"
-                      onChange={(e) => handleSelectAll(e.target.checked)}
-                      checked={selectedItems.size === (Array.isArray(employeeData) ? employeeData.length : 0)}
-                    />
+                    type="checkbox"
+                    onChange={(e) => handleSelectAll(e.target.checked)}
+                    checked={
+                      selectedItems.size ===
+                      (Array.isArray(employeeData) ? employeeData.length : 0)
+                    }
+                  />
                 </th>
                 <th>Nombre completo</th>
                 <th>Correo electrónico</th>

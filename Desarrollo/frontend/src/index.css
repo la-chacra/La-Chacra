@@ -2104,6 +2104,33 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   transition: all 0.2s ease;
 }
 
+.hs-filters-left input[type="text"] {
+  background: #ffffff;
+  color: #111111;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
+  height: 40px;
+  width: 340px;
+  transition: all 0.2s ease;
+}
+
+.hs-filters-left input[type="text"]::placeholder {
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .hs-filters-left input[type="text"] {
+    width: 100%;
+  }
+}
+
+
+.hs-filters-left .search-bar {
+  width: 4rem;
+}
+
 .hs-filters-left select:focus,
 .hs-filters-left input:focus {
   outline: 2px solid #34aecc;
