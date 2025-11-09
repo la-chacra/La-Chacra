@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../../components/HeaderUnificado";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faDownload, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
+import ControlBar from "../../../components/ControlBar";
 
 export default function HistorialRes() {
+  const navigate = useNavigate();
   const [reservas, setReservas] = useState([]);
   const [filteredReservas, setFilteredReservas] = useState([]);
   const [search, setSearch] = useState("");
@@ -11,7 +14,7 @@ export default function HistorialRes() {
   const [selected, setSelected] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Cargar reservas
+  // 🔹 Cargar reservas
   useEffect(() => {
     const fetchReservas = async () => {
       try {
@@ -34,19 +37,21 @@ export default function HistorialRes() {
     fetchReservas();
   }, []);
 
-  // Filtro y búsqueda
+  // 🔹 Filtro y búsqueda
   useEffect(() => {
     const result = reservas.filter((r) => {
       const matchesSearch =
         r.nombre_completo?.toLowerCase().includes(search.toLowerCase()) ||
         r.correo_electronico?.toLowerCase().includes(search.toLowerCase());
-      const matchesEstado = filterEstado ? r.estado === filterEstado : true;
+      const matchesEstado = filterEstado
+        ? r.estado === filterEstado
+        : true;
       return matchesSearch && matchesEstado;
     });
     setFilteredReservas(result);
   }, [search, filterEstado, reservas]);
 
-  // Selección múltiple
+  // 🔹 Selección múltiple
   const toggleSelectAll = () => {
     if (selected.length === filteredReservas.length) setSelected([]);
     else setSelected(filteredReservas.map((r) => r.reserva_id));
@@ -54,11 +59,13 @@ export default function HistorialRes() {
 
   const toggleSelect = (id) => {
     setSelected((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      prev.includes(id)
+        ? prev.filter((x) => x !== id)
+        : [...prev, id]
     );
   };
 
-  // Eliminar reserva
+  // 🔹 Eliminar reserva
   const desactivarReserva = async (reserva_id) => {
     if (!window.confirm("¿Seguro que deseas eliminar esta reserva?")) return;
 
@@ -71,12 +78,55 @@ export default function HistorialRes() {
       const data = await res.json();
       alert(data.message);
       if (data.success) {
-        setReservas((prev) => prev.filter((r) => r.reserva_id !== reserva_id));
+        setReservas((prev) =>
+          prev.filter((r) => r.reserva_id !== reserva_id)
+        );
       }
     } catch (err) {
       console.error("Error al eliminar reserva:", err);
     }
   };
+
+  // 🔹 Limpiar filtros
+  const handleClearFilters = () => {
+    setSearch("");
+    setFilterEstado("");
+  };
+
+  // 🔹 Exportar reservas
+  const handleExport = () => {
+    if (selected.length > 0) {
+      const ids = selected.join(",");
+      window.open(`/api/exportar-reservas?ids=${ids}`, "_blank");
+    } else {
+      window.open(`/api/exportar-reservas`, "_blank");
+    }
+  };
+
+  // 🔹 Configuración de filtros
+  const filters = [
+    {
+      label: "Estado",
+      type: "select",
+      value: filterEstado,
+      onChange: setFilterEstado,
+      options: ["Seleccionar", "Pendiente", "Confirmada", "Cancelada"],
+    },
+  ];
+
+  // 🔹 Botones de acción
+  const buttons = [
+    {
+      label: "Añadir reserva",
+      icon: faPlus,
+      onClick: () => navigate("/gestion/reserva"),
+    },
+    {
+      label: selected.length > 0 ? "Exportar seleccionadas" : "Exportar",
+      icon: faDownload,
+      onClick: handleExport,
+    },
+  ];
 
   if (loading) {
     return (
@@ -90,45 +140,18 @@ export default function HistorialRes() {
   }
 
   return (
-    <div className="hs-history-container font-montserrat ">
+    <div className="hs-history-container font-montserrat">
       <Header />
 
       <div className="hs-history-content space-y-6">
-        {/* 🔹 FILTROS Y ACCIONES */}
-        <div className="hs-filters-bar">
-          <div className="hs-filters-left">
-            <input
-              type="text"
-              placeholder="Buscar por nombre o correo..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <select
-              value={filterEstado}
-              onChange={(e) => setFilterEstado(e.target.value)}
-            >
-              <option value="">Todos los estados</option>
-              <option value="Pendiente">Pendiente</option>
-              <option value="Confirmada">Confirmada</option>
-              <option value="Cancelada">Cancelada</option>
-            </select>
-          </div>
-
-          <div className="hs-filters-right">
-            <button
-              onClick={() => {
-                setSearch("");
-                setFilterEstado("");
-              }}
-                style={{
-                background: "#E6E6F1",
-                color: "#29292b",
-              }}
-            >
-              Limpiar filtros
-            </button>
-          </div>
-        </div>
+        {/* 🔹 BARRA DE CONTROL UNIFICADA */}
+        <ControlBar
+          searchValue={search}
+          onSearchChange={setSearch}
+          filters={filters}
+          onClearFilters={handleClearFilters}
+          buttons={buttons}
+        />
 
         {/* 🔹 TABLA DE RESERVAS */}
         <div className="hs-table-container">
@@ -159,7 +182,9 @@ export default function HistorialRes() {
                   <tr
                     key={r.reserva_id}
                     className={
-                      selected.includes(r.reserva_id) ? "hs-selected" : ""
+                      selected.includes(r.reserva_id)
+                        ? "hs-selected"
+                        : ""
                     }
                   >
                     <td className="text-center">
@@ -171,7 +196,9 @@ export default function HistorialRes() {
                     </td>
                     <td>{r.nombre_completo}</td>
                     <td>{r.correo_electronico}</td>
-                    <td className="text-center">{r.cantidad_personas}</td>
+                    <td className="text-center">
+                      {r.cantidad_personas}
+                    </td>
                     <td className="text-center">{r.fecha}</td>
                     <td className="text-center">
                       <span
@@ -188,7 +215,9 @@ export default function HistorialRes() {
                     </td>
                     <td className="text-center">
                       <button
-                        onClick={() => desactivarReserva(r.reserva_id)}
+                        onClick={() =>
+                          desactivarReserva(r.reserva_id)
+                        }
                         className="hover:scale-110 transition"
                       >
                         <FontAwesomeIcon
@@ -201,7 +230,10 @@ export default function HistorialRes() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={7} className="text-center py-6 text-gray-500 italic">
+                  <td
+                    colSpan={7}
+                    className="text-center py-6 text-gray-500 italic"
+                  >
                     No se encontraron reservas.
                   </td>
                 </tr>
