@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../../components/HeaderUnificado";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faDownload, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faDownload, faPlus, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import ControlBar from "../../../components/ControlBar";
 
@@ -114,7 +114,6 @@ export default function HistorialRes() {
     },
   ];
 
-  // 🔹 Botones de acción
   const buttons = [
     {
       label: "Añadir reserva",
@@ -125,6 +124,11 @@ export default function HistorialRes() {
       label: selected.length > 0 ? "Exportar seleccionadas" : "Exportar",
       icon: faDownload,
       onClick: handleExport,
+    },
+    {
+      label: "Reservas actuales",
+      icon: faCheckCircle,
+      onClick: () => navigate("/gestion/reservas-actuales"),
     },
   ];
 
@@ -202,13 +206,12 @@ export default function HistorialRes() {
                     <td className="text-center">{r.fecha}</td>
                     <td className="text-center">
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          r.estado === "Confirmada"
+                        className={`px-2 py-1 rounded-full text-xs font-semibold ${r.estado === "Confirmada"
                             ? "bg-green-500/20 text-green-400"
                             : r.estado === "Pendiente"
-                            ? "bg-yellow-500/20 text-yellow-400"
-                            : "bg-red-500/20 text-red-400"
-                        }`}
+                              ? "bg-yellow-500/20 text-yellow-400"
+                              : "bg-red-500/20 text-red-400"
+                          }`}
                       >
                         {r.estado}
                       </span>

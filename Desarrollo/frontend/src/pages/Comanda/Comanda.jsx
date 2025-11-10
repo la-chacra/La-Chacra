@@ -1,13 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import Header from "../../components/HeaderUnificado";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock, faClipboardList, faCheckCircle, faCheckDouble, faTimesCircle, faCheck, faTimes, faArrowLeft, faDownload, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faClock,
+  faClipboardList,
+  faCheckCircle,
+  faCheckDouble,
+  faTimes,
+  faArrowLeft,
+  faDownload,
+  faSearch,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import WindowWarning from '../../components/Alert';
 
 const OrderManagement = () => {
-
   const navigate = useNavigate();
+  const { usuario } = useAuth();
 
   const [n_mesa, setN_mesa] = useState('');
   const [comanda_id, setComandaId] = useState('');
@@ -17,29 +28,22 @@ const OrderManagement = () => {
   const [nota, setNota] = useState('');
   const [estado, setEstado] = useState('EnProceso');
   const [availableProductos, setAvailableProductos] = useState([]);
-  const { usuario } = useAuth();
+
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [pendingComanda, setPendingComanda] = useState(null);
 
   useEffect(() => {
-    // Para testing sin backend: cargar un JSON local con productos de prueba.
-    // Esto permite probar la UI y seleccionar productos mientras el backend
-    // no está disponible. Reemplazar por la llamada real al backend cuando
-    // se integre.
     const loadLocalProducts = async () => {
       try {
         const resp = await fetch('/src/pages/Comanda/productos.json', { cache: 'no-store' });
         if (!resp.ok) return;
         const data = await resp.json();
-        // Filtrar solo productos activos y con precio numérico
         const activos = Array.isArray(data)
           ? data.filter(p => p.activo !== false && !isNaN(Number(p.precio)))
           : [];
         setAvailableProductos(activos);
-      } catch (err) {
-        // Silencioso en testing; si se quiere depurar, usar console.error
-        // console.error('Error cargando productos locales', err);
-      }
+      } catch {}
     };
-
     loadLocalProducts();
   }, []);
 
@@ -81,18 +85,6 @@ const OrderManagement = () => {
       total: calculateTotal()
     };
 
-    /**
-     * cuando el usuario guarde la comanda, esta información debe enviarse 
-     * al servidor para guardarse en la base de datos.
-     * 
-     * - n_mesa
-     * - numPersonas
-     * - productos
-     * - nota
-     * - estado
-     * - total
-     */
-
     try {
       const respuesta = await fetch("/api/gestion/comanda/crear", {
         method: "POST",
@@ -105,7 +97,7 @@ const OrderManagement = () => {
 
       if (dataRes.success) {
         alert("Comanda exitosa");
-        setComandaId(dataRes["data"]["comanda_id"])
+        setComandaId(dataRes["data"]["comanda_id"]);
       } else {
         alert("Error: " + dataRes.message);
       }
@@ -115,21 +107,33 @@ const OrderManagement = () => {
   };
 
   const handleSaveAndPrint = () => {
+    if (selectedProductos.length === 0) {
+      alert("No se han seleccionado productos.");
+      return;
+    }
+
     const comandaData = {
       n_mesa,
       numPersonas,
       productos: selectedProductos,
       nota,
       estado,
-      total: calculateTotal()
+      total: calculateTotal(),
     };
-    console.log('Guardando e imprimiendo comanda:', comandaData);
 
-    /**
-     * esta función debe hacer lo mismo que guardar la comanda, 
-     * pero además deberia activar el proceso de impresión del pedido 
-     * (mandar la información a la impresora).
-     */
+    setPendingComanda(comandaData);
+    setShowConfirm(true);
+  };
+
+  const confirmAndPrint = async () => {
+    setShowConfirm(false);
+    console.log("Guardando e imprimiendo comanda:", pendingComanda);
+    // Aquí podés reutilizar handleSaveComanda y luego imprimir
+  };
+
+  const cancelPrint = () => {
+    setShowConfirm(false);
+    setPendingComanda(null);
   };
 
   const getStatusIcon = (status) => {
@@ -157,6 +161,35 @@ const OrderManagement = () => {
     <div className="om-order-management font-montserrat">
       <Header />
 
+      {showConfirm && (
+        <WindowWarning
+          type="confirm"
+          icon="question"
+          message={
+            <div className="text-left">
+              <h4 className="font-semibold mb-2">Confirmar impresión</h4>
+              <p className="mb-2">Mesa: {n_mesa || "-"}</p>
+              <p className="mb-2">Personas: {numPersonas || "-"}</p>
+              <p className="mb-2 font-semibold">Productos seleccionados:</p>
+              <ul className="list-disc pl-5 mb-2">
+                {selectedProductos.map((p, i) => (
+                  <li key={i}>
+                    {p.nombre} — ${p.precio}
+                  </li>
+                ))}
+              </ul>
+              <p className="mb-2">
+                <strong>Nota:</strong> {nota || "(sin nota)"}
+              </p>
+              <p className="font-bold text-lg mt-3">
+                Total: ${calculateTotal()}
+              </p>
+            </div>
+          }
+          onConfirm={confirmAndPrint}
+          onCancel={cancelPrint}
+        />
+      )}
 
       <div className="om-content">
         <div className="om-header-actions">
@@ -171,7 +204,6 @@ const OrderManagement = () => {
             <FontAwesomeIcon icon={faDownload} />
           </button>
         </div>
-
 
         <div className="om-main-content">
           <div className="om-left-section">
@@ -227,7 +259,8 @@ const OrderManagement = () => {
                   </div>
                 ))}
               </div>
-              <hr className="om-divider" />  {/* <-- Add this line */}
+
+              <hr className="om-divider" />
               <div className="om-selected-items">
                 {selectedProductos.map((producto, index) => (
                   <div key={index} className="om-selected-item">
@@ -281,11 +314,17 @@ const OrderManagement = () => {
           <div className="om-right-section">
             <div className="om-total-section">
               <h3>Precio total</h3>
-              <div className="om-total-amount">${calculateTotal()} de {selectedProductos.length} productos</div>
+              <div className="om-total-amount">
+                ${calculateTotal()} de {selectedProductos.length} productos
+              </div>
 
               <div className="om-action-buttons">
-                <button className="om-save-button" onClick={handleSaveComanda}>Guardar Comanda</button>
-                <button className="om-save-print-button" onClick={handleSaveAndPrint}>Mandar a Imprimir</button>
+                <button className="om-save-button" onClick={handleSaveComanda}>
+                  Guardar Comanda
+                </button>
+                <button className="om-save-print-button" onClick={handleSaveAndPrint}>
+                  Mandar a Imprimir
+                </button>
               </div>
             </div>
           </div>
