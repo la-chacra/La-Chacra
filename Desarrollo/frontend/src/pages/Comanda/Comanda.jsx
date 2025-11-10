@@ -3,6 +3,7 @@ import Header from "../../components/HeaderUnificado";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faClipboardList, faCheckCircle, faCheckDouble, faTimesCircle, faCheck, faTimes, faArrowLeft, faDownload, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 
 const OrderManagement = () => {
 
@@ -16,6 +17,7 @@ const OrderManagement = () => {
   const [nota, setNota] = useState('');
   const [estado, setEstado] = useState('EnProceso');
   const [availableProductos, setAvailableProductos] = useState([]);
+  const { usuario } = useAuth();
 
   useEffect(() => {
     // Para testing sin backend: cargar un JSON local con productos de prueba.
@@ -70,13 +72,13 @@ const OrderManagement = () => {
   };
 
   const handleSaveComanda = async () => {
-    const comandaData = { 
-      nMesa: n_mesa, 
-      numPersonas: numPersonas, 
-      productos: selectedProductos, 
-      nota: nota, 
-      estado: estado, 
-      total: calculateTotal() 
+    const comandaData = {
+      nMesa: n_mesa,
+      numPersonas: numPersonas,
+      productos: selectedProductos,
+      nota: nota,
+      estado: estado,
+      total: calculateTotal()
     };
 
     /**
@@ -113,13 +115,13 @@ const OrderManagement = () => {
   };
 
   const handleSaveAndPrint = () => {
-    const comandaData = { 
-      n_mesa, 
-      numPersonas, 
-      productos: selectedProductos, 
-      nota, 
-      estado, 
-      total: calculateTotal() 
+    const comandaData = {
+      n_mesa,
+      numPersonas,
+      productos: selectedProductos,
+      nota,
+      estado,
+      total: calculateTotal()
     };
     console.log('Guardando e imprimiendo comanda:', comandaData);
 
@@ -153,19 +155,23 @@ const OrderManagement = () => {
 
   return (
     <div className="om-order-management font-montserrat">
-  <Header />
+      <Header />
+
 
       <div className="om-content">
         <div className="om-header-actions">
-          <button className="om-back-button" onClick={() => navigate("/gestion/comanda-historial")}>
-            <FontAwesomeIcon icon={faArrowLeft} /> {/*se necesita pagina de historial de comanda*/}
-            Volver a Historial de Comandas
-          </button>
+          {usuario.tipo === "A" && (
+            <button className="om-back-button" onClick={() => navigate("/gestion/comanda-historial")}>
+              <FontAwesomeIcon icon={faArrowLeft} />
+              Volver a Historial de Comandas
+            </button>
+          )}
           <button className="om-export-button">
             Exportar
-            <FontAwesomeIcon icon={faDownload} /> {/*aun se tiene que incorporar el export*/}
+            <FontAwesomeIcon icon={faDownload} />
           </button>
         </div>
+
 
         <div className="om-main-content">
           <div className="om-left-section">
@@ -229,7 +235,7 @@ const OrderManagement = () => {
                       <span className="om-item-name">{producto.nombre}</span>
                       <span className="om-item-price">${producto.precio}</span>
                     </div>
-                    <button 
+                    <button
                       className="om-remove-item"
                       onClick={() => handleRemoveProducto(index)}
                     >
@@ -257,8 +263,8 @@ const OrderManagement = () => {
               <h3>Estado</h3>
               <div className="om-status-dropdown">
                 {getStatusIcon(estado)}
-                <select 
-                  value={estado} 
+                <select
+                  value={estado}
                   onChange={(e) => setEstado(e.target.value)}
                   className="om-status-select"
                 >

@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import Header from "../../components/HeaderUnificado";
 import { FaClock, FaCheck, FaTrash, FaPlus, FaDownload } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import ControlBar from "../../components/ControlBar";
+import DatePicker from "../../components/DatePickerNormal";
 
-export default function ComandaPage() {
+export default function ComandaHistorial() {
   const navigate = useNavigate();
+
+  // --- Datos simulados ---
   const [orders, setOrders] = useState(
     Array.from({ length: 10 }).map((_, i) => ({
       id: i + 1,
@@ -21,13 +25,17 @@ export default function ComandaPage() {
     }))
   );
 
+  // --- Estado de filtros ---
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectAll, setSelectAll] = useState(false);
   const [statusFilter, setStatusFilter] = useState("");
-  const [dateFilter, setDateFilter] = useState("");
+  const [dateFilter, setDateFilter] = useState("Fecha");
+  const [selectedDate, setSelectedDate] = useState(null);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [openOrderId, setOpenOrderId] = useState(null);
 
+  // --- Selección ---
   const handleCheck = (id) => {
     setOrders((prev) => {
       const updated = prev.map((o) =>
@@ -45,9 +53,63 @@ export default function ComandaPage() {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("¿Seguro que quieres eliminar este pedido?")) {
+    if (window.confirm("¿Seguro que quieres eliminar esta comanda?")) {
       setOrders((prev) => prev.filter((order) => order.id !== id));
     }
+  };
+
+  const handleClearFilters = () => {
+    setStatusFilter("");
+    setDateFilter("Fecha");
+    setSelectedDate(null);
+    setMinPrice("");
+    setMaxPrice("");
+    setSearchTerm("");
+  };
+
+  // --- 🔍 Filtrado con búsqueda ---
+  const filteredOrders = orders.filter((o) => {
+    // 🔸 Búsqueda por nombre de producto dentro de la comanda
+    const matchesSearch =
+      searchTerm === "" ||
+      o.items.some((item) =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+    // 🔸 Filtro por estado
+    const matchesStatus = statusFilter === "" || o.status === statusFilter;
+
+    // 🔸 Filtro por fecha
+    const [year, month, day] = o.date.split("-");
+    const orderDate = new Date(`${year}-${month}-${day}`);
+    const now = new Date();
+    let matchesDate = true;
+
+    if (dateFilter === "Hoy") {
+      matchesDate = orderDate.toDateString() === now.toDateString();
+    } else if (dateFilter === "Esta semana") {
+      const start = new Date(now);
+      start.setDate(now.getDate() - now.getDay());
+      const end = new Date(start);
+      end.setDate(start.getDate() + 7);
+      matchesDate = orderDate >= start && orderDate < end;
+    } else if (dateFilter === "Este mes") {
+      matchesDate =
+        orderDate.getMonth() === now.getMonth() &&
+        orderDate.getFullYear() === now.getFullYear();
+    } else if (dateFilter === "Fecha personalizada" && selectedDate) {
+      matchesDate = orderDate.toDateString() === selectedDate.toDateString();
+    }
+
+    // 🔸 Filtros por precio
+    const matchesMin = minPrice === "" || Number(o.price) >= Number(minPrice);
+    const matchesMax = maxPrice === "" || Number(o.price) <= Number(maxPrice);
+
+    return matchesSearch && matchesStatus && matchesDate && matchesMin && matchesMax;
+  });
+
+  const toggleItems = (id) => {
+    setOpenOrderId(openOrderId === id ? null : id);
   };
 
   const selectedOrders = orders.filter((o) => o.checked);
@@ -56,162 +118,151 @@ export default function ComandaPage() {
     0
   );
 
-  const filteredOrders = orders.filter((o) => {
-    const withinStatus = statusFilter === "" || o.status === statusFilter;
-    const withinDate = dateFilter === "" || o.date === dateFilter;
-    const withinMin = minPrice === "" || Number(o.price) >= Number(minPrice);
-    const withinMax = maxPrice === "" || Number(o.price) <= Number(maxPrice);
-    return withinStatus && withinDate && withinMin && withinMax;
-  });
+  // --- Configuración de filtros y botones ---
+  const filters = [
+    {
+      label: "Estado",
+      type: "select",
+      value: statusFilter,
+      onChange: setStatusFilter,
+      options: ["Seleccionar", "Pendiente", "Hecho"],
+    },
+    {
+      label: "Fecha",
+      type: "date",
+      value: dateFilter,
+      onChange: setDateFilter,
+      options: [
+        "Fecha",
+        "Hoy",
+        "Esta semana",
+        "Este mes",
+        "Fecha personalizada",
+      ],
+      customComponent:
+        dateFilter === "Fecha personalizada" && (
+          <DatePicker
+            selectedDate={selectedDate}
+            onDateChange={setSelectedDate}
+          />
+        ),
+    },
+    {
+      label: "Precio mínimo",
+      type: "number",
+      value: minPrice,
+      onChange: setMinPrice,
+      placeholder: "Min",
+    },
+    {
+      label: "Precio máximo",
+      type: "number",
+      value: maxPrice,
+      onChange: setMaxPrice,
+      placeholder: "Max",
+    },
+  ];
 
-  const toggleItems = (id) => {
-    setOpenOrderId(openOrderId === id ? null : id);
-  };
+  const buttons = [
+    {
+      label: "Añadir",
+      icon: FaPlus,
+      onClick: () => navigate("/gestion/comanda"),
+    },
+    {
+      label: "Exportar",
+      icon: FaDownload,
+      onClick: () => alert("⬇️ Exportando historial..."),
+    },
+  ];
 
   return (
-    <div className="om-order-management font-overlock bg-yellow-50 min-h-screen">
-      <AdminHeader />
+    <div className="hs-history-container font-montserrat">
+      <Header />
 
-      <div className="max-w-6xl mx-auto p-6 space-y-6">
-        {/* FILTROS + BOTONES */}
-        <div className="bg-gray-100 border border-gray-300 rounded-lg shadow-sm p-4 flex flex-wrap justify-between items-center gap-4">
-          {/* Filtros */}
-          <div className="flex items-center gap-3 min-w-0 md:flex-nowrap flex-wrap">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 text-sm h-10 w-full md:w-40 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            >
-              <option value="">Todos los estados</option>
-              <option value="Pendiente">Pendiente</option>
-              <option value="Hecho">Hecho</option>
-            </select>
+      <div className="hs-history-content space-y-6">
+        {/* --- BARRA DE CONTROL --- */}
+        <ControlBar
+          searchValue={searchTerm}
+          onSearchChange={setSearchTerm}
+          filters={filters}
+          onClearFilters={handleClearFilters}
+          buttons={buttons}
+        />
 
-            <input
-              type="date"
-              value={dateFilter}
-              onChange={(e) => setDateFilter(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 text-sm h-10 focus:outline-none focus:ring-2 focus:ring-emerald-500 relative top-[7px]"
-            />
-
-            <input
-              type="number"
-              placeholder="Precio mínimo"
-              value={minPrice}
-              onChange={(e) => setMinPrice(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 text-sm h-10 focus:outline-none focus:ring-2 focus:ring-emerald-500 relative top-[7px]"
-            />
-
-            <input
-              type="number"
-              placeholder="Precio máximo"
-              value={maxPrice}
-              onChange={(e) => setMaxPrice(e.target.value)}
-              className="bborder border-gray-300 rounded-md px-3 text-sm h-10 focus:outline-none focus:ring-2 focus:ring-emerald-500 relative top-[7px]"
-            />
-          </div>
-
-          {/* Botones */}
-          <div className="flex gap-3 flex-wrap justify-center md:justify-end w-full md:w-auto">
-            <button
-            onClick={() => {
-              setStatusFilter("");
-              setDateFilter("");
-              setMinPrice("");
-              setMaxPrice("");
-            }}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md flex items-center gap-2 shadow"
-          >
-            Limpiar filtros
-          </button>
-            <button
-              onClick={() => navigate("/gestion/comanda")}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md flex items-center gap-2 shadow"
-            >
-              Añadir <FaPlus />
-            </button>
-            <button
-              onClick={() => alert("⬇️ Exportando pedidos...")}
-              className="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-md flex items-center gap-2 shadow"
-            >
-              Exportar <FaDownload />
-            </button>
-          </div>
-        </div>
-
-        {/* TABLA */}
-        <div className="overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
-          <table className="w-full text-sm text-center border-collapse">
-            <thead className="bg-gray-100">
+        {/* --- TABLA --- */}
+        <div className="hs-table-container">
+          <table className="hs-history-table">
+            <thead>
               <tr>
-                <th className="px-3 py-2">
+                <th className="hs-checkbox-column">
                   <input
                     type="checkbox"
                     checked={selectAll}
                     onChange={handleSelectAll}
-                    className="accent-emerald-500"
                   />
                 </th>
-                <th className="px-3 py-2">Estado</th>
-                <th className="px-3 py-2">Artículos</th>
-                <th className="px-3 py-2">Precio</th>
-                <th className="px-3 py-2">Mesa</th>
-                <th className="px-3 py-2">Personas</th>
-                <th className="px-3 py-2">Fecha</th>
-                <th className="px-3 py-2">Acciones</th>
+                <th>Estado</th>
+                <th>Artículos</th>
+                <th>Precio</th>
+                <th>Mesa</th>
+                <th>Personas</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
               {filteredOrders.map((order) => (
                 <React.Fragment key={order.id}>
                   <tr
-                    className={`${
-                      order.status === "Pendiente" ? "bg-emerald-50" : "bg-white"
-                    } border-b hover:bg-gray-50 transition`}
+                    className={
+                      order.status === "Pendiente" ? "hs-selected" : ""
+                    }
                   >
-                    <td className="px-3 py-2">
+                    <td className="text-center">
                       <input
                         type="checkbox"
                         checked={order.checked}
                         onChange={() => handleCheck(order.id)}
-                        className="accent-emerald-500"
                       />
                     </td>
-                    <td className="px-3 py-2">
+                    <td>
                       {order.status === "Pendiente" ? (
-                        <FaClock className="text-yellow-500 mx-auto" />
+                        <FaClock className="text-yellow-400 mx-auto" />
                       ) : (
-                        <FaCheck className="text-green-600 mx-auto" />
+                        <FaCheck className="text-emerald-400 mx-auto" />
                       )}
                     </td>
                     <td
-                      className="px-3 py-2 text-blue-700 underline cursor-pointer"
+                      className="text-blue-700 underline cursor-pointer"
                       onClick={() => toggleItems(order.id)}
                     >
                       Ver
                     </td>
-                    <td className="px-3 py-2">${order.price}</td>
-                    <td className="px-3 py-2">{order.table}</td>
-                    <td className="px-3 py-2">{order.people}</td>
-                    <td className="px-3 py-2">{order.date}</td>
-                    <td className="px-3 py-2 flex justify-center gap-3">
+                    <td className="hs-highlight">${order.price}</td>
+                    <td>{order.table}</td>
+                    <td>{order.people}</td>
+                    <td className="hs-fecha-column">{order.date}</td>
+                    <td className="text-center">
                       <button onClick={() => handleDelete(order.id)}>
                         <FaTrash className="text-red-500 hover:text-red-600" />
                       </button>
                     </td>
                   </tr>
 
-                  {/* Mostrar artículos */}
                   {openOrderId === order.id && (
-                    <tr className="bg-gray-100">
-                      <td colSpan={8} className="px-3 py-2 text-left">
-                        <ul className="list-disc pl-6">
-                          {order.items.map((item, idx) => (
-                            <li key={idx}>
-                              {item.name} - Cantidad: {item.quantity}
-                            </li>
-                          ))}
-                        </ul>
+                    <tr>
+                      <td colSpan={8}>
+                        <div className="hs-agregacion-details">
+                          <strong>Productos en la comanda:</strong>
+                          <ul className="list-disc pl-6">
+                            {order.items.map((item, idx) => (
+                              <li key={idx}>
+                                {item.name} — Cantidad: {item.quantity}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
                       </td>
                     </tr>
                   )}
@@ -221,15 +272,25 @@ export default function ComandaPage() {
           </table>
         </div>
 
-        {/* Totales */}
+        {/* --- TOTAL SELECCIONADO --- */}
         {selectedOrders.length > 0 && (
-          <div className="bg-gray-800 text-white p-4 rounded-md flex justify-between items-center animate-fadeIn mt-4">
-            <p className="font-semibold">Total en pedidos seleccionados</p>
-            <p className="text-sm opacity-90">
-              ${totalSelected.toFixed(2)} de {selectedOrders.length} pedidos
+          <div
+            className="
+              fixed bottom-0 left-0 right-0
+              bg-[#0D0F10] text-white
+              p-4 flex justify-between items-center
+              shadow-[0_-2px_10px_rgba(0,0,0,0.5)]
+              border-t border-gray-700
+              font-montserrat z-50
+            "
+          >
+            <p className="font-semibold">Total de comandas seleccionadas</p>
+            <p>
+              ${totalSelected.toFixed(2)} — {selectedOrders.length} comandas
             </p>
           </div>
         )}
+
       </div>
     </div>
   );

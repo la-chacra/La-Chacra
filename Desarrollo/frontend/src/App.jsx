@@ -14,7 +14,7 @@ import Eventos from "./pages/Eventos/Eventos";
 import AccesoDenegado from "./pages/Otros/AccesoDenegado";
 
 // --- Páginas de gestión ---
-import ReservaHist from "./pages/Reserva/ReservaAdmin/HistorialAdmin";
+import ReservaHist from "./pages/Reserva/ReservaAdmin/ReservaHistorial";
 import Comanda from "./pages/Comanda/Comanda";
 import ComandaHist from "./pages/Comanda/ComandaHist";
 import GestionStock from "./pages/Stock/GestionStock";
@@ -65,7 +65,7 @@ function App() {
         <Route element={<RutaProtegida rolRequerido="A" />}>
           <Route path="/gestion/reserva" element={<ReservaHist />} />
           <Route path="/gestion/stock" element={<GestionStock />} />
-          <Route path="/gestion/stock-historial" element={<Navigate to="/en-construccion" replace />} />
+          <Route path="/gestion/stock-historial" element={<StockHist/>} />
           <Route path="/gestion/platos-tabla" element={<PlatosTabla />} />
           <Route path="/gestion/plato" element={<Platos />} />
           <Route path="/gestion/plato/:id" element={<Platos />} />

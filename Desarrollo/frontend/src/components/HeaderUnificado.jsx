@@ -28,7 +28,7 @@ const HeaderUnificado = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
 
-  const role = usuario?.tipo; // 'A', 'E' o 'C'
+  const rol = usuario?.tipo; // 'A', 'E' o 'C'
   const isInicio = location.pathname === "/";
   const isGestion = location.pathname.startsWith("/gestion");
   const mostrarWave = ["/carta", "/reserva", "/eventos"].includes(location.pathname);
@@ -45,7 +45,7 @@ const HeaderUnificado = () => {
   };
 
   // === Header Admin / Gestión ===
-  if (autenticado && (role === "A" || role === "E") && isGestion) {
+  if (autenticado && (rol === "A" || rol === "E") && isGestion) {
     return (
       <header className="admin-header">
         <div className="admin-logo">
@@ -56,7 +56,7 @@ const HeaderUnificado = () => {
 
         {/* NAV DESKTOP */}
         <nav className="admin-nav-links">
-          {role === "A" ? (
+          {rol === "A" ? (
             <>
               <NavLink to="/gestion/stock" className="admin-nav-link">
                 <FontAwesomeIcon icon={faBoxesStacked} /> Stock
@@ -103,9 +103,6 @@ const HeaderUnificado = () => {
               <Link to="/perfil" className="li-dropdown-item">
                 <FontAwesomeIcon icon={faUserCircle} /> Mi Perfil
               </Link>
-              <Link to={role === "A" ? "/gestion/estadisticas" : "/gestion/comanda"} className="li-dropdown-item gestion">
-                <FontAwesomeIcon icon={faGear} /> Gestión
-              </Link>
               <button onClick={handleLogout} className="li-dropdown-item logout">
                 <FontAwesomeIcon icon={faSignOutAlt} /> Cerrar Sesión
               </button>
@@ -121,7 +118,7 @@ const HeaderUnificado = () => {
         {/* MOBILE MENU */}
         <div className={`admin-mobile-menu ${menuOpen ? "open" : ""}`}>
           <nav className="admin-mobile-nav">
-            {(role === "A"
+            {(rol === "A"
               ? [
                 ["Stock", "/gestion/stock", faBoxesStacked],
                 ["Reservas", "/gestion/reserva", faCalendarCheck],
@@ -154,15 +151,12 @@ const HeaderUnificado = () => {
                 <Link to="/perfil" onClick={() => setMenuOpen(false)}>
                   Mi Perfil
                 </Link>
-                <Link to={role === "A" ? "/gestion/estadisticas" : "/gestion/comanda"}  onClick={() => setMenuOpen(false)} className="gestion">
-                  Gestión
-                </Link>
                 <button
                   onClick={() => {
                     setMenuOpen(false);
                     handleLogout();
                   }}
-                  className="logout"
+                  className="logout text-red-600"
                 >
                   Cerrar Sesión
                 </button>
@@ -249,8 +243,8 @@ const HeaderUnificado = () => {
                 <Link to="/perfil" className="li-dropdown-item">
                   <FontAwesomeIcon icon={faUserCircle} /> {t("perfil.mi_perfil")}
                 </Link>
-                {(role === "A" || role === "E") && (
-                  <Link to={role === "A" ? "/gestion/estadisticas" : "/gestion/comanda"}  className="li-dropdown-item gestion">
+                {(rol === "A" || rol === "E") && (
+                  <Link to={rol === "A" ? "/gestion/estadisticas" : "/gestion/comanda"}  className="li-dropdown-item gestion">
                     <FontAwesomeIcon icon={faGear} /> Gestión
                   </Link>
                 )}
@@ -328,9 +322,9 @@ const HeaderUnificado = () => {
                   <Link to="/perfil" onClick={() => setMenuOpen(false)}>
                     {t("perfil.mi_perfil")}
                   </Link>
-                  {(role === "A" || role === "E") && (
+                  {(rol === "A" || rol === "E") && (
                     <Link
-                      to={role === "A" ? "/gestion/estadisticas" : "/gestion/comanda"} 
+                      to={rol === "A" ? "/gestion/estadisticas" : "/gestion/comanda"} 
                       className="gestion"
                       onClick={() => setMenuOpen(false)}
                     >
@@ -342,7 +336,7 @@ const HeaderUnificado = () => {
                       setMenuOpen(false);
                       handleLogout();
                     }}
-                    className="logout"
+                    className="logout text-red-600"
                   >
                     {t("perfil.cerrar_sesion")}
                   </button>

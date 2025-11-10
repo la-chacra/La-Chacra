@@ -1,16 +1,28 @@
 import React, { useState, useEffect } from "react";
-import { FaSearch, FaFilter, FaDownload, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import Header from "../../components/HeaderUnificado";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faDownload,
+  faEllipsisV,
+  faPen,
+  faTrash,
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
+import ControlBar from "../../components/ControlBar";
+import DatePicker from "../../components/DatePickerNormal";
 
-export default function GestionStock() {
+const GestionStock = () => {
   const [stock, setStock] = useState([]);
   const [filteredStock, setFilteredStock] = useState([]);
-  const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState([]);
-  const [filterType, setFilterType] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("Categoría");
+  const [dateFilter, setDateFilter] = useState("Fecha");
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedItems, setSelectedItems] = useState(new Set());
+  const [openActionMenu, setOpenActionMenu] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 Cargar stock desde backend
+  // 🔹 Cargar stock
   useEffect(() => {
     const cargarStock = async () => {
       try {
@@ -18,11 +30,13 @@ export default function GestionStock() {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
-        if (!res.ok) throw new Error(`Error ${res.status}`);
         const data = await res.json();
-        if (!data.success) throw new Error(data.message || "Error al obtener stock");
-        setStock(data.data);
-        setFilteredStock(data.data);
+        if (data.success) {
+          setStock(data.data);
+          setFilteredStock(data.data);
+        } else {
+          alert("Error al cargar stock: " + data.message);
+        }
       } catch (err) {
         console.error("Error:", err);
       } finally {
@@ -32,37 +46,63 @@ export default function GestionStock() {
     cargarStock();
   }, []);
 
-  // 🔍 Filtro de búsqueda y categoría (con comparación flexible)
   useEffect(() => {
     const result = stock.filter((item) => {
-      const matchesSearch = item.nombre?.toLowerCase().includes(search.toLowerCase());
-      const matchesType = filterType
-        ? item.categoria?.toLowerCase().includes(filterType.toLowerCase())
-        : true;
-      return matchesSearch && matchesType;
+      const matchesSearch = item.nombre
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const matchesCategory =
+        categoryFilter === "Categoría" ||
+        item.categoria?.toLowerCase() === categoryFilter.toLowerCase();
+
+      const now = new Date();
+      let matchesDate = true;
+
+      if (item.fecha_creacion) {
+        const [day, month, yearTime] = item.fecha_creacion.split("-");
+        const [year, time] = yearTime.split(" ");
+        const fechaItem = new Date(`${year}-${month}-${day}T${time}`);
+
+        if (dateFilter === "Hoy") {
+          matchesDate = fechaItem.toDateString() === now.toDateString();
+        } else if (dateFilter === "Esta semana") {
+          const startOfWeek = new Date(now);
+          startOfWeek.setDate(now.getDate() - now.getDay());
+          const endOfWeek = new Date(startOfWeek);
+          endOfWeek.setDate(startOfWeek.getDate() + 7);
+          matchesDate = fechaItem >= startOfWeek && fechaItem < endOfWeek;
+        } else if (dateFilter === "Este mes") {
+          matchesDate =
+            fechaItem.getMonth() === now.getMonth() &&
+            fechaItem.getFullYear() === now.getFullYear();
+        } else if (dateFilter === "Fecha personalizada" && selectedDate) {
+          matchesDate = fechaItem.toDateString() === selectedDate.toDateString();
+        }
+      }
+
+      return matchesSearch && matchesCategory && matchesDate;
     });
     setFilteredStock(result);
-  }, [search, filterType, stock]);
+  }, [searchTerm, categoryFilter, dateFilter, selectedDate, stock]);
 
-  const toggleSelectAll = () => {
-    if (selected.length === filteredStock.length) setSelected([]);
-    else setSelected(filteredStock.map((p) => p.insumo_id));
+  const handleSelectAll = (checked) => {
+    if (checked) setSelectedItems(new Set(filteredStock.map((i) => i.insumo_id)));
+    else setSelectedItems(new Set());
   };
 
-  const toggleSelect = (id) => {
-    setSelected((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    );
+  const handleSelectItem = (id, checked) => {
+    const newSelected = new Set(selectedItems);
+    if (checked) newSelected.add(id);
+    else newSelected.delete(id);
+    setSelectedItems(newSelected);
   };
 
   const handleAdd = () => alert("Añadir producto (pendiente de implementación)");
 
   const handleEdit = async (producto) => {
-    const nuevoNombre = prompt("Nuevo nombre del producto:", producto.nombre);
+    const nuevoNombre = prompt("Nuevo nombre:", producto.nombre);
     const nuevoPrecio = prompt("Nuevo precio unitario:", producto.precio_unitario);
-    const nuevaCantidadMin = prompt("Nueva cantidad mínima:", producto.cantidad_minima);
-
-    if (!nuevoNombre || !nuevoPrecio || !nuevaCantidadMin) return;
+    if (!nuevoNombre || !nuevoPrecio) return;
 
     try {
       const res = await fetch(`/api/stock/${producto.insumo_id}/modificar`, {
@@ -71,159 +111,219 @@ export default function GestionStock() {
         body: JSON.stringify({
           nombre: nuevoNombre,
           precio_unitario: parseFloat(nuevoPrecio),
-          cantidad_minima: parseInt(nuevaCantidadMin),
-          categoria: producto.categoria,
-          unidad: producto.unidad,
         }),
       });
-
       const data = await res.json();
-      if (!data.success) throw new Error(data.message);
-      alert("Producto actualizado con éxito");
-
-      setStock((prev) =>
-        prev.map((p) =>
-          p.insumo_id === producto.insumo_id
-            ? {
-                ...p,
-                nombre: nuevoNombre,
-                precio_unitario: nuevoPrecio,
-                cantidad_minima: nuevaCantidadMin,
-              }
-            : p
-        )
-      );
+      if (data.success) {
+        setStock((prev) =>
+          prev.map((p) =>
+            p.insumo_id === producto.insumo_id
+              ? { ...p, nombre: nuevoNombre, precio_unitario: nuevoPrecio }
+              : p
+          )
+        );
+        alert("Producto actualizado correctamente");
+      } else alert("Error: " + data.message);
     } catch (err) {
-      alert("Error al actualizar el producto: " + err.message);
+      alert("Error al actualizar: " + err.message);
     }
   };
 
   const handleDelete = async (producto) => {
-    if (!window.confirm(`¿Seguro que deseas eliminar "${producto.nombre}" del inventario?`))
-      return;
-
+    if (!window.confirm(`¿Eliminar "${producto.nombre}" del inventario?`)) return;
     try {
       const res = await fetch(`/api/stock/${producto.insumo_id}/desactivar`, {
         method: "PUT",
       });
-
       const data = await res.json();
-      if (!data.success) throw new Error(data.message);
-
-      alert("🗑️ Producto desactivado correctamente");
-      setStock((prev) =>
-        prev.map((p) =>
-          p.insumo_id === producto.insumo_id ? { ...p, activo: 0 } : p
-        )
-      );
+      if (data.success) {
+        setStock((prev) =>
+          prev.filter((p) => p.insumo_id !== producto.insumo_id)
+        );
+        alert("Producto eliminado correctamente");
+      }
     } catch (err) {
-      alert("Error al desactivar el producto: " + err.message);
+      alert("Error al eliminar: " + err.message);
     }
   };
 
+  const handleExport = () => {
+    const ids = Array.from(selectedItems).join(",");
+    const url = ids
+      ? `/api/exportar-stock?ids=${ids}`
+      : `/api/exportar-stock`;
+    window.open(url, "_blank");
+  };
+
+  // Configuración ControlBar
+  const filters = [
+    {
+      label: "Categoría",
+      type: "select",
+      value: categoryFilter,
+      onChange: setCategoryFilter,
+      options: [
+        "Categoría",
+        "Carnes",
+        "Lácteos",
+        "Secos",
+        "Bebidas",
+        "Verduras",
+        "Frutas",
+        "Higiene",
+      ],
+    },
+    {
+      label: "Fecha",
+      type: "date",
+      value: dateFilter,
+      onChange: setDateFilter,
+      options: ["Fecha", "Hoy", "Esta semana", "Este mes", "Fecha personalizada"],
+      customComponent:
+        dateFilter === "Fecha personalizada" && (
+          <DatePicker selectedDate={selectedDate} onDateChange={setSelectedDate} />
+        ),
+    },
+  ];
+
+  const buttons = [
+    {
+      label: "Añadir producto",
+      icon: faPlus,
+      onClick: handleAdd,
+    },
+    {
+      label: selectedItems.size > 0 ? "Exportar seleccionados" : "Exportar",
+      icon: faDownload,
+      onClick: handleExport,
+    },
+  ];
+
+  if (loading) {
+    return (
+      <div className="hs-history-container font-overlock text-gray-200">
+        <Header />
+        <div className="flex justify-center items-center h-[70vh] text-gray-400">
+          <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      </div>
+    );
+  }
+
+
+  if (loading) {
+    return (
+      <div className="bg-black h-screen flex items-center justify-center">
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-neutral-950 text-gray-200 flex flex-col">
+    <div className="hs-history-container font-montserrat">
       <Header />
 
-      <div className="p-6 flex flex-col flex-1 max-w-7xl mx-auto w-full">
-        <div className="flex flex-wrap md:flex-nowrap justify-between items-center gap-3 mb-6 bg-neutral-900 p-4 rounded-xl shadow-md border border-neutral-800">
-          <div className="flex flex-wrap md:flex-nowrap items-center gap-3 w-full md:w-auto">
-            <div className="flex items-center bg-neutral-800 rounded-md px-3 w-full md:w-72 h-10">
-              <FaSearch className="text-gray-400 mr-2" />
-              <input
-                type="text"
-                placeholder="Buscar..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="bg-transparent text-gray-200 placeholder-gray-500 w-full h-full flex items-center focus:outline-none"
-              />
-            </div>
+      <div className="hs-history-content">
+        <ControlBar
+          searchValue={searchTerm}
+          onSearchChange={setSearchTerm}
+          filters={filters}
+          buttons={buttons}
+        />
 
-            <div className="flex items-center bg-neutral-800 rounded-md px-3 h-10">
-              <FaFilter className="text-gray-400 mr-2" />
-              <select
-                value={filterType}
-                onChange={(e) => setFilterType(e.target.value)}
-                className="bg-transparent text-gray-200 focus:outline-none cursor-pointer"
-              >
-                <option value="">Categoría</option>
-                <option value="Carnes">Carnes</option>
-                <option value="Lácteos">Lácteos</option>
-                <option value="Secos">Secos</option>
-                <option value="Bebidas">Bebidas</option>
-                <option value="Verduras">Verduras</option>
-                <option value="Frutas">Frutas</option>
-                <option value="Higiene">Higiene</option>
-              </select>
-            </div>
-          </div>
-
-          <button
-            onClick={handleAdd}
-            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-md font-medium shadow transition w-full md:w-auto justify-center"
-          >
-            <FaPlus /> Añadir
-          </button>
-        </div>
-
-        {/* 🧾 Tabla */}
-        <div className="overflow-x-auto bg-white rounded-xl shadow-lg border border-neutral-200">
-          <table className="w-full text-sm text-left text-gray-800">
-            <thead className="bg-neutral-100 text-gray-800 uppercase text-xs">
+        <div className="hs-table-container">
+          <table className="hs-history-table">
+            <thead>
               <tr>
-                <th className="px-4 py-3 text-center">#</th>
-                <th className="px-4 py-3">Nombre</th>
-                <th className="px-4 py-3">Categoría</th>
-                <th className="px-4 py-3 text-center">Cantidad</th>
-                <th className="px-4 py-3 text-center">Mínima</th>
-                <th className="px-4 py-3 text-center">Unidad</th>
-                <th className="px-4 py-3 text-center">Precio Unidad</th>
-                <th className="px-4 py-3 text-center">Total</th>
-                <th className="px-4 py-3 text-center">Activo</th>
-                <th className="px-4 py-3 text-center">Acciones</th>
+                <th className="hs-checkbox-column">
+                  <input
+                    type="checkbox"
+                    onChange={(e) => handleSelectAll(e.target.checked)}
+                    checked={selectedItems.size === filteredStock.length}
+                  />
+                </th>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Cantidad</th>
+                <th>Mínima</th>
+                <th>Unidad</th>
+                <th>Precio Unidad</th>
+                <th>Total</th>
+                <th>Activo</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
               {filteredStock.length > 0 ? (
-                filteredStock.map((producto, i) => (
+                filteredStock.map((p) => (
                   <tr
-                    key={producto.insumo_id}
-                    className="border-t border-neutral-200 hover:bg-neutral-50"
+                    key={p.insumo_id}
+                    className={selectedItems.has(p.insumo_id) ? "hs-selected" : ""}
                   >
-                    <td className="px-4 py-3 text-center">{i + 1}</td>
-                    <td className="px-4 py-3 font-semibold text-gray-900">{producto.nombre}</td>
-                    <td className="px-4 py-3">{producto.categoria}</td>
-                    <td className="px-4 py-3 text-center">{producto.cantidad}</td>
-                    <td className="px-4 py-3 text-center">{producto.cantidad_minima}</td>
-                    <td className="px-4 py-3 text-center">{producto.unidad}</td>
-                    <td className="px-4 py-3 text-center">${producto.precio_unitario}</td>
-                    <td className="px-4 py-3 text-center">
-                      ${(producto.cantidad * producto.precio_unitario).toFixed(2)}
+                    <td className="hs-checkbox-column">
+                      <input
+                        type="checkbox"
+                        checked={selectedItems.has(p.insumo_id)}
+                        onChange={(e) =>
+                          handleSelectItem(p.insumo_id, e.target.checked)
+                        }
+                      />
                     </td>
-                    <td className="px-4 py-3 text-center">
+                    <td>{p.nombre}</td>
+                    <td>{p.categoria}</td>
+                    <td className="text-center">{p.cantidad}</td>
+                    <td className="text-center">{p.cantidad_minima}</td>
+                    <td className="text-center">{p.unidad}</td>
+                    <td className="text-center">${p.precio_unitario}</td>
+                    <td className="text-center">
+                      ${(p.cantidad * p.precio_unitario).toFixed(2)}
+                    </td>
+                    <td className="text-center">
                       <span
-                        className={`font-semibold ${
-                          producto.activo ? "text-emerald-600" : "text-red-600"
+                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                          p.activo
+                            ? "bg-green-500/20 text-green-400"
+                            : "bg-red-500/20 text-red-400"
                         }`}
                       >
-                        {producto.activo ? "Activo" : "Inactivo"}
+                        {p.activo ? "Activo" : "Inactivo"}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-center">
-                      <div className="flex justify-center gap-3">
-                        <button
-                          onClick={() => handleEdit(producto)}
-                          className="hover:scale-110 transition"
-                        >
-                          <FaEdit className="text-gray-600 hover:text-emerald-600" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(producto)}
-                          className="hover:scale-110 transition"
-                        >
-                          <FaTrash className="text-red-500 hover:text-red-600" />
-                        </button>
-                      </div>
+                    <td className="tp-actions-cell">
+                      <button
+                        className="tp-action-btn"
+                        onClick={() =>
+                          setOpenActionMenu(
+                            openActionMenu === p.insumo_id ? null : p.insumo_id
+                          )
+                        }
+                      >
+                        <FontAwesomeIcon icon={faEllipsisV} />
+                      </button>
+
+                      {openActionMenu === p.insumo_id && (
+                        <div className="tp-action-menu">
+                          <button
+                            className="tp-action-item tp-edit"
+                            onClick={() => handleEdit(p)}
+                          >
+                            <FontAwesomeIcon
+                              icon={faPen}
+                              className="tp-action-icon"
+                            />
+                            Editar
+                          </button>
+                          <button
+                            className="tp-action-item tp-delete"
+                            onClick={() => handleDelete(p)}
+                          >
+                            <FontAwesomeIcon
+                              icon={faTrash}
+                              className="tp-action-icon"
+                            />
+                            Eliminar
+                          </button>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))
@@ -240,4 +340,6 @@ export default function GestionStock() {
       </div>
     </div>
   );
-}
+};
+
+export default GestionStock;

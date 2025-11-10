@@ -3,8 +3,6 @@ import { useNavigate } from "react-router-dom";
 import Header from "../../components/HeaderUnificado";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faSearch,
-  faFilter,
   faDownload,
   faPlus,
   faEllipsisV,
@@ -12,6 +10,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import IngredientsModal from "../../components/IngredientsModal";
+import ControlBar from "../../components/ControlBar";
 
 const MenuTable = () => {
   const [selectedItems, setSelectedItems] = useState(new Set());
@@ -20,7 +19,6 @@ const MenuTable = () => {
   const [menuData, setMenuData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedIngredients, setSelectedIngredients] = useState(null);
-  const [showCategoryFilter, setShowCategoryFilter] = useState(false);
   const [openActionMenu, setOpenActionMenu] = useState(null);
 
   const navigate = useNavigate();
@@ -37,7 +35,6 @@ const MenuTable = () => {
     "Refrescos",
     "Helados",
     "Postres",
-    // se pueden agregar más categorías aquí si se cambian en la carta
   ];
 
   const categoryColors = {
@@ -51,84 +48,27 @@ const MenuTable = () => {
     Refrescos: "#19c28fff",
     Helados: "#e062acff",
     Postres: "#b47ce7ff",
-    "Categoría": "#868E96",
+    Categoría: "#868E96",
     Todos: "#495057",
   };
 
- useEffect(() => {
-  fetch("/api/productos-menu")
-    .then((res) => res.json())
-    .then((data) => {
-      if (Array.isArray(data)) {
-        setMenuData(data);
-      } else if (data.success && Array.isArray(data.data)) {
-        setMenuData(data.data);
-      } else {
-        console.error("Formato inesperado de respuesta:", data);
-      }
-    })
-    .catch((err) => {
-      console.error("Error al cargar los platos:", err);
-      alert("No se pudieron cargar los productos del menú");
-    });
-}, []);
-
-
-const handleGuardar = async () => {
-  const formData = new FormData();
-  formData.append("nombre", nombre);
-  formData.append("precio", precio);
-  formData.append("ingredientes", JSON.stringify(ingredientes));
-  formData.append("categoria", categoria);
-  formData.append("disponibilidad", disponibilidad);
-  formData.append("activo", activo);
-  if (imagen) formData.append("imagen", imagen);
-
-  const url = id
-    ? `/api/productos-menu/${id}` // PUT para editar
-    : "/api/productos-menu"; // POST para agregar
-  const method = id ? "PUT" : "POST";
-
-  try {
-    const res = await fetch(url, {
-      method,
-      body: formData,
-      credentials: "include",
-    });
-
-    const data = await res.json();
-    if (data.success) {
-      alert("Plato guardado correctamente");
-      navigate("/gestion/platos-tabla");
-    } else {
-      alert("Error: " + data.message);
-    }
-  } catch (error) {
-    console.error("Error en la conexión:", error);
-    alert("Error al conectar con el servidor");
-  }
-};
-const handleDelete = async (producto_id) => {
-  if (window.confirm("¿Seguro que quieres eliminar este producto?")) {
-    try {
-      const res = await fetch(`/api/productos-menu/desactivar/${producto_id}`, {
-        method: "DELETE",
+  useEffect(() => {
+    fetch("/api/productos-menu")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setMenuData(data);
+        } else if (data.success && Array.isArray(data.data)) {
+          setMenuData(data.data);
+        } else {
+          console.error("Formato inesperado de respuesta:", data);
+        }
+      })
+      .catch((err) => {
+        console.error("Error al cargar los platos:", err);
+        alert("No se pudieron cargar los productos del menú");
       });
-
-      const data = await res.json();
-      if (data.success) {
-        setMenuData(menuData.filter((item) => item.producto_id !== producto_id));
-        alert("Plato desactivado correctamente");
-      } else {
-        alert("Error al desactivar: " + data.message);
-      }
-    } catch {
-      alert("Error de conexión con el servidor");
-    }
-  }
-};
-
-
+  }, []);
 
   const handleSelectAll = (checked) => {
     if (checked) setSelectedItems(new Set(menuData.map((p) => p.producto_id)));
@@ -142,31 +82,40 @@ const handleDelete = async (producto_id) => {
     setSelectedItems(newSelected);
   };
 
-  const filteredData = menuData.filter((p) => {
-    const matchesSearch =
-      p.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.categoria.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.ingredientes.some((ing) =>
-        ing.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+  const handleDelete = async (producto_id) => {
+    if (window.confirm("¿Seguro que quieres eliminar este producto?")) {
+      try {
+        const res = await fetch(`/api/productos-menu/desactivar/${producto_id}`, {
+          method: "DELETE",
+        });
 
-    const matchesCategory =
-      categoryFilter === "Todos" ||
-      categoryFilter === "Categoría" ||
-      p.categoria === categoryFilter;
-
-    return matchesSearch && matchesCategory;
-  });
+        const data = await res.json();
+        if (data.success) {
+          setMenuData(menuData.filter((item) => item.producto_id !== producto_id));
+          alert("Plato desactivado correctamente");
+        } else {
+          alert("Error al desactivar: " + data.message);
+        }
+      } catch {
+        alert("Error de conexión con el servidor");
+      }
+    }
+  };
 
   const handleExport = () => {
-    // crear endpoint GET /api/exportar-historial
-    // debe generar CSV o Excel, usando los IDs seleccionados si se pasan
-    // ejemplo: /api/exportar-productos?ids=1,2,3
     const ids = Array.from(selectedItems).join(",");
     const url = ids
       ? `/api/exportar-productos?ids=${ids}`
       : `/api/exportar-productos`;
     window.open(url, "_blank");
+  };
+
+  const handleAddProduct = () => {
+    navigate("/gestion/plato");
+  };
+
+  const handleEdit = (id) => {
+    navigate(`/gestion/plato/${id}`);
   };
 
   const handleViewIngredients = (ingredientes) => {
@@ -178,77 +127,57 @@ const handleDelete = async (producto_id) => {
     setShowModal(true);
   };
 
-  const handleAddProduct = () => {
-    // redirige a la ruta de crear producto, backend debe soportar POST /api/productos
-    navigate("/gestion/plato");
-  };
-  const handleEdit = (id) => {
-  navigate(`/gestion/plato/${id}`);
-};
+  const filteredData = menuData.filter((p) => {
+    const matchesSearch =
+      p.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.categoria.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (Array.isArray(p.ingredientes) &&
+        p.ingredientes.some((ing) => 
+          ing.toLowerCase().includes(searchTerm.toLocaleLowerCase())
+        ));
 
-  
+    const matchesCategory =
+      categoryFilter === "Todos" ||
+      categoryFilter === "Categoría" ||
+      p.categoria === categoryFilter;
 
+    return matchesSearch && matchesCategory;
+  });
 
+  const filters = [
+    {
+      label: "Categoría",
+      type: "select",
+      value: categoryFilter,
+      onChange: setCategoryFilter,
+      options: allCategories,
+    },
+  ];
+
+  const buttons = [
+    {
+      label: "Añadir producto",
+      icon: faPlus,
+      onClick: handleAddProduct,
+    },
+    {
+      label: selectedItems.size > 0 ? "Exportar seleccionados" : "Exportar",
+      icon: faDownload,
+      onClick: handleExport,
+    },
+  ];
 
   return (
     <div className="hs-history-container font-montserrat">
       <Header />
 
       <div className="hs-history-content">
-        <div className="hs-controls-bar">
-          <div className="hs-search-section">
-            <div className="hs-search-input-container">
-              <input
-                type="text"
-                placeholder="Buscar"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="hs-search-input"
-              />
-              <FontAwesomeIcon icon={faSearch} className="hs-search-icon" />
-            </div>
-
-            <button
-              className="hs-filter-btn"
-              onClick={() => setShowCategoryFilter((prev) => !prev)}
-            >
-              <span>Filtrar</span>
-              <FontAwesomeIcon icon={faFilter} />
-            </button>
-          </div>
-
-          <div
-            className={`hs-date-filter-wrapper ${
-              showCategoryFilter ? "visible" : ""
-            }`}
-          >
-            <div className="hs-date-filter">
-              <select
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
-                className="hs-date-select"
-              >
-                {allCategories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <button className="hs-export-btn" onClick={handleAddProduct}>
-            <span>Añadir producto</span>
-            <FontAwesomeIcon icon={faPlus} />
-          </button>
-
-          <button className="hs-export-btn" onClick={handleExport}>
-            <span>
-              {selectedItems.size > 0 ? "Exportar seleccionados" : "Exportar"}
-            </span>
-            <FontAwesomeIcon icon={faDownload} />
-          </button>
-        </div>
+        <ControlBar
+          searchValue={searchTerm}
+          onSearchChange={setSearchTerm}
+          filters={filters}
+          buttons={buttons}
+        />
 
         <div className="hs-table-container">
           <table className="hs-history-table">

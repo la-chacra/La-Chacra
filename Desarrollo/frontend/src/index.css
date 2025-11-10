@@ -1638,6 +1638,10 @@ input {
   .admin-hamburger {
     display: block;
   }
+
+  .admin-header .right-controls {
+    display: none;
+  }
 }
 
 /* Right Gestión */
@@ -2063,6 +2067,146 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   color: #000000;
   font-weight: bold;
 }
+/* FILTROS HISTORIAL DE COMANDAS */
+.hs-filters-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0D0F10;
+  color: #ffffff;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  gap: 1rem;
+}
+
+.hs-filters-left {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.75rem;
+}
+
+
+.hs-filters-left select,
+.hs-filters-left input {
+  background: #ffffff;
+  color: #000000;
+  border: none;
+  border-radius: 6px;
+  margin-top: 12px;
+  padding: 8px 12px;
+  font-size: 14px;
+  height: 38px; 
+  width: 170px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.hs-filters-left input[type="text"] {
+  background: #ffffff;
+  color: #111111;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
+  height: 40px;
+  width: 340px;
+  transition: all 0.2s ease;
+}
+
+.hs-filters-left input[type="text"]::placeholder {
+  color: #666;
+}
+
+.hs-date-select[type="number"] {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+}
+
+
+@media (max-width: 768px) {
+  .hs-filters-left input[type="text"] {
+    width: 100%;
+  }
+}
+
+
+.hs-filters-left .search-bar {
+  width: 4rem;
+}
+
+.hs-filters-left select:focus,
+.hs-filters-left input:focus {
+  outline: 2px solid #34aecc;
+}
+
+.hs-filters-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.hs-filters-right button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 14px;
+  font-weight: 600;
+  background: #ffffff;
+  color: #000;
+  border-radius: 6px;
+  padding: 8px 14px;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.hs-filters-right button:hover {
+  background: #f2f2f2;
+  transform: translateY(-1px);
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 1024px) {
+  .hs-filters-bar {
+    align-items: stretch;
+  }
+
+  .hs-filters-left {
+    justify-content: flex-start;
+  }
+
+  .hs-filters-right {
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 768px) {
+  .hs-filters-left {
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .hs-filters-right {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .hs-filters-right button {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .hs-filters-left input,
+  .hs-filters-left select {
+    width: 100%;
+  }
+}
+
 
 .hs-filter-btn:hover{
   background-color: #d8d8e2;
@@ -3211,6 +3355,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .et-role-badge.empleado {
   background-color: #65a80c;
 }
+
+.et-filters-container .hs-export-btn {
+  margin-top: 21px;
+  height: 38px; 
+  background-color: #070707;
+  color: white;
+}
+
 
 /*ALERTA*/
 .ww-overlay {
