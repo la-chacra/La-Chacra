@@ -131,6 +131,17 @@ class Reserva extends ModeloBase {
     return static::$conexion_bd->realizarConsulta($query) !== false;
     }
 
+    public static function actualizarEstado (int $reserva_id, EstadoReserva $estado): bool {
+        return self::actualizar(
+            [
+            "reserva_id"   => $reserva_id,
+            "estado"       => $estado->value,
+            ]
+        );
+    }
+
+
+
 
 
     // Getters y Setters

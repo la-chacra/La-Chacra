@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\Enums\EstadoReserva;
 use App\Models\Reserva;
 use App\Services\ControllerService;
 use DateTime;
@@ -85,6 +86,49 @@ public function desactivarReserva($router, $params) {
         return ["success" => false, "message" => "Error interno del servidor"];
     }
 }
+
+public function marcarLlegada($router, $params) {
+    $id = (int)$params["id"] ?? null;
+
+    if (!$id) {
+        return [
+            "success" => false,
+            "message" => "ID de reserva no especificado"
+        ];
+    }
+
+    try {
+        // Verificar que exista
+        $datosReserva = ControllerService::handlerErrorConexion(fn() => Reserva::encontrarPorID($id));
+        if (!$datosReserva) {
+            return [
+                "success" => false,
+                "message" => "No se encontró la reserva especificada"
+            ];
+        }
+
+        $resultado = ControllerService::handlerErrorConexion(fn() => Reserva::actualizarEstado($id, EstadoReserva::CONFIRMADA));
+
+        if ($resultado) {
+            return [
+                "success" => true,
+                "message" => "Reserva marcada como llegada correctamente"
+            ];
+        } else {
+            return [
+                "success" => false,
+                "message" => "No se pudo actualizar el estado de la reserva"
+            ];
+        }
+    } catch (Exception $e) {
+        http_response_code(500);
+        return [
+            "success" => false,
+            "message" => "Error interno del servidor"
+        ];
+    }
+}
+
 
 
 

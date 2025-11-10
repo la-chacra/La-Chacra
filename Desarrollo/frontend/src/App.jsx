@@ -24,6 +24,7 @@ import PlatosTabla from "./pages/Platos/TablaPlatos";
 import Estadisticas from "./pages/Estadisticas/EstadisticasMain";
 import Empleados from "./pages/Empleados/Empleados";
 import EmpleadosTabla from "./pages/Empleados/EmpleadosTabla";
+import ReservasActuales from "./pages/Reserva/ReservaAdmin/ReservasActuales";
 
 // --- Testing ---
 import Test from "./pages/Admin/Test";
@@ -59,6 +60,7 @@ function App() {
         <Route element={<RutaProtegida rolRequerido="E" />}>
           <Route path="/gestion/comanda" element={<Comanda />} />
           <Route path="/gestion/comanda-historial" element={<ComandaHist />} />
+          <Route path="/gestion/reservas-actuales" element={<ReservasActuales />} />
         </Route>
 
         {/* Rutas protegidas para administradores */}

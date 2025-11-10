@@ -36,15 +36,19 @@ class AuthMiddleware {
      */
     private const mapaDeAccesos = [
         "C" => [ // C = cliente
-            "/api/reservas/registrar",
-            "/api/reservas/cancelar",
-            "/api/reservas/actualizar"
+            "/api/reserva/crear",
+            "/api/reserva/cancelar",
+            "/api/reserva/actualizar"
         ],
         "E" => [ // E = empleado
             /* Empleado (operaciones sobre comandas gestionadas por empleados)
                Rutas definidas en public/index.php usan el prefijo /api/gestion/comanda */
             "/api/gestion/comanda/crear",
             "/api/gestion/comanda/actualizar",
+            "/api/reserva/crear",
+            "/api/reserva/cancelar",
+            "/api/reserva/actualizar",
+            "/api/reservas/marcar-llegada/{id}"
             /* si en el futuro existe un endpoint de listado para empleados, agregarlo aquí */
         ],
         "A" => [ // A = admin
@@ -89,9 +93,11 @@ class AuthMiddleware {
             "/api/productos-menu",
             "/api/productos-menu/{id}",
             "/api/productos-menu/desactivar/{id}",
-            
-            
-             
+            // Reservas
+            "/api/reserva/crear",
+            "/api/reserva/cancelar",
+            "/api/reserva/actualizar",
+            "/api/reservas/marcar-llegada/{id}"
         ]
     ];
 

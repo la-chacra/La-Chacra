@@ -41,9 +41,10 @@ $router->get("/api/logout", [AuthController::class, "logout"]);
 $router->get("/api/estadoSesion", [AuthController::class, "estadoSesion"]);
 
 // API Reserva Cliente
-$router->post('/api/reservas/registrar', [ReservaController::class, 'registrar']);
+$router->post('/api/reservas/crear', [ReservaController::class, 'registrar']);
 $router->post('/api/reservas/actualizar', [ReservaController::class, 'actualizar']);
 $router->post('/api/reservas/cancelar', [ReservaController::class, 'cancelar']);
+$router->put('/api/reservas/marcar-llegada/{id}', [ReservaController::class, 'marcarLlegada']);
 
 //API Reserva Admin
 $router->get("/api/reservas/obtener", [ReservaController::class, "obtenerReservas"]);
