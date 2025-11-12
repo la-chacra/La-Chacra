@@ -6,6 +6,15 @@ use App\Models\ModeloBase;
 use App\Services\ContrasenaService;
 use DateTime;
 
+/**
+ * Clase Usuario
+ *
+ * Representa a los usuarios del sistema (clientes, mozos y administradores).
+ * Gestiona su registro, autenticación, edición y eliminación lógica.
+ *
+ * @package App\Models
+ */
+
 abstract class Usuario extends ModeloBase {
 
     // -- Atributos para Base de Datos

@@ -3,7 +3,14 @@
 namespace App\Models;
 
 use App\Models\ModeloBase;
-
+/**
+ * Clase Plato
+ *
+ * Representa un plato del menú del restaurante.
+ * Gestiona su creación, edición, eliminación y vínculo con los insumos utilizados.
+ *
+ * @package App\Models
+ */
 class Plato extends ModeloBase {
 
     protected static string $pk_bd = "producto_id";

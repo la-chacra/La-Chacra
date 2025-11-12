@@ -6,9 +6,14 @@ use App\Models\ModeloBase;
 use App\Models\Enums\Periodo;
 use App\Models\Enums\TemporadasAltas;
 
-
-
-
+/**
+ * Clase Estadistica
+ *
+ * Proporciona las consultas necesarias para generar estadísticas del restaurante,
+ * como ventas por mes, productos más vendidos y temporadas más activas.
+ *
+ * @package App\Models
+ */
 class Estadistica extends ModeloBase {
     
     /**
@@ -31,6 +36,10 @@ class Estadistica extends ModeloBase {
         return static::$conexion_bd->realizarConsulta($consulta);
     }
 
+    /**
+     * Obtiene el Top de Platos
+     * Los mejores 5
+     */
     public static function obtenerTopPlatos(): array {
         $consulta =  "
             SELECT 
@@ -50,7 +59,10 @@ class Estadistica extends ModeloBase {
         return static::$conexion_bd->realizarConsulta($consulta);
     }
 
-
+    /**
+     * Obtiene el Top de Ventas por Temporada
+     * Con la cantidad de productos vendidos
+     */
     public static function obtenerVentasPorTemporada(): array {
     $consulta = "
         SELECT 
@@ -71,6 +83,12 @@ class Estadistica extends ModeloBase {
     return static::$conexion_bd->realizarConsulta($consulta);
 }
 
+     /**
+     * Obtiene el Top de Pedidos
+     * Con la comanda, al hacer el pedido y este se de por finalizado,
+     * al guardarse como finalizado se usa para obtener la cantidad de pedidos
+    
+     */
     public static function obtenerPedidosTotales(): array {
         $consulta = "
             SELECT COUNT(*) AS total_pedidos
@@ -80,6 +98,11 @@ class Estadistica extends ModeloBase {
         return static::$conexion_bd->realizarConsulta($consulta);
     }
 
+     /**
+     * Obtiene el Top de Reservas 
+     * Parecida al de obtenerPedidosTotales()
+     * Busca la reserva hecha que este finalizada para obtener la cantidad de la misma
+     */
     public static function obtenerReservasTotales(): array {
         $consulta = "
             SELECT COUNT(*) AS total_visitas
@@ -89,6 +112,12 @@ class Estadistica extends ModeloBase {
         return static::$conexion_bd->realizarConsulta($consulta);
     }
 
+    /**
+     * Obtiene el Top de Ganancias Totales 
+     * Se multiplica el precio de Productos Menu de la BD,
+     * para que este muestre la ganancia total
+     * 
+     */
     public static function obtenerGananciasTotales(): array {
         $consulta = "
             SELECT 
@@ -101,6 +130,11 @@ class Estadistica extends ModeloBase {
         return static::$conexion_bd->realizarConsulta($consulta);
     }
 
+    /**
+     * Obtiene el Top de Tendencias Estacionales 
+     * La única grafica de la parte de estadistica
+     * Muestra las estaciones con sus productos mas vendidos
+     */
     public static function obtenerTendenciasEstacionales(): array {
         $consulta = "
         SELECT 
@@ -122,7 +156,11 @@ class Estadistica extends ModeloBase {
 
         return static::$conexion_bd->realizarConsulta($consulta);
     }
-
+    /**
+     * Obtiene el Top de Ranking Productos 
+     * Una de las 3 tablas de la parte de estadistica
+     * Muestra los productos mas vendidos
+     */
     public static function obtenerRankingProductos(): array {
         $consulta = "
             SELECT 
@@ -141,7 +179,11 @@ class Estadistica extends ModeloBase {
         return static::$conexion_bd->realizarConsulta($consulta);
     }
 
-
+    /**
+     * Obtiene el Top de Ranking Reservas 
+     * Una de las 3 tablas de la parte de estadistica
+     * Muestra los reservas mas vendidos
+     */
     public static function obtenerRankingReservas(): array {
         $consulta = "
             SELECT 
@@ -158,6 +200,11 @@ class Estadistica extends ModeloBase {
         return static::$conexion_bd->realizarConsulta($consulta);
     }
 
+    /**
+     * Obtiene el Top de Ranking Ventas 
+     * Una de las 3 tablas de la parte de estadistica
+     * Muestra los ventas mas vendidos
+     */
     public static function obtenerRankingVentas(): array {
         $consulta = "
             SELECT 

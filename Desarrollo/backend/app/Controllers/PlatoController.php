@@ -5,17 +5,28 @@ namespace App\Controllers;
 use App\Models\Plato;
 use App\Services\ControllerService;
 use Exception;
+/**
+ * Controlador PlatoController
+ *
+ * Gestiona las operaciones relacionadas con los platos del menú.
+ * Permite crear, editar, eliminar y listar los platos disponibles.
+ *
+ * @package App\Controllers
+ */
 
 class PlatoController
 {
-    // Obtener todos los platos
+    /**
+     * Obtiene todos los platos
+     */
     public function obtenerPlatos($router)
     {
         try {
             $platos = Plato::obtenerTodos();
 
-            // ✅ Decodificar ingredientes antes de enviarlos al frontend
-            foreach ($platos as &$plato) {
+    /**
+     * De string a array
+     */            foreach ($platos as &$plato) {
                 if (isset($plato['ingredientes']) && is_string($plato['ingredientes'])) {
                     $plato['ingredientes'] = json_decode($plato['ingredientes'], true);
                 }
@@ -34,7 +45,9 @@ class PlatoController
         }
     }
 
-    // Obtener un plato por ID
+    /**
+     * Obtiene plato por la id 
+     */
     public function obtenerPorId($router, $params): array
     {
         $id = (int)$params["id"];
@@ -46,7 +59,7 @@ class PlatoController
                 return ["success" => false, "message" => "Plato no encontrado."];
             }
 
-            // ✅ Decodificar ingredientes si vienen como texto
+           
             if (isset($plato['ingredientes']) && is_string($plato['ingredientes'])) {
                 $plato['ingredientes'] = json_decode($plato['ingredientes'], true);
             }
@@ -58,7 +71,9 @@ class PlatoController
         }
     }
 
-    // Crear nuevo plato
+    /**
+     * Crea nuevo plato
+     */
     public function crearPlato($router): array
     {
         try {
@@ -83,7 +98,7 @@ class PlatoController
                 $imagenUrl = "/img/platos/" . $nombreArchivo;
             }
 
-            // ✅ Crear plato con ingredientes como array
+          
             $plato = new Plato(
                 $nombre,
                 $precio,
@@ -106,7 +121,9 @@ class PlatoController
         }
     }
 
-    // Actualizar plato existente
+    /**
+     * Actualiza plato
+     */    
     public function actualizarPlato($router, $params): array
     {
         $id = (int)$params["id"];
@@ -130,19 +147,18 @@ class PlatoController
 
             $ingredientesRaw = $_POST["ingredientes"] ?? "[]";
 
-if (is_string($ingredientesRaw)) {
-    $ingredientes = json_decode($ingredientesRaw, true);
-    if (!is_array($ingredientes)) {
-        $ingredientes = array_map("trim", explode(",", $ingredientesRaw));
-    }
-} elseif (is_array($ingredientesRaw)) {
-    $ingredientes = $ingredientesRaw;
-} else {
-    $ingredientes = [];
-}
+                if (is_string($ingredientesRaw)) {
+                    $ingredientes = json_decode($ingredientesRaw, true);
+                    if (!is_array($ingredientes)) {
+                        $ingredientes = array_map("trim", explode(",", $ingredientesRaw));
+                    }
+                } elseif (is_array($ingredientesRaw)) {
+                    $ingredientes = $ingredientesRaw;
+                } else {
+                    $ingredientes = [];
+                }
 
 
-            // ✅ Manejo de imagen (solo si se sube una nueva)
             $imagenUrl = $platoExistente["imagen_url"] ?? null;
             if (!empty($_FILES["imagen"]["name"])) {
                 $nombreArchivo = uniqid("plato_") . "_" . basename($_FILES["imagen"]["name"]);
@@ -151,11 +167,10 @@ if (is_string($ingredientesRaw)) {
                 $imagenUrl = "/img/platos/" . $nombreArchivo;
             }
 
-            // ✅ Crear objeto actualizado
             $plato = new Plato(
                 $nombre,
                 $precio,
-                $ingredientes, // <-- array, no JSON
+                $ingredientes,
                 $categoria,
                 $disponibilidad,
                 $activo,
@@ -178,8 +193,10 @@ if (is_string($ingredientesRaw)) {
         }
     }
 
-    // Desactivar plato
-    public function desactivarPlato($router, $params): array
+    /**
+     * Desactivar plato
+     */   
+     public function desactivarPlato($router, $params): array
     {
         $id = (int)$params["id"];
         try {

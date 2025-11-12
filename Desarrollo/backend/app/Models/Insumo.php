@@ -6,7 +6,14 @@ use App\Models\ModeloBase;
 use App\Models\Enums\Categoria;
 
 
-
+/**
+ * Clase Insumo
+ *
+ * Representa los insumos del restaurante utilizados en la preparación de platos.
+ * Gestiona su stock, actualización de cantidades y control de disponibilidad.
+ *
+ * @package App\Models
+ */
 class Insumo extends ModeloBase {
 
     // -- Atributos de la Base de Datos

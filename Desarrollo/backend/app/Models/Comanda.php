@@ -6,6 +6,14 @@ use DateTime;
 use App\Models\ModeloBase;
 use App\Models\Enums\EstadoComanda;
 
+/**
+ * Clase Comanda
+ *
+ * Representa las comandas registradas por los mozos en el restaurante.
+ * Gestiona el alta, actualización y eliminación de pedidos, así como su relación con mesas y usuarios.
+ *
+ * @package App\Models
+ */
 class Comanda extends ModeloBase {
 
     protected static string $pk_bd = "comanda_id";
