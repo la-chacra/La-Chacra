@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\ModeloBase;
-use App\Models\Enums\Categoria;
 
 
 /**
@@ -23,246 +22,241 @@ class Insumo extends ModeloBase {
 
     // -- Atributos de un Insumo del Inventario
     private ?int $insumo_id;
-    private string $nombre; 
-    private Categoria $categoria;
-    private int $cantidad;
-    private int $cantidadMinima;
-    private string $unidad; 
-    private float $precioUnitario;
+    private string $nombre;
+    private ?string $categoria;
+    private float $cantidad;
+    private float $cantidad_minima;
+    private ?string $unidad;
+    private ?int $precio_unitario;
+    private bool $activo;
 
-    // -- Constructor
-    public function __construct(string $nombre, Categoria $categoria, float $cantidad, float $cantidadMinima, string $unidad, float $precioUnitario) {
+    // Constructor
+    public function __construct(
+        string $nombre,
+        ?string $categoria,
+        float $cantidad,
+        float $cantidad_minima,
+        ?string $unidad,
+        ?int $precio_unitario,
+        bool $activo = true
+    ) {
         $this->insumo_id = null;
         $this->nombre = $nombre;
         $this->categoria = $categoria;
         $this->cantidad = $cantidad;
-        $this->cantidadMinima = $cantidadMinima;
+        $this->cantidad_minima = $cantidad_minima;
         $this->unidad = $unidad;
-        $this->precioUnitario = $precioUnitario;
+        $this->precio_unitario = $precio_unitario;
+        $this->activo = $activo;
     }
 
-    /**
-     * Crea una instancia del modelo Insumo basada en el ID de insumo proporcionado.
-     *
-     * Este método de fábrica estático recupera los datos del Insumo usando el ID dado,
-     * y retorna un nuevo objeto Insumo con los datos correspondientes.
-     * Si no se encuentra información para el ID especificado, retorna null.
-     *
-     * @param int $insumo_id El identificador único del Insumo a recuperar.
-     * @return Insumo|null La instancia de Insumo si se encuentra, o null si no.
-     */
-    public static function factory(int $insumo_id): ?Insumo {
-        $datos = self::encontrarPorID($insumo_id);
-        
-        if (empty($data)) {
-            return null;
-        }
+    public function registrarInsumo(): bool
+    {
+        $resultado = $this->crearRegistro([
+            "nombre" => $this->nombre,
+            "categoria" => $this->categoria,
+            "cantidad" => $this->cantidad,
+            "cantidad_minima" => $this->cantidad_minima,
+            "unidad" => $this->unidad,
+            "precio_unitario" => $this->precio_unitario,
+            "activo" => $this->activo ? 1 : 0
+        ]);
 
-        $insumo = new Insumo(
-            $datos["nombre"] ?? null,
-            $datos["categoria"] ?? null,
-            $datos["cantidad"] ?? null,
-            $datos["cantidad_minima"] ?? null,
-            $datos["unidad"] ?? null,
-            $datos["precio_unitario"] ?? null
-        );
-
-        $insumo->insumo_id = $datos["insumo_id"];
-        return $insumo;
-    }
-
-    /**
-     * Registra un nuevo insumo en la base de datos utilizando los atributos actuales del objeto.
-     * 
-     * Crea un registro con los datos del insumo (nombre, categoría, cantidad, cantidad mínima, unidad y precio unitario).
-     * Asigna automáticamente el ID generado al atributo local `insumo_id` del objeto.
-     *
-     * @see ModeloBase::crearRegistro()
-     * @return bool Retorna `true` si el registro fue creado exitosamente, `false` en caso contrario.
-     */
-    public function registrarInsumo () : bool{
-        $resultado = $this->crearRegistro(
-            [
-                "nombre"          => $this->nombre,
-                "categoria"       => $this->categoria,
-                "cantidad"        => $this->cantidad,
-                "cantidad_minima" => $this->cantidadMinima,
-                "unidad"          => $this->unidad,
-                "precioUnitario"  => $this->precioUnitario
-            ]
-        );
-
-        // Automaticamente asigna el ID al objeto de forma local
         $id = $this->encontrarUltimoRegistro();
-        $this->insumo_id = $id[static::$pk_bd];
+        $this->insumo_id = $id[static::$pk_bd] ?? null;
 
         return $resultado;
     }
 
-    /**
-     * Actualizar datos de un Insumo en una base de datos.
-     * 
-     * Actualiza un registro con los datos del insumo (nombre, categoría, cantidad, cantidad mínima, unidad y precio unitario).
-     * 
-     * @return bool Retorna `true` si el registro fue actualziado exitosamente, `false` en caso contrario.
-     */
-    public function actualizarInsumo () : bool {
-        return $this->actualizar(
-            [
-                "insumo_id"       => $this->insumo_id,
-                "nombre"          => $this->nombre,
-                "categoria"       => $this->categoria,
-                "cantidad"        => $this->cantidad,
-                "cantidad_minima" => $this->cantidadMinima,
-                "unidad"          => $this->unidad,
-                "precioUnitario"  => $this->precioUnitario
-            ]
-        );
+    public function actualizarInsumo(): bool
+    {
+        return $this->actualizar([
+            "insumo_id" => $this->insumo_id,
+            "nombre" => $this->nombre,
+            "categoria" => $this->categoria,
+            "cantidad" => $this->cantidad,
+            "cantidad_minima" => $this->cantidad_minima,
+            "unidad" => $this->unidad,
+            "precio_unitario" => $this->precio_unitario,
+            "activo" => $this->activo ? 1 : 0
+        ]);
     }
 
-    /**
-     * Elimina el registro de un Insumo dada su ID.
-     * 
-     * @return bool Retorna `true` si el registro fue eliminado exitosamente, `false` en caso contrario.
-     */
-    public function eliminarInsumo () : bool {
-        return $this->eliminar($this->insumo_id);
+    public function eliminarInsumo(): bool
+    {
+        return $this->actualizarActividad($this->insumo_id, false);
     }
 
-    /**
-     * Actualizar el estado de actividad de un Insumo en la Base de Datos.
-     * 
-     * @param bool $activo `true` o `false` según si se lo quiere activar o desactivar.
-     * @return bool Retorna `true` si el registro fue actualizado exitosamente, `false` en caso contrario.
-     */
-    public static function actualizarActividad (int $insumo_id, bool $activo) : bool {
-        return self::actualizar(
-            [
-                "insumo_id" => $insumo_id,
-                "activo"  => $activo
-            ]
-        );
-    }
-
-    /**
-     * Actualizar la cantidad de un Insumo en la Base de Datos.
-     * 
-     * @param bool $activo `true` o `false` según si se lo quiere activar o desactivar.
-     * @return bool Retorna `true` si el registro fue actualizado exitosamente, `false` en caso contrario.
-     */
-    public static function actualizarCantidad (int $insumo_id, int $cantidad) : bool {
-        // Se optó porque sea estático para que no sea necesario crear un objeto entero solamente
-        // para actualizar la cantidad.
-        return self::actualizar(
-            [
-                "insumo_id" => $insumo_id,
-                "cantidad"  => $cantidad
-            ]
-        );
-    }
-
-    /**
-     * Verficar si existe un Insumo en la base de datos
-     * 
-     * @return bool Retorna `true` si el insumo ya es existente, `false` en caso contrario.
-     */
-    public function esExistente(): bool{
-        $resultado = $this->encontrarPorID($this->insumo_id);
-        return !empty($resultado);
-    }
-
-     public static function obtenerHistorial(): array {
+    public static function obtenerInsumos(): array
+    {
         $consulta = "
-          SELECT 
-                ra.log_id,
-                ra.insumo_id,
-                ra.fecha_cambio,
-                ra.tipo_cambio,
-                ra.valor_antes,
-                ra.valor_despues,
-                ra.detalle AS motivo,
-                u.nombre AS usuario,
-                i.nombre AS nombre_insumo
-            FROM registro_actividades ra
-            JOIN usuario u ON ra.usuario_id = u.usuario_id
-            LEFT JOIN inventario i ON ra.insumo_id = i.insumo_id
-            ORDER BY ra.fecha_cambio DESC
+            SELECT 
+                insumo_id,
+                nombre,
+                categoria,
+                cantidad,
+                cantidad_minima,
+                unidad,
+                precio_unitario,
+                activo
+            FROM inventario
+            WHERE activo = 1
+            ORDER BY nombre ASC;
         ";
         return static::$conexion_bd->realizarConsulta($consulta);
     }
-    // public function actualizarDisponibilidad() {
 
-    // return $this->actualizar(
-    //     [
-    //         static::$pk_bd => $this->insumo_id,
-    //         "disponibilidad" => $this->disponiblidad
-    //     ]
-    // );
-    
+    /** Actualizar estado de actividad (borrado lógico) */
+    public static function actualizarActividad(int $insumo_id, bool $activo): bool
+    {
+        $estado = $activo ? 1 : 0;
+        $query = "UPDATE inventario SET activo = $estado WHERE insumo_id = $insumo_id";
+        return static::$conexion_bd->realizarConsulta($query) !== false;
+    }
+
+    // ------------------------------------------------------------------
     // Getters y Setters
-    
-    // Getter y setter para insumo_id
-    public function getInsumoId() : ?int {
+    // ------------------------------------------------------------------
+
+   
+
+    /**
+     * Get the value of insumo_id
+     */ 
+    public function getInsumoId()
+    {
         return $this->insumo_id;
     }
 
-    public function setInsumoId(int $insumo_id) {
+    /**
+     * Set the value of insumo_id
+     *
+     * @return  self
+     */ 
+    public function setInsumoId($insumo_id)
+    {
         $this->insumo_id = $insumo_id;
+
+        return $this;
     }
 
-    // Getter y setter para nombre
-    public function getNombre() : string {
-        return $this->nombre;
-    }
+        /**
+         * Get the value of nombre
+         */ 
+        public function getNombre()
+        {
+                return $this->nombre;
+        }
 
-    public function setNombre(string $nombre) {
-        $this->nombre = $nombre;
-    }
+        /**
+         * Set the value of nombre
+         *
+         * @return  self
+         */ 
+        public function setNombre($nombre)
+        {
+                $this->nombre = $nombre;
 
-    // Getter y setter para categoria
-    public function getCategoria() : Categoria {
+                return $this;
+        }
+
+    /**
+     * Get the value of categoria
+     */ 
+    public function getCategoria()
+    {
         return $this->categoria;
     }
 
-    public function setCategoria(Categoria $categoria) {
+    /**
+     * Set the value of categoria
+     *
+     * @return  self
+     */ 
+    public function setCategoria($categoria)
+    {
         $this->categoria = $categoria;
+
+        return $this;
     }
 
-    // Getter y setter para cantidad
-    public function getCantidad() : float {
-        return $this->cantidad;
+    /**
+     * Get the value of cantidad_minima
+     */ 
+    public function getCantidad_minima()
+    {
+        return $this->cantidad_minima;
     }
 
-    public function setCantidad(int $cantidad) {
-        $this->cantidad = $cantidad;
+    /**
+     * Set the value of cantidad_minima
+     *
+     * @return  self
+     */ 
+    public function setCantidad_minima($cantidad_minima)
+    {
+        $this->cantidad_minima = $cantidad_minima;
+
+        return $this;
     }
 
-    // Getter y setter para cantidadMinima
-    public function getCantidadMinima() : float {
-        return $this->cantidad;
-    }
-
-    public function setCantidadMinima(int $cantidadMinima) {
-        $this->cantidadMinima = $cantidadMinima;
-    }
-
-    // Getter y setter para unidad
-    public function getUnidad(): string {
+    /**
+     * Get the value of unidad
+     */ 
+    public function getUnidad()
+    {
         return $this->unidad;
     }
 
-    public function setUnidad(string $unidad) {
+    /**
+     * Set the value of unidad
+     *
+     * @return  self
+     */ 
+    public function setUnidad($unidad)
+    {
         $this->unidad = $unidad;
+
+        return $this;
     }
 
-    // Getter y setter para precioUnitario
-    public function getPrecioUnitario() : float {
-        return $this->precioUnitario;
+    /**
+     * Get the value of precio_unitario
+     */ 
+    public function getPrecio_unitario()
+    {
+        return $this->precio_unitario;
     }
 
-    public function setPrecioUnitario(float $precioUnitario) {
-        $this->precioUnitario = $precioUnitario;
+    /**
+     * Set the value of precio_unitario
+     *
+     * @return  self
+     */ 
+    public function setPrecio_unitario($precio_unitario)
+    {
+        $this->precio_unitario = $precio_unitario;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of activo
+     */ 
+    public function getActivo()
+    {
+        return $this->activo;
+    }
+
+    /**
+     * Set the value of activo
+     *
+     * @return  self
+     */ 
+    public function setActivo($activo)
+    {
+        $this->activo = $activo;
+
+        return $this;
     }
 }
-
-    

@@ -77,12 +77,11 @@ $router->get('/api/estadistica/obtenerRankingReservas', [EstadisticaController::
 $router->get('/api/estadistica/obtenerRankingVentas', [EstadisticaController::class, 'obtenerRankingVentas']);
 
 //API StockController
-$router->get("/api/stock", [StockController::class, "obtenerInsumos"]);
-$router->get("/api/stock/{id}", [StockController::class, "obtenerPorID"]);
-$router->post("/api/stock/registrar", [StockController::class, "registrarInsumo"]);
-$router->put("/api/stock/{id}/modificar", [StockController::class, "modificarInsumo"]);
-$router->put("/api/stock/{id}/desactivar", [StockController::class, "desactivarInsumo"]);
-$router->put("/api/stock/{id}/activar", [StockController::class, "activarInsumo"]);
+$router->get('/api/stock/{id}', [StockController::class, 'obtenerPorId']);
+$router->get('/api/stock', [StockController::class, 'obtener']);
+$router->post('/api/stock/registrar', [StockController::class, 'registrar']);
+$router->put('/api/stock/modificar/{id}', [StockController::class, 'modificar']);
+$router->delete('/api/stock/eliminar/{id}', [StockController::class, 'eliminar']);
 
 // API EmpleadoController
 $router->get("/api/empleado/obtener", [EmpleadoController::class, "obtenerEmpleados"]);
