@@ -20,8 +20,12 @@ namespace App\Models\Enums;
  * @package App\Models\Enums
  */
 enum Categoria : string {
-    case Carne = "Carne";
-    case Bebida = "Bebida";
+    case Carne = "Carnes";
+    case Bebida = "Bebidas";
+    case Lacteos = "Lacteos";
+    case Secos = "Secos";
+    case Frutas = "Frutas";
+    case Verduras = "Verduras";
     case Aderezos = "Aderezos";
     case Accesorios = "Accesorios";
     case Postres = "Postres";

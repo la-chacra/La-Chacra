@@ -29,6 +29,7 @@ import ReservasActuales from "./pages/Reserva/ReservaAdmin/ReservasActuales";
 // --- Testing ---
 import Test from "./pages/Admin/Test";
 import EnConstruccion from "./pages/Otros/EnConstruccion";
+import GestorProducto from "./pages/Stock/AñadirStock";
 
 function App() {
   const { cargando } = useAuth();
@@ -75,6 +76,10 @@ function App() {
           <Route path="/gestion/empleados-tabla" element={<EmpleadosTabla />} />
           <Route path="/gestion/empleado" element={<Empleados />} />
           <Route path="/gestion/empleado/:id" element={<Empleados />} />
+          <Route path="/gestion/stock" element={<GestionStock />} />
+          <Route path="/gestion/stock/nuevo" element={<GestorProducto />} />
+          <Route path="/gestion/stock/:id" element={<GestorProducto />} />
+
         </Route>
 
         {/* Página de acceso denegado */}

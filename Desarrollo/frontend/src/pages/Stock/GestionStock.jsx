@@ -8,12 +8,14 @@ import {
   faTrash,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom"; 
 import ControlBar from "../../components/ControlBar";
 import DatePicker from "../../components/DatePickerNormal";
 
 const GestionStock = () => {
   const [stock, setStock] = useState([]);
   const [filteredStock, setFilteredStock] = useState([]);
+  const [sortFilter, setSortFilter] = useState("Ordenar por");
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("Categoría");
   const [dateFilter, setDateFilter] = useState("Fecha");
@@ -21,8 +23,9 @@ const GestionStock = () => {
   const [selectedItems, setSelectedItems] = useState(new Set());
   const [openActionMenu, setOpenActionMenu] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate(); 
 
-  // 🔹 Cargar stock
+
   useEffect(() => {
     const cargarStock = async () => {
       try {
@@ -46,44 +49,61 @@ const GestionStock = () => {
     cargarStock();
   }, []);
 
-  useEffect(() => {
-    const result = stock.filter((item) => {
-      const matchesSearch = item.nombre
-        ?.toLowerCase()
-        .includes(searchTerm.toLowerCase());
-      const matchesCategory =
-        categoryFilter === "Categoría" ||
-        item.categoria?.toLowerCase() === categoryFilter.toLowerCase();
+ useEffect(() => {
+  let result = stock.filter((item) => {
+    const matchesSearch = item.nombre
+      ?.toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      categoryFilter === "Categoría" ||
+      item.categoria?.toLowerCase() === categoryFilter.toLowerCase();
 
-      const now = new Date();
-      let matchesDate = true;
+    const now = new Date();
+    let matchesDate = true;
 
-      if (item.fecha_creacion) {
-        const [day, month, yearTime] = item.fecha_creacion.split("-");
-        const [year, time] = yearTime.split(" ");
-        const fechaItem = new Date(`${year}-${month}-${day}T${time}`);
+    if (item.fecha_creacion) {
+      const [day, month, yearTime] = item.fecha_creacion.split("-");
+      const [year, time] = yearTime.split(" ");
+      const fechaItem = new Date(`${year}-${month}-${day}T${time}`);
 
-        if (dateFilter === "Hoy") {
-          matchesDate = fechaItem.toDateString() === now.toDateString();
-        } else if (dateFilter === "Esta semana") {
-          const startOfWeek = new Date(now);
-          startOfWeek.setDate(now.getDate() - now.getDay());
-          const endOfWeek = new Date(startOfWeek);
-          endOfWeek.setDate(startOfWeek.getDate() + 7);
-          matchesDate = fechaItem >= startOfWeek && fechaItem < endOfWeek;
-        } else if (dateFilter === "Este mes") {
-          matchesDate =
-            fechaItem.getMonth() === now.getMonth() &&
-            fechaItem.getFullYear() === now.getFullYear();
-        } else if (dateFilter === "Fecha personalizada" && selectedDate) {
-          matchesDate = fechaItem.toDateString() === selectedDate.toDateString();
-        }
+      if (dateFilter === "Hoy") {
+        matchesDate = fechaItem.toDateString() === now.toDateString();
+      } else if (dateFilter === "Esta semana") {
+        const startOfWeek = new Date(now);
+        startOfWeek.setDate(now.getDate() - now.getDay());
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 7);
+        matchesDate = fechaItem >= startOfWeek && fechaItem < endOfWeek;
+      } else if (dateFilter === "Este mes") {
+        matchesDate =
+          fechaItem.getMonth() === now.getMonth() &&
+          fechaItem.getFullYear() === now.getFullYear();
+      } else if (dateFilter === "Fecha personalizada" && selectedDate) {
+        matchesDate = fechaItem.toDateString() === selectedDate.toDateString();
       }
+    }
 
-      return matchesSearch && matchesCategory && matchesDate;
-    });
-    setFilteredStock(result);
-  }, [searchTerm, categoryFilter, dateFilter, selectedDate, stock]);
+    return matchesSearch && matchesCategory && matchesDate;
+  });
+
+  // Ordenamiento según filtro seleccionado
+  if (sortFilter === "Precio ↓") {
+    result.sort((a, b) => a.precio_unitario - b.precio_unitario);
+  } else if (sortFilter === "Precio ↑") {
+    result.sort((a, b) => b.precio_unitario - a.precio_unitario);
+  } else if (sortFilter === "Cantidad ↓") {
+    result.sort((a, b) => a.cantidad - b.cantidad);
+  } else if (sortFilter === "Cantidad ↑") {
+    result.sort((a, b) => b.cantidad - a.cantidad);
+  } else if (sortFilter === "Unidad (A-Z)") {
+    result.sort((a, b) => a.unidad.localeCompare(b.unidad));
+  } else if (sortFilter === "Unidad (Z-A)") {
+    result.sort((a, b) => b.unidad.localeCompare(a.unidad));
+  }
+
+  setFilteredStock(result);
+}, [searchTerm, categoryFilter, dateFilter, selectedDate, stock, sortFilter]);
+
 
   const handleSelectAll = (checked) => {
     if (checked) setSelectedItems(new Set(filteredStock.map((i) => i.insumo_id)));
@@ -97,55 +117,36 @@ const GestionStock = () => {
     setSelectedItems(newSelected);
   };
 
-  const handleAdd = () => alert("Añadir producto (pendiente de implementación)");
-
-  const handleEdit = async (producto) => {
-    const nuevoNombre = prompt("Nuevo nombre:", producto.nombre);
-    const nuevoPrecio = prompt("Nuevo precio unitario:", producto.precio_unitario);
-    if (!nuevoNombre || !nuevoPrecio) return;
-
-    try {
-      const res = await fetch(`/api/stock/${producto.insumo_id}/modificar`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nombre: nuevoNombre,
-          precio_unitario: parseFloat(nuevoPrecio),
-        }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setStock((prev) =>
-          prev.map((p) =>
-            p.insumo_id === producto.insumo_id
-              ? { ...p, nombre: nuevoNombre, precio_unitario: nuevoPrecio }
-              : p
-          )
-        );
-        alert("Producto actualizado correctamente");
-      } else alert("Error: " + data.message);
-    } catch (err) {
-      alert("Error al actualizar: " + err.message);
-    }
+  const handleAdd = () => {
+    navigate("/gestion/stock/nuevo");
   };
 
-  const handleDelete = async (producto) => {
-    if (!window.confirm(`¿Eliminar "${producto.nombre}" del inventario?`)) return;
+  const handleEdit = (id) => {
+    navigate(`/gestion/stock/${id}`);
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("¿Eliminar este producto?")) return;
+
     try {
-      const res = await fetch(`/api/stock/${producto.insumo_id}/desactivar`, {
-        method: "PUT",
+      const res = await fetch(`/api/stock/eliminar/${id}`, {
+        method: "DELETE",
+        credentials: "include",
       });
+
       const data = await res.json();
+
       if (data.success) {
-        setStock((prev) =>
-          prev.filter((p) => p.insumo_id !== producto.insumo_id)
-        );
-        alert("Producto eliminado correctamente");
+        alert("Producto eliminado (desactivado)");
+        setStock((prev) => prev.filter((p) => p.insumo_id !== id));
+      } else {
+        alert("Error: " + data.message);
       }
-    } catch (err) {
-      alert("Error al eliminar: " + err.message);
+    } catch (error) {
+      alert("Error al eliminar: " + error);
     }
   };
+
 
   const handleExport = () => {
     const ids = Array.from(selectedItems).join(",");
@@ -165,14 +166,32 @@ const GestionStock = () => {
       options: [
         "Categoría",
         "Carnes",
+        "Bebidas",
         "Lácteos",
         "Secos",
-        "Bebidas",
-        "Verduras",
         "Frutas",
-        "Higiene",
+        "Verduras",
+        "Aderezos",
+        "Condimentos",
+        "Accesorios",
+        "Postres",
       ],
     },
+    {
+  label: "Ordenar",
+  type: "select",
+  value: sortFilter,
+  onChange: setSortFilter,
+  options: [
+    "Ordenar por",
+    "Precio ↑",
+    "Precio ↓",
+    "Cantidad ↑",
+    "Cantidad ↓",
+    "Unidad (A-Z)",
+    "Unidad (Z-A)",
+  ],
+},
     {
       label: "Fecha",
       type: "date",
@@ -185,6 +204,7 @@ const GestionStock = () => {
         ),
     },
   ];
+  
 
   const buttons = [
     {
@@ -254,7 +274,9 @@ const GestionStock = () => {
             </thead>
             <tbody>
               {filteredStock.length > 0 ? (
-                filteredStock.map((p) => (
+                      filteredStock
+                        .filter((p) => p.activo) 
+                        .map((p) => (
                   <tr
                     key={p.insumo_id}
                     className={selectedItems.has(p.insumo_id) ? "hs-selected" : ""}
@@ -304,7 +326,7 @@ const GestionStock = () => {
                         <div className="tp-action-menu">
                           <button
                             className="tp-action-item tp-edit"
-                            onClick={() => handleEdit(p)}
+                            onClick={() => handleEdit(p.insumo_id)}
                           >
                             <FontAwesomeIcon
                               icon={faPen}
@@ -314,7 +336,7 @@ const GestionStock = () => {
                           </button>
                           <button
                             className="tp-action-item tp-delete"
-                            onClick={() => handleDelete(p)}
+                            onClick={() => handleDelete(p.insumo_id)}
                           >
                             <FontAwesomeIcon
                               icon={faTrash}
