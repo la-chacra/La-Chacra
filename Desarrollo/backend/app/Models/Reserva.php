@@ -7,6 +7,14 @@ use App\Models\Usuario;
 use App\Models\Enums\EstadoReserva;
 use DateTime;
 
+/**
+ * Clase Reserva
+ *
+ * Representa las reservas realizadas por los usuarios en el restaurante.
+ * Gestiona su registro, actualización, eliminación y obtención.
+ *
+ * @package App\Models
+ */
 class Reserva extends ModeloBase {
 
     // -- Atributos de la Base de Datos

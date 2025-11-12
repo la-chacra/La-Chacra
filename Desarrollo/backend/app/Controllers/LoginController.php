@@ -4,8 +4,20 @@ namespace App\Controllers;
 
 use App\Models\Cliente;
 use App\Services\ContrasenaService;
+/**
+ * Controlador LoginController
+ *
+ * Gestiona el inicio de sesión de los usuarios.
+ * Valida credenciales y define los roles de acceso (cliente, mozo, administrador).
+ *
+ * @package App\Controllers
+ */
 
 class LoginController {
+
+    /**
+     * se logea con datos de la bd
+     */
         public function login($router) : array {
         
         $datos = json_decode(file_get_contents("php://input"), true);
@@ -16,15 +28,19 @@ class LoginController {
             return ["success" => false, "message" => "Correo y contraseña son obligatorios"];
         }
 
-        // Buscar usuario
+    /**
+     * Busca usuario
+     */
         $usuario = Cliente::encontrarPorCorreo($correo);
 
         if (!$usuario) {
             return ["success" => false, "message" => "Usuario no encontrado"];
         }
 
-        // Verificar contraseña (comparar con hash guardado en BD)
-        if (ContrasenaService::verificarPass($contrasena, $usuario["contrasena"])) {
+    /**
+     * Verifica contreseña
+     */       
+     if (ContrasenaService::verificarPass($contrasena, $usuario["contrasena"])) {
 
             $_SESSION["usuario_id"] = $usuario["usuario_id"];
             $_SESSION["nombre"] = $usuario["nombre"];

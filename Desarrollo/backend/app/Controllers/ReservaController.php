@@ -7,9 +7,21 @@ use App\Models\Reserva;
 use App\Services\ControllerService;
 use DateTime;
 use Exception;
+/**
+ * Controlador ReservaController
+ *
+ * Gestiona las reservas de mesas realizadas por los clientes.
+ * Permite crear, editar, cancelar y consultar reservas.
+ *
+ * @package App\Controllers
+ */
 
 class ReservaController {
 
+    /**
+     * Obtiene todas las reservas
+     * 
+     */
     public function obtenerReservas($router) {
         try {
             $reservas = ControllerService::handlerErrorConexion(
@@ -23,6 +35,10 @@ class ReservaController {
         }
     }
 
+    /**
+     * Obtiene la reserva por ID
+     * 
+     */
     public function obtenerPorID($router, $params) {
         $id = $params["id"];
         try {
@@ -42,6 +58,10 @@ class ReservaController {
         }
     }
 
+    /**
+     * Registra la reserva
+     * 
+     */
     public function registrar($router): array {
         try {
             $datos = json_decode(file_get_contents("php://input"), true);
@@ -69,7 +89,10 @@ class ReservaController {
 
   
 
-
+    /**
+     * Desactiva la reserva
+     * 
+     */
 public function desactivarReserva($router, $params) {
     try {
         $id = $params["id"];
@@ -86,7 +109,10 @@ public function desactivarReserva($router, $params) {
         return ["success" => false, "message" => "Error interno del servidor"];
     }
 }
-
+/**
+     * Avisa si llego el cliente que solicito la reserva
+     * 
+     */
 public function marcarLlegada($router, $params) {
     $id = (int)$params["id"] ?? null;
 
@@ -98,8 +124,10 @@ public function marcarLlegada($router, $params) {
     }
 
     try {
-        // Verificar que exista
-        $datosReserva = ControllerService::handlerErrorConexion(fn() => Reserva::encontrarPorID($id));
+/**
+     * verifica que el cliente exsita
+     * 
+     */        $datosReserva = ControllerService::handlerErrorConexion(fn() => Reserva::encontrarPorID($id));
         if (!$datosReserva) {
             return [
                 "success" => false,

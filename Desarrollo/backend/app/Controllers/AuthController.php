@@ -1,6 +1,13 @@
 <?php
 namespace App\Controllers;
-
+/**
+ * Controlador AuthController
+ *
+ * Gestiona la autenticación de usuarios en el sistema.
+ * Controla el inicio y cierre de sesión, así como la verificación de credenciales.
+ *
+ * @package App\Controllers
+ */
 class AuthController {
     public function estadoSesion($router): array {
         if (isset($_SESSION["usuario_id"])) {

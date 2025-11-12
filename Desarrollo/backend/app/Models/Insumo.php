@@ -4,23 +4,23 @@ namespace App\Models;
 
 use App\Models\ModeloBase;
 
-class Insumo extends ModeloBase
-{
-    // Atributos de la Base de Datos
-    protected static string $pk_bd      = "insumo_id";
-    protected static string $tabla_bd   = "inventario";
-    protected static array  $columnas_bd = [
-        "insumo_id",
-        "nombre",
-        "categoria",
-        "cantidad",
-        "cantidad_minima",
-        "unidad",
-        "precio_unitario",
-        "activo"
-    ];
 
-    // Atributos
+/**
+ * Clase Insumo
+ *
+ * Representa los insumos del restaurante utilizados en la preparación de platos.
+ * Gestiona su stock, actualización de cantidades y control de disponibilidad.
+ *
+ * @package App\Models
+ */
+class Insumo extends ModeloBase {
+
+    // -- Atributos de la Base de Datos
+    protected static string $pk_bd = "insumo_id";
+    protected static string $tabla_bd = "inventario";
+    protected static array $columnas_bd = ["insumo_id", "nombre", "categoria", "cantidad", "cantidad_minima", "unidad", "precio_unitario", "activo"];
+
+    // -- Atributos de un Insumo del Inventario
     private ?int $insumo_id;
     private string $nombre;
     private ?string $categoria;

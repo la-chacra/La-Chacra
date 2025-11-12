@@ -6,6 +6,14 @@ use App\Models\Insumo;
 use App\Models\Enums\Categoria;
 use App\Services\ControllerService;
 use Exception;
+/**
+ * Controlador StockController
+ *
+ * Controla las operaciones de gestión de stock de insumos y productos.
+ * Permite consultar, actualizar y notificar sobre niveles bajos de inventario.
+ *
+ * @package App\Controllers
+ */
 
 class StockController {
 

@@ -6,7 +6,14 @@ use DateTime;
 use App\Models\Comanda;
 use App\Models\Enums\EstadoComanda;
 use App\Services\ControllerService;
-
+/**
+ * Controlador ComandaController
+ *
+ * Gestiona las operaciones relacionadas con las comandas:
+ * creación, actualización de estado, impresión y eliminación.
+ *
+ * @package App\Controllers
+ */
 class ComandaController {
 
     /**

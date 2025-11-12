@@ -9,17 +9,3 @@ class Administrador extends Usuario {
       parent::__construct($nombre, $apellido, $correo, $contrasena, $fecha_nacimiento, "A");
    }
 }
-
-   // Comentados : deben ser controladores
-    // public function gestionarUsuarios(){
-        
-    // }
-    // public function gestionarStock(){
-        
-    // }
-    // public function gestionarPlatos(){
-        
-    // }
-    // public function verEstadisticas(){
-        
-    // }
