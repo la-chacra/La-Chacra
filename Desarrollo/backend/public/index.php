@@ -47,6 +47,7 @@ $router->post('/api/reservas/cancelar', [ReservaController::class, 'cancelar']);
 
 //API Reserva Admin
 $router->get("/api/reservas/obtener", [ReservaController::class, "obtenerReservas"]);
+$router->post("/api/reservas/registrar", [ReservaController::class, "registrar"]);
 $router->get("/api/reservas/obtener/{id}", [ReservaController::class, "obtenerPorID"]);
 $router->put("/api/reservas/modificar/{id}", [ReservaController::class, "modificarReserva"]);
 $router->delete('/api/reservas/desactivar/{id}', [ReservaController::class, 'desactivarReserva']);

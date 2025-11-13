@@ -45,6 +45,7 @@ class AuthMiddleware {
                Rutas definidas en public/index.php usan el prefijo /api/gestion/comanda */
             "/api/gestion/comanda/crear",
             "/api/gestion/comanda/actualizar",
+            
             /* si en el futuro existe un endpoint de listado para empleados, agregarlo aquí */
         ],
         "A" => [ // A = admin

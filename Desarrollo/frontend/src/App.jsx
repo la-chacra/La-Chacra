@@ -29,6 +29,7 @@ import EmpleadosTabla from "./pages/Empleados/EmpleadosTabla";
 import Test from "./pages/Admin/Test";
 import EnConstruccion from "./pages/Otros/EnConstruccion";
 import GestorProducto from "./pages/Stock/AñadirStock";
+import ReservaAgregar from "./pages/Reserva/ReservaAdmin/AñadirReserva";
 
 function App() {
   const { cargando } = useAuth();
@@ -77,6 +78,8 @@ function App() {
           <Route path="/gestion/stock" element={<GestionStock />} />
           <Route path="/gestion/stock/nuevo" element={<GestorProducto />} />
           <Route path="/gestion/stock/:id" element={<GestorProducto />} />
+          <Route path="/gestion/reserva/agregar" element={<ReservaAgregar />} />
+
 
         </Route>
 

@@ -14,7 +14,6 @@ export default function HistorialRes() {
   const [selected, setSelected] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 Cargar reservas
   useEffect(() => {
     const fetchReservas = async () => {
       try {
@@ -37,7 +36,6 @@ export default function HistorialRes() {
     fetchReservas();
   }, []);
 
-  // 🔹 Filtro y búsqueda
   useEffect(() => {
     const result = reservas.filter((r) => {
       const matchesSearch =
@@ -51,7 +49,6 @@ export default function HistorialRes() {
     setFilteredReservas(result);
   }, [search, filterEstado, reservas]);
 
-  // 🔹 Selección múltiple
   const toggleSelectAll = () => {
     if (selected.length === filteredReservas.length) setSelected([]);
     else setSelected(filteredReservas.map((r) => r.reserva_id));
@@ -65,7 +62,6 @@ export default function HistorialRes() {
     );
   };
 
-  // 🔹 Eliminar reserva
   const desactivarReserva = async (reserva_id) => {
     if (!window.confirm("¿Seguro que deseas eliminar esta reserva?")) return;
 
@@ -87,13 +83,11 @@ export default function HistorialRes() {
     }
   };
 
-  // 🔹 Limpiar filtros
   const handleClearFilters = () => {
     setSearch("");
     setFilterEstado("");
   };
 
-  // 🔹 Exportar reservas
   const handleExport = () => {
     if (selected.length > 0) {
       const ids = selected.join(",");
@@ -103,7 +97,6 @@ export default function HistorialRes() {
     }
   };
 
-  // 🔹 Configuración de filtros
   const filters = [
     {
       label: "Estado",
@@ -114,12 +107,11 @@ export default function HistorialRes() {
     },
   ];
 
-  // 🔹 Botones de acción
   const buttons = [
     {
       label: "Añadir reserva",
       icon: faPlus,
-      onClick: () => navigate("/gestion/reserva"),
+      onClick: () => navigate("/gestion/reserva/agregar"),
     },
     {
       label: selected.length > 0 ? "Exportar seleccionadas" : "Exportar",
@@ -144,7 +136,6 @@ export default function HistorialRes() {
       <Header />
 
       <div className="hs-history-content space-y-6">
-        {/* 🔹 BARRA DE CONTROL UNIFICADA */}
         <ControlBar
           searchValue={search}
           onSearchChange={setSearch}
@@ -153,7 +144,6 @@ export default function HistorialRes() {
           buttons={buttons}
         />
 
-        {/* 🔹 TABLA DE RESERVAS */}
         <div className="hs-table-container">
           <table className="hs-history-table">
             <thead>
@@ -242,7 +232,6 @@ export default function HistorialRes() {
           </table>
         </div>
 
-        {/* 🔹 TOTAL SELECCIONADO */}
         {selected.length > 0 && (
           <div className="mt-4 bg-[#0D0F10] text-white p-4 rounded-md flex justify-between items-center shadow-lg">
             <p className="font-semibold">
