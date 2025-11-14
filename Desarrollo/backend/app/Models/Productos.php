@@ -4,7 +4,14 @@ namespace App\Models;
 
 use App\Models\ModeloBase;
 
-
+/**
+ * Clase Productos
+ *
+ * Gestiona la información general de los productos del restaurante (platos, bebidas, postres, etc.).
+ * Permite la búsqueda, listado y filtrado de productos activos.
+ *
+ * @package App\Models
+ */
 class Producto extends ModeloBase {
 
     // -- Atributos de la Base de Datos

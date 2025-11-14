@@ -111,6 +111,10 @@ class EstadisticaController {
     ];
 }
 
+/**
+     * Muestra el dashboard
+     * 
+     */
 public function obtenerDashboard($router) {
     try {
         $topPlatos = ControllerService::handlerErrorConexion(fn() => Estadistica::obtenerTopPlatos());
@@ -147,7 +151,11 @@ public function obtenerDashboard($router) {
             return ["success" => false, "message" => "No se encontraron datos de tendencias estacionales", "data" => []];
         }
 
-        // Convertir el string de productos en array
+        /**
+     * De string a array
+   
+     * 
+     */
         foreach ($tendencias as &$fila) {
             if (!empty($fila["productos"])) {
                 $fila["productos"] = array_map("trim", explode(",", $fila["productos"]));

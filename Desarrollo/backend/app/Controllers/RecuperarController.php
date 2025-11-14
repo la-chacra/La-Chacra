@@ -142,7 +142,9 @@ class RecuperarController {
             return;
         }
 
-        // Actualizar contraseña
+        /**
+     * Actualiza passw
+     */
         $hash = password_hash($nuevaPassword, PASSWORD_DEFAULT);
         $usuario = Usuario::encontrarPorCorreo($correo);
         if (!$usuario) {

@@ -10,8 +10,21 @@ use App\Services\ContrasenaService;
 use DateTime;
 use Exception;
 
+/**
+ * Controlador EmpleadoController
+ *
+ * Administra las operaciones de gestión de empleados del sistema.
+ * Permite agregar, editar y eliminar registros de mozos y administradores.
+ *
+ * @package App\Controllers
+ */
 class EmpleadoController {
 
+    /**
+     * Obtiene todos los empleados 
+     * Con valores de la bd
+     * 
+     */
     public function obtenerEmpleados ($router) {
         try {
             $usuarios = ControllerService::handlerErrorConexion(fn() => Usuario::obtenerUsuariosPorTipo(["A", "E"]));
@@ -43,7 +56,11 @@ class EmpleadoController {
 
         return ["success" => true, "message" => "Usuarios obtenidos con éxito", "data" => $admins_empleados];
     }
-
+  /**
+     * Obtiene todos los empleados por su id
+     * Con valores de la bd
+     * 
+     */
     public static function obtenerPorID($router, $params) {
 
         $id = $params["id"];
@@ -72,6 +89,11 @@ class EmpleadoController {
         }
     }
 
+      /**
+     * Modifica el empleado 
+     * Cambiando los valores de la bd
+     * 
+     */
     public function modificarEmpleado($router, $params) {
 
         $datos = json_decode(file_get_contents("php://input"), true);
@@ -118,6 +140,11 @@ class EmpleadoController {
         }
     }
 
+      /**
+     * Agrega un empleado nuevo
+     * Agregando valores a la bd
+     * 
+     */
     public function registrarEmpleado ($router): array {
         try {
             $datos = json_decode(file_get_contents("php://input"), true);
@@ -154,12 +181,10 @@ class EmpleadoController {
                 return ["success" => false, "message" => "Rol inválido"];
             }
 
-            // fix: da error
-            // if($usuario->esExistente()) {
-            //     return ["success" => false, "message" => "El usuario ya está registrado"];
-            // }
-
-            // Registrar en BD
+          /**
+     * Registra en la bd
+     * 
+     */
             $resultado = ControllerService::handlerErrorConexion(fn() => $usuario->registrarUsuario());
             
             return $resultado ? ["success" => true, "message" => "Usuario registrado correctamente"] : ["success" => false, "message" => "Error al registrar el usuario"];
@@ -169,6 +194,12 @@ class EmpleadoController {
         }
     }
 
+      /**
+     * Desactiva al empleado 
+     * Desactivandolo en la bd
+     * activo = 0
+     * 
+     */
     public function desactivarEmpleado($router, $params) {
         try {
             $id = $params["id"];
@@ -182,6 +213,11 @@ class EmpleadoController {
         }
     }
 
+      /**
+     * Exporta todos los empleados 
+     * Se lo hace a excel
+     * 
+     */
     public function exportarUsuarios($router) {
         try {
             $ids = $_GET["ids"] ?? null;

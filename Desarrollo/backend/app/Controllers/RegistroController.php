@@ -4,8 +4,20 @@ namespace App\Controllers;
 
 use App\Models\Cliente;
 use App\Services\ContrasenaService;
+/**
+ * Controlador RegistroController
+ *
+ * Gestiona el registro de nuevos usuarios en el sistema.
+ * Valida los datos de registro y genera las cuentas de cliente.
+ *
+ * @package App\Controllers
+ */
 
 class RegistroController {
+
+    /**
+     * Registra en la bd
+     */
     public function registrar($router): array {
 
         $datos = json_decode(file_get_contents("php://input"), true);

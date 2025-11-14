@@ -4,8 +4,14 @@ namespace App\Models;
 
 use App\Config\Database;
 
-// Arreglar validaciones, agregar excepciones de la bd (que si la bd no responde, lance una ex)
-
+/**
+ * Clase ModeloBase
+ *
+ * Clase abstracta que sirve como base para todos los modelos del sistema.
+ * Proporciona los métodos genéricos de conexión, CRUD y mapeo con la base de datos.
+ *
+ * @package App\Models
+ */
 abstract class ModeloBase {
 
     protected static $conexion_bd;
