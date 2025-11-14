@@ -4,7 +4,7 @@ session_start();
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require './vendor/autoload.php';
 
 use Router\Router;
 use Config\Database;
