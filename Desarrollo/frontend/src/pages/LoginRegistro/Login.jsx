@@ -1,22 +1,29 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle, faFacebookF } from "@fortawesome/free-brands-svg-icons";
+
 import Header from "../../components/HeaderUnificado";
 import Footer from "../../components/Footer";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { loginUsuario } from "../../services/authService";
+
+import WindowWarning from "../../components/Alert";
+
 import logo2 from "../../assets/logo2.png";
 import fuego from "../../assets/fuego.gif";
 
 const Auth = () => {
   const location = useLocation();
-  // Si venimos con location.state.openRegister=true, abrimos el panel de registro
-  const [esRegistrado, setesRegistrado] = useState(() => !!location.state?.openRegister);
+  const navigate = useNavigate();
+  const { usuario, login, checkSesion } = useAuth();
+
+  const [esRegistrado, setesRegistrado] = useState(
+    () => !!location.state?.openRegister
+  );
   const [hoveredPanel, setHoveredPanel] = useState(null);
 
-  // Estados para formulario de Registro
+  // Estados Registro
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [regCorreo, setRegCorreo] = useState("");
@@ -24,14 +31,47 @@ const Auth = () => {
   const [confirmarContrasena, setConfirmarContrasena] = useState("");
   const [fechaNacimiento, setFechaNacimiento] = useState("");
 
-  // Estados para formulario de Login
+  // Estados Login
   const [loginCorreo, setLoginCorreo] = useState("");
   const [loginContrasena, setLoginContrasena] = useState("");
 
-  const navigate = useNavigate();
-  const { usuario, login, checkSesion } = useAuth();
+  // ALERTA CUSTOM
+  const [alertData, setAlertData] = useState({
+    visible: false,
+    message: "",
+    icon: "warning",
+    type: "alert",
+    onConfirm: null,
+    onCancel: null,
+  });
 
-    if (usuario) {
+  const showAlert = ({
+    message,
+    icon = "warning",
+    type = "alert",
+    onConfirm = () =>
+      setAlertData((prev) => ({
+        ...prev,
+        visible: false,
+      })),
+    onCancel = () =>
+      setAlertData((prev) => ({
+        ...prev,
+        visible: false,
+      })),
+  }) => {
+    setAlertData({
+      visible: true,
+      message,
+      icon,
+      type,
+      onConfirm,
+      onCancel,
+    });
+  };
+
+  // SI YA ESTÁ LOGEADO
+  if (usuario) {
     return (
       <>
         <Header />
@@ -56,40 +96,54 @@ const Auth = () => {
     );
   }
 
+  // LOGIN
   const handleLogin = async (e) => {
     e.preventDefault();
 
     if (!loginCorreo || !loginContrasena) {
-      alert("Debe ingresar correo y contraseña");
+      showAlert({
+        message: "Debe ingresar correo y contraseña",
+        icon: "warning",
+      });
       return;
     }
 
     try {
-      const result = await loginUsuario({ loginCorreo, loginContrasena });
+      const result = await loginUsuario({
+        loginCorreo,
+        loginContrasena,
+      });
 
       if (result.success) {
-        // actualizar contexto si el backend devolvió usuario
         if (result.usuario) login(result.usuario);
 
-        // Aseguramos estado fresco del servidor (opcional)
         if (checkSesion) await checkSesion();
 
-        // redirigir a inicio
         navigate("/");
       } else {
-        alert(result.message || "Credenciales inválidas");
+        showAlert({
+          message: result.message || "Credenciales inválidas",
+          icon: "error",
+        });
       }
     } catch (error) {
       console.error("Error en login:", error);
-      alert("Error de conexión con el servidor");
+      showAlert({
+        message: "Error de conexión con el servidor",
+        icon: "error",
+      });
     }
   };
 
+  // REGISTRO
   const handleRegister = async (e) => {
     e.preventDefault();
 
     if (regContrasena !== confirmarContrasena) {
-      alert("Las contraseñas no coinciden");
+      showAlert({
+        message: "Las contraseñas no coinciden",
+        icon: "warning",
+      });
       return;
     }
 
@@ -108,44 +162,80 @@ const Auth = () => {
       });
 
       const dataRes = await res.json();
-      console.log("Register response:", dataRes);
 
       if (dataRes.success) {
-        alert("Usuario registrado correctamente");
+        showAlert({
+          message: "Usuario registrado correctamente",
+          icon: "success",
+        });
 
-        // Intentamos obtener sesión/actualizar contexto si el backend inició sesión automáticamente
         if (checkSesion) await checkSesion();
 
-        // Navegar a inicio
         navigate("/");
       } else {
-        alert("Error: " + dataRes.message);
+        showAlert({
+          message: "Error: " + dataRes.message,
+          icon: "error",
+        });
       }
     } catch (error) {
       console.error("Error en registro:", error);
-      alert("Error de conexión con el servidor");
+      showAlert({
+        message: "Error de conexión con el servidor",
+        icon: "error",
+      });
     }
   };
 
   return (
     <>
       <Header />
+
+      {alertData.visible && (
+        <WindowWarning
+          type={alertData.type}
+          message={alertData.message}
+          icon={alertData.icon}
+          onConfirm={alertData.onConfirm}
+          onCancel={alertData.onCancel}
+        />
+      )}
+
       <div className="auth-page">
-        <div className={`auth-container fade-in-up ${esRegistrado ? "right-panel-active" : ""}`}>
-          
-          {/* FORMULARIOS PARA DESKTOP */}
+        <div
+          className={`auth-container fade-in-up ${
+            esRegistrado ? "right-panel-active" : ""
+          }`}
+        >
+          {/* REGISTRO – DESKTOP */}
           <div className="form-container sign-up-container">
             <form onSubmit={handleRegister}>
               <h2 className="auth-title">REGISTRO</h2>
+
               <div className="input-group">
-                <input type="text" name="nombre" placeholder="Nombre" value={nombre} onChange={(e) => setNombre(e.target.value)}/>
-                <input type="text" name="apellido" placeholder="Apellido" value={apellido} onChange={(e) => setApellido(e.target.value)}/>
-              </div>
-              <div className="input-group">
-                <input type="email" name="regCorreo" placeholder="Correo electrónico" value={regCorreo} onChange={(e) => setRegCorreo(e.target.value)} />
                 <input
                   type="text"
-                  name="fechaNacimiento"
+                  placeholder="Nombre"
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                />
+                <input
+                  type="text"
+                  placeholder="Apellido"
+                  value={apellido}
+                  onChange={(e) => setApellido(e.target.value)}
+                />
+              </div>
+
+              <div className="input-group">
+                <input
+                  type="email"
+                  placeholder="Correo electrónico"
+                  value={regCorreo}
+                  onChange={(e) => setRegCorreo(e.target.value)}
+                />
+                <input
+                  type="text"
                   placeholder="__/__/____"
                   onFocus={(e) => (e.target.type = "date")}
                   onBlur={(e) => (e.target.type = "text")}
@@ -153,35 +243,65 @@ const Auth = () => {
                   onChange={(e) => setFechaNacimiento(e.target.value)}
                 />
               </div>
-              <input type="password" name="regContrasena" placeholder="Contraseña" value={regContrasena} onChange={(e) => setRegContrasena(e.target.value)}/>
-              <input type="password" name="confirmarContrasena" placeholder="Confirme su contraseña" value={confirmarContrasena} onChange={(e) => setConfirmarContrasena(e.target.value)}/>
+
+              <input
+                type="password"
+                placeholder="Contraseña"
+                value={regContrasena}
+                onChange={(e) => setRegContrasena(e.target.value)}
+              />
+
+              <input
+                type="password"
+                placeholder="Confirme su contraseña"
+                value={confirmarContrasena}
+                onChange={(e) => setConfirmarContrasena(e.target.value)}
+              />
+
               <button type="submit" className="auth-btn">
                 REGISTRARSE
               </button>
-              <p className="auth-or">o continua con...</p>
-              <div className="social-login">
+
+              {/* <p className="auth-or">o continua con...</p> */}
+
+              {/* <div className="social-login">
                 <button type="button">
                   <FontAwesomeIcon icon={faGoogle} /> Google
                 </button>
                 <button type="button">
                   <FontAwesomeIcon icon={faFacebookF} /> Facebook
                 </button>
-              </div>
+              </div> */}
             </form>
           </div>
 
-          {/* FORMULARIO LOGIN */}
+          {/* LOGIN – DESKTOP */}
           <div className="form-container sign-in-container">
             <form onSubmit={handleLogin}>
               <h2 className="auth-title">INICIO DE SESIÓN</h2>
+
               <label>Correo Electrónico</label>
-              <input type="email" id="LogCorreo" name="loginCorreo" placeholder="Ingrese su correo electrónico" value={loginCorreo} onChange={(e) => setLoginCorreo(e.target.value)}/>
+              <input
+                type="email"
+                placeholder="Ingrese su correo electrónico"
+                value={loginCorreo}
+                onChange={(e) => setLoginCorreo(e.target.value)}
+              />
+
               <label>Contraseña</label>
-              <input type="password" id="LogContrasena" name="loginContrasena" placeholder="Ingrese su contraseña" value={loginContrasena} onChange={(e) => setLoginContrasena(e.target.value)}/>
+              <input
+                type="password"
+                placeholder="Ingrese su contraseña"
+                value={loginContrasena}
+                onChange={(e) => setLoginContrasena(e.target.value)}
+              />
+
               <button type="submit" className="auth-btn">
                 INICIAR SESIÓN
               </button>
-              <p className="auth-or">o continua con...</p>
+
+              {/* <p className="auth-or">o continua con...</p> */}
+{/* 
               <div className="social-login">
                 <button type="button">
                   <FontAwesomeIcon icon={faGoogle} /> Google
@@ -189,7 +309,7 @@ const Auth = () => {
                 <button type="button">
                   <FontAwesomeIcon icon={faFacebookF} /> Facebook
                 </button>
-              </div>
+              </div> */}
             </form>
           </div>
 
@@ -200,7 +320,9 @@ const Auth = () => {
                 <div className="auth-logo">
                   <img src={logo2} alt="La Chacra Logo" />
                 </div>
+
                 <p>¿YA TENÉS UNA CUENTA?</p>
+
                 <button
                   type="button"
                   className="switch-btn"
@@ -210,10 +332,13 @@ const Auth = () => {
                 >
                   INICIA SESIÓN
                 </button>
+
                 <img
                   src={fuego}
                   alt="Fuego"
-                  className={`fuego-gif ${hoveredPanel === "left" ? "show" : ""}`}
+                  className={`fuego-gif ${
+                    hoveredPanel === "left" ? "show" : ""
+                  }`}
                 />
               </div>
 
@@ -221,7 +346,9 @@ const Auth = () => {
                 <div className="auth-logo">
                   <img src={logo2} alt="La Chacra Logo" />
                 </div>
+
                 <p>¿NO TENÉS UNA CUENTA?</p>
+
                 <button
                   type="button"
                   className="switch-btn"
@@ -231,86 +358,154 @@ const Auth = () => {
                 >
                   REGISTRATE
                 </button>
+
                 <img
                   src={fuego}
                   alt="Fuego"
-                  className={`fuego-gif ${hoveredPanel === "right" ? "show" : ""}`}
+                  className={`fuego-gif ${
+                    hoveredPanel === "right" ? "show" : ""
+                  }`}
                 />
               </div>
             </div>
           </div>
 
-          {/* FORMULARIOS MÓVIL */}
+          {/* FORMULARIOS MOBILE */}
           <div className="form-container-mobile">
             {esRegistrado ? (
-              <form className="sign-up-container-mobile" onSubmit={handleRegister}>
-                <h2 className="auth-title">REGISTRO</h2>
-                <div className="input-group">
-                  <input type="text" name="nombre" placeholder="Nombre" value={nombre} onChange={(e) => setNombre(e.target.value)}/>
-                  <input type="text" name="apellido" placeholder="Apellido" value={apellido} onChange={(e) => setApellido(e.target.value)}/>
-                </div>
-                <div className="input-group">
-                  <input type="email" name="regCorreo" placeholder="Correo" value={regCorreo} onChange={(e) => setRegCorreo(e.target.value)}/>
+              <>
+                <form
+                  className="sign-up-container-mobile"
+                  onSubmit={handleRegister}
+                >
+                  <h2 className="auth-title">REGISTRO</h2>
+
+                  <div className="input-group">
+                    <input
+                      type="text"
+                      placeholder="Nombre"
+                      value={nombre}
+                      onChange={(e) => setNombre(e.target.value)}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Apellido"
+                      value={apellido}
+                      onChange={(e) => setApellido(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="input-group">
+                    <input
+                      type="email"
+                      placeholder="Correo"
+                      value={regCorreo}
+                      onChange={(e) => setRegCorreo(e.target.value)}
+                    />
+
+                    <input
+                      type="text"
+                      placeholder="__/__/____"
+                      onFocus={(e) => (e.target.type = "date")}
+                      onBlur={(e) => (e.target.type = "text")}
+                      value={fechaNacimiento}
+                      onChange={(e) => setFechaNacimiento(e.target.value)}
+                    />
+                  </div>
+
                   <input
-                    type="text"
-                    name="fechaNacimiento"
-                    placeholder="__/__/____"
-                    onFocus={(e) => (e.target.type = "date")}
-                    onBlur={(e) => (e.target.type = "text")}
-                    value={fechaNacimiento}
-                    onChange={(e) => setFechaNacimiento(e.target.value)}
+                    type="password"
+                    placeholder="Contraseña"
+                    value={regContrasena}
+                    onChange={(e) => setRegContrasena(e.target.value)}
                   />
-                </div>(
-                <input type="password" name="regContrasena" placeholder="Contraseña" value={regContrasena} onChange={(e) => setRegContrasena(e.target.value)}/>
-                <input type="password" name="confirmarContrasena" placeholder="Confirme su contraseña" value={confirmarContrasena} onChange={(e) => setConfirmarContrasena(e.target.value)}/>
-                <button type="submit" className="auth-btn">
-                  REGISTRARSE
-                </button>
-                <p className="auth-or">o continua con...</p>
-                <div className="social-login">
-                  <button type="button">
-                    <FontAwesomeIcon icon={faGoogle} /> Google
+
+                  <input
+                    type="password"
+                    placeholder="Confirme su contraseña"
+                    value={confirmarContrasena}
+                    onChange={(e) => setConfirmarContrasena(e.target.value)}
+                  />
+
+                  <button type="submit" className="auth-btn">
+                    REGISTRARSE
                   </button>
-                  <button type="button">
-                    <FontAwesomeIcon icon={faFacebookF} /> Facebook
-                  </button>
-                </div>
-              </form>
+
+                  {/* <p className="auth-or">o continua con...</p> */}
+
+                  {/* <div className="social-login">
+                    <button type="button">
+                      <FontAwesomeIcon icon={faGoogle} /> Google
+                    </button>
+                    <button type="button">
+                      <FontAwesomeIcon icon={faFacebookF} /> Facebook
+                    </button>
+                  </div> */}
+                </form>
+              </>
             ) : (
-              <form className="sign-in-container-mobile" onSubmit={handleLogin}>
-                <h2 className="auth-title">INICIO DE SESIÓN</h2>
-                <label>Correo Electrónico</label>
-                <input type="email" id="LogCorreoMobile" name="loginCorreo" placeholder="Ingrese su correo electrónico" value={loginCorreo} onChange={(e) => setLoginCorreo(e.target.value)} />
-                <label>Contraseña</label>
-                <input type="password" id="LogContrasenaMobile" name="loginContrasena" placeholder="Ingrese su contraseña" value={loginContrasena} onChange={(e) => setLoginContrasena(e.target.value)}/>
-                <button type="submit" className="auth-btn">
-                  INICIAR SESIÓN
-                </button>
-                <p className="auth-or">o continua con...</p>
-                <div className="social-login">
-                  <button type="button">
-                    <FontAwesomeIcon icon={faGoogle} /> Google
+              <>
+                <form
+                  className="sign-in-container-mobile"
+                  onSubmit={handleLogin}
+                >
+                  <h2 className="auth-title">INICIO DE SESIÓN</h2>
+
+                  <label>Correo Electrónico</label>
+                  <input
+                    type="email"
+                    placeholder="Ingrese su correo electrónico"
+                    value={loginCorreo}
+                    onChange={(e) => setLoginCorreo(e.target.value)}
+                  />
+
+                  <label>Contraseña</label>
+                  <input
+                    type="password"
+                    placeholder="Ingrese su contraseña"
+                    value={loginContrasena}
+                    onChange={(e) => setLoginContrasena(e.target.value)}
+                  />
+
+                  <button type="submit" className="auth-btn">
+                    INICIAR SESIÓN
                   </button>
-                  <button type="button">
-                    <FontAwesomeIcon icon={faFacebookF} /> Facebook
-                  </button>
-                </div>
-              </form>
+
+                  {/* <p className="auth-or">o continua con...</p> */}
+
+                  {/* <div className="social-login">
+                    <button type="button">
+                      <FontAwesomeIcon icon={faGoogle} /> Google
+                    </button>
+                    <button type="button">
+                      <FontAwesomeIcon icon={faFacebookF} /> Facebook
+                    </button>
+                  </div> */}
+                </form>
+              </>
             )}
 
-            {/* BOTÓN CAMBIO FORMULARIO */}
+            {/* BOTÓN DE CAMBIO */}
             <div className="mobile-switch">
               {esRegistrado ? (
                 <>
                   <p>¿YA TENÉS UNA CUENTA?</p>
-                  <button type="button" className="switch-btn" onClick={() => setesRegistrado(false)}>
+                  <button
+                    type="button"
+                    className="switch-btn"
+                    onClick={() => setesRegistrado(false)}
+                  >
                     INICIAR SESIÓN
                   </button>
                 </>
               ) : (
                 <>
                   <p>¿NO TENÉS UNA CUENTA?</p>
-                  <button type="button" className="switch-btn" onClick={() => setesRegistrado(true)}>
+                  <button
+                    type="button"
+                    className="switch-btn"
+                    onClick={() => setesRegistrado(true)}
+                  >
                     REGISTRATE
                   </button>
                 </>
@@ -319,6 +514,7 @@ const Auth = () => {
           </div>
         </div>
       </div>
+
       <Footer />
     </>
   );

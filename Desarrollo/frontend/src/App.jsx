@@ -30,6 +30,7 @@ import ReservasActuales from "./pages/Reserva/ReservaAdmin/ReservasActuales";
 import Test from "./pages/Admin/Test";
 import EnConstruccion from "./pages/Otros/EnConstruccion";
 import GestorProducto from "./pages/Stock/AñadirStock";
+import Perfil from "./pages/User/Perfil";
 
 function App() {
   const { cargando } = useAuth();
@@ -54,7 +55,7 @@ function App() {
         {/* Rutas protegidas para usuarios autenticados (cualquier rol) */}
         <Route element={<RutaProtegida />}>
           <Route path="/reserva" element={<Reserva />} />
-          <Route path="/perfil" element={<Navigate to="/en-construccion" replace />} />
+          <Route path="/perfil" element={<Perfil />} />
         </Route>
 
         {/* Rutas protegidas para empleados */}

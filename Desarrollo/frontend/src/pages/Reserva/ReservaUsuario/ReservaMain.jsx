@@ -42,10 +42,11 @@ const TableReservationMain = ({ selectedDate, selectedTime, selectedTable, onTab
     const fecha = new Date(selectedDate).toISOString().split("T")[0];
 
     const datosReserva = {
-      fecha: fecha,
-      hora: selectedTime,
-      cantidadPersonas: selectedTable
+      fechaHora: `${fecha} ${selectedTime}:00`,
+      cantidadPersonas: selectedTable,
+      estado: "PENDIENTE"
     }
+
     
     try {
       const respuesta = await fetch("/api/reserva/crear", {
