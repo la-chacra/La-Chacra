@@ -21,7 +21,7 @@ use App\Controllers\StockController;
 use App\Controllers\EstadisticaController;
 use App\Controllers\EmpleadoController;
 use App\Controllers\PlatoController;
-
+use App\Controllers\HistorialController;
 
 
 $db = new Database();
@@ -39,12 +39,18 @@ $router->post("/api/login", [LoginController::class, "login"]);
 $router->post("/api/registro", [RegistroController::class, "registrar"]);
 $router->get("/api/logout", [AuthController::class, "logout"]);
 $router->get("/api/estadoSesion", [AuthController::class, "estadoSesion"]);
+$router->get("/api/obtenerDatos", [AuthController::class, "obtenerDatosUsuario"]);
+$router->put("/api/usuario/cambiar-contraseña", [AuthController::class, "cambiarContrasena"]);
+$router->put("/api/usuario/actualizar", [AuthController::class, "actualizarDatos"]);
 
 // API Reserva Cliente
-$router->post('/api/reservas/crear', [ReservaController::class, 'registrar']);
-$router->post('/api/reservas/actualizar', [ReservaController::class, 'actualizar']);
-$router->post('/api/reservas/cancelar', [ReservaController::class, 'cancelar']);
+$router->post('/api/reserva/crear', [ReservaController::class, 'registrar']);
+$router->post('/api/reserva/actualizar', [ReservaController::class, 'actualizar']);
+$router->post('/api/reserva/cancelar', [ReservaController::class, 'cancelar']);
 $router->put('/api/reservas/marcar-llegada/{id}', [ReservaController::class, 'marcarLlegada']);
+$router->get('/api/reserva/activa', [ReservaController::class, 'reservaActiva']);
+$router->delete('/api/reserva/cancelar', [ReservaController::class, 'cancelar']);
+
 
 //API Reserva Admin
 $router->get("/api/reservas/obtener", [ReservaController::class, "obtenerReservas"]);
@@ -99,9 +105,11 @@ $router->post('/api/productos-menu', [PlatoController::class, 'crearPlato']);
 $router->put('/api/productos-menu/{id}', [PlatoController::class, 'actualizarPlato']);
 $router->delete('/api/productos-menu/desactivar/{id}', [PlatoController::class, 'desactivarPlato']);
 
+// API Historial de Cambios
 
-
-
+$router->get("/api/gestion/historial", [HistorialController::class, "obtenerHistorial"]);
+$router->post("/api/gestion/restaurar", [HistorialController::class, "restaurarCambio"]);
+$router->get("/api/gestion/exportar-historial", [HistorialController::class, "exportarHistorial"]);
 
 $allowedOrigin = "http://localhost:5173";
 header("Access-Control-Allow-Origin: $allowedOrigin");

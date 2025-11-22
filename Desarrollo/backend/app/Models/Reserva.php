@@ -130,6 +130,32 @@ class Reserva extends ModeloBase {
     return static::$conexion_bd->realizarConsulta($consulta);
 }
 
+    public static function obtenerReservaActiva(int $usuarioId) : ?array {
+        $sql = "
+            SELECT reserva_id, fecha_hora, cant_personas, estado
+            FROM reserva
+            WHERE usuario_id = :usuario_id
+            AND activa = 1
+            LIMIT 1
+        ";
+
+        $result = static::$conexion_bd->realizarConsulta($sql, [
+            ":usuario_id" => $usuarioId
+        ]);
+
+        return $result[0] ?? null;
+    }
+
+    
+public static function cancelarReservaActiva(int $usuarioId): bool {
+    $sql = "UPDATE reserva SET activa = 0, estado = :estado WHERE usuario_id = :usuario_id AND activa = 1";
+    
+    return static::$conexion_bd->ejecutarConsulta($sql, [
+        ":usuario_id" => $usuarioId,
+        ":estado" => EstadoReserva::CANCELADA->value
+    ]);
+}
+
 
     public static function actualizarActividad(int $reserva_id, bool $activa): bool {
         $estado = $activa ? 1 : 0;

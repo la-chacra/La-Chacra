@@ -4,15 +4,8 @@ namespace App\Controllers;
 
 use App\Models\Plato;
 use App\Services\ControllerService;
+use App\Services\ActividadMiddleware;
 use Exception;
-/**
- * Controlador PlatoController
- *
- * Gestiona las operaciones relacionadas con los platos del menú.
- * Permite crear, editar, eliminar y listar los platos disponibles.
- *
- * @package App\Controllers
- */
 
 class PlatoController
 {
@@ -24,9 +17,7 @@ class PlatoController
         try {
             $platos = Plato::obtenerTodos();
 
-    /**
-     * De string a array
-     */            foreach ($platos as &$plato) {
+            foreach ($platos as &$plato) {
                 if (isset($plato['ingredientes']) && is_string($plato['ingredientes'])) {
                     $plato['ingredientes'] = json_decode($plato['ingredientes'], true);
                 }
@@ -59,12 +50,12 @@ class PlatoController
                 return ["success" => false, "message" => "Plato no encontrado."];
             }
 
-           
             if (isset($plato['ingredientes']) && is_string($plato['ingredientes'])) {
                 $plato['ingredientes'] = json_decode($plato['ingredientes'], true);
             }
 
             return ["success" => true, "data" => $plato];
+
         } catch (Exception $e) {
             http_response_code(500);
             return ["success" => false, "message" => "Error al buscar el plato."];
@@ -89,7 +80,7 @@ class PlatoController
                 return ["success" => false, "message" => "Datos incompletos."];
             }
 
-            // ✅ Manejo de imagen (opcional)
+            // Imagen
             $imagenUrl = null;
             if (!empty($_FILES["imagen"]["name"])) {
                 $nombreArchivo = uniqid("plato_") . "_" . basename($_FILES["imagen"]["name"]);
@@ -98,7 +89,6 @@ class PlatoController
                 $imagenUrl = "/img/platos/" . $nombreArchivo;
             }
 
-          
             $plato = new Plato(
                 $nombre,
                 $precio,
@@ -110,6 +100,19 @@ class PlatoController
             );
 
             $resultado = ControllerService::handlerErrorConexion(fn() => $plato->registrarPlato());
+
+            if ($resultado) {
+                // Obtener plato recién creado
+                $nuevoPlato = Plato::buscarPorId($plato->getProductoId());
+
+                ActividadMiddleware::cambioPlato(
+                    null,
+                    $nuevoPlato,
+                    $_SESSION["usuario_id"],
+                    $nuevoPlato["producto_id"],
+                    "Registro de nuevo plato"
+                );
+            }
 
             return $resultado
                 ? ["success" => true, "message" => "Plato registrado correctamente."]
@@ -135,6 +138,9 @@ class PlatoController
                 return ["success" => false, "message" => "Plato no encontrado."];
             }
 
+            // Estado ANTES
+            $antes = $platoExistente;
+
             $nombre = $_POST["nombre"] ?? $platoExistente["nombre"];
             $precio = $_POST["precio"] ?? $platoExistente["precio"];
             $categoria = $_POST["categoria"] ?? $platoExistente["categoria"];
@@ -147,17 +153,16 @@ class PlatoController
 
             $ingredientesRaw = $_POST["ingredientes"] ?? "[]";
 
-                if (is_string($ingredientesRaw)) {
-                    $ingredientes = json_decode($ingredientesRaw, true);
-                    if (!is_array($ingredientes)) {
-                        $ingredientes = array_map("trim", explode(",", $ingredientesRaw));
-                    }
-                } elseif (is_array($ingredientesRaw)) {
-                    $ingredientes = $ingredientesRaw;
-                } else {
-                    $ingredientes = [];
+            if (is_string($ingredientesRaw)) {
+                $ingredientes = json_decode($ingredientesRaw, true);
+                if (!is_array($ingredientes)) {
+                    $ingredientes = array_map("trim", explode(",", $ingredientesRaw));
                 }
-
+            } elseif (is_array($ingredientesRaw)) {
+                $ingredientes = $ingredientesRaw;
+            } else {
+                $ingredientes = [];
+            }
 
             $imagenUrl = $platoExistente["imagen_url"] ?? null;
             if (!empty($_FILES["imagen"]["name"])) {
@@ -180,6 +185,19 @@ class PlatoController
 
             $resultado = ControllerService::handlerErrorConexion(fn() => $plato->actualizarPlato());
 
+            if ($resultado) {
+                // Estado DESPUÉS
+                $despues = Plato::buscarPorId($id);
+
+                ActividadMiddleware::cambioPlato(
+                    $antes,
+                    $despues,
+                    $_SESSION["usuario_id"],
+                    $id,
+                    "Modificación de plato"
+                );
+            }
+
             return $resultado
                 ? ["success" => true, "message" => "Plato actualizado correctamente."]
                 : ["success" => false, "message" => "No se pudo actualizar el plato."];
@@ -196,15 +214,35 @@ class PlatoController
     /**
      * Desactivar plato
      */   
-     public function desactivarPlato($router, $params): array
+    public function desactivarPlato($router, $params): array
     {
         $id = (int)$params["id"];
+
         try {
-            $resultado = ControllerService::handlerErrorConexion(fn() => Plato::actualizarActividad($id, false));
+            // Estado ANTES
+            $antes = Plato::buscarPorId($id);
+
+            $resultado = ControllerService::handlerErrorConexion(
+                fn() => Plato::actualizarActividad($id, false)
+            );
+
+            if ($resultado) {
+                // Estado DESPUÉS
+                $despues = Plato::buscarPorId($id);
+
+                ActividadMiddleware::cambioPlato(
+                    $antes,
+                    $despues,
+                    $_SESSION["usuario_id"],
+                    $id,
+                    "Desactivación de plato"
+                );
+            }
 
             return $resultado
                 ? ["success" => true, "message" => "Plato desactivado correctamente."]
                 : ["success" => false, "message" => "No se pudo desactivar el plato."];
+
         } catch (Exception $e) {
             http_response_code(500);
             return ["success" => false, "message" => "Error interno al desactivar plato."];

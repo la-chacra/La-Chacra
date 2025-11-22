@@ -38,7 +38,11 @@ class AuthMiddleware {
         "C" => [ // C = cliente
             "/api/reserva/crear",
             "/api/reserva/cancelar",
-            "/api/reserva/actualizar"
+            "/api/reserva/actualizar",
+            "/api/obtenerDatos",
+            "/api/usuario/actualizar",
+            "/api/usuario/cambiar-contraseña",
+            '/api/reserva/activa'
         ],
         "E" => [ // E = empleado
             /* Empleado (operaciones sobre comandas gestionadas por empleados)
@@ -48,7 +52,11 @@ class AuthMiddleware {
             "/api/reserva/crear",
             "/api/reserva/cancelar",
             "/api/reserva/actualizar",
-            "/api/reservas/marcar-llegada/{id}"
+            "/api/reservas/marcar-llegada/{id}",
+            "/api/obtenerDatos",
+            "/api/usuario/actualizar",
+            "/api/usuario/cambiar-contraseña",
+            '/api/reserva/activa'
             /* si en el futuro existe un endpoint de listado para empleados, agregarlo aquí */
         ],
         "A" => [ // A = admin
@@ -97,7 +105,17 @@ class AuthMiddleware {
             "/api/reserva/crear",
             "/api/reserva/cancelar",
             "/api/reserva/actualizar",
-            "/api/reservas/marcar-llegada/{id}"
+            "/api/reservas/marcar-llegada/{id}",
+            // Usuario
+            "/api/obtenerDatos",
+            "/api/usuario/actualizar",
+            "/api/usuario/cambiar-contraseña",
+            // Historial Cambios
+            "/api/gestion/historial",
+            "/api/gestion/restaurar",
+            "/api/gestion/exportar-historial",
+            '/api/reserva/cancelar',
+            '/api/reserva/activa'
         ]
     ];
 
@@ -112,6 +130,7 @@ class AuthMiddleware {
         "/api/registro",
         "/api/logout",
         "/api/estadoSesion",
+        "/api/obtenerDatos",
         // Recuperar contraseña (deben ser públicos para poder iniciar el flujo de recuperación)
         "/api/recuperar/enviarCodigo",
         "/api/recuperar/cambiarPassword"

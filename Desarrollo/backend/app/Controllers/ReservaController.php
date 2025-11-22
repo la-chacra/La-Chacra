@@ -68,7 +68,7 @@ class ReservaController {
             $usuario_id = $_SESSION["usuario_id"] ?? null;
             $fechaHora = $datos["fechaHora"] ?? "";
             $cantidadPersonas = $datos["cantidadPersonas"] ?? "";
-            $estado = $datos["estado"] ?? "Pendiente";
+            $estado = EstadoReserva::tryFrom($datos["estado"]) ?? EstadoReserva::PENDIENTE;
 
             if (empty($usuario_id) || empty($fechaHora) || empty($cantidadPersonas)) {
                 http_response_code(400);
@@ -78,6 +78,16 @@ class ReservaController {
             $reserva = new Reserva($usuario_id, $fechaHora, (int)$cantidadPersonas, $estado);
             $resultado = ControllerService::handlerErrorConexion(fn() => $reserva->registrarReserva());
 
+            $reservaActiva = Reserva::obtenerReservaActiva($usuario_id);
+
+            if ($reservaActiva) {
+                return [
+                    "success" => false,
+                    "message" => "Ya tienes una reserva activa. Cancélala antes de hacer una nueva."
+                ];
+            }
+
+
             return $resultado
                 ? ["success" => true, "message" => "Reserva registrada correctamente"]
                 : ["success" => false, "message" => "Error al registrar la reserva"];
@@ -86,6 +96,19 @@ class ReservaController {
             return ["success" => false, "message" => "Error interno del servidor"];
         }
     }
+
+    public function cancelar($router) {
+    $usuario_id = $_SESSION["usuario_id"] ?? null;
+
+    if (!$usuario_id)
+        return ["success" => false, "message" => "No autenticado"];
+
+    $resultado = Reserva::cancelarReservaActiva($usuario_id);
+
+    return $resultado
+        ? ["success" => true, "message" => "Reserva cancelada"]
+        : ["success" => false, "message" => "No tienes reservas activas"];
+}
 
   
 
@@ -156,6 +179,49 @@ public function marcarLlegada($router, $params) {
         ];
     }
 }
+
+public function reservaActiva($router) {
+
+    try {
+        // Verificar sesión
+        $usuario_id = $_SESSION["usuario_id"] ?? null;
+
+        if (!$usuario_id) {
+            http_response_code(401);
+            return [
+                "success" => false,
+                "message" => "Usuario no autenticado"
+            ];
+        }
+
+        // Buscar reserva activa usando el modelo
+        $reserva = ControllerService::handlerErrorConexion(
+            fn() => Reserva::obtenerReservaActiva($usuario_id)
+        );
+
+        if ($reserva) {
+            return [
+                "success" => true,
+                "message" => "Reserva activa encontrada",
+                "data" => $reserva
+            ];
+        }
+
+        return [
+            "success" => false,
+            "message" => "No hay reservas activas"
+        ];
+
+    } catch (Exception $e) {
+
+        http_response_code(500);
+        return [
+            "success" => false,
+            "message" => "Error interno del servidor"
+        ];
+    }
+}
+
 
 
 
